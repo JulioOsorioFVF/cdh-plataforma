@@ -29,6 +29,7 @@
     "db:seed:vistas": "npm run db:sql -- prisma/seeds/03_vistas_analiticas.sql",
     "db:seed:indices": "npm run db:sql -- prisma/seeds/04_indices_y_materializadas.sql",
     "db:seed:usuario": "tsx prisma/seeds/usuario.ts",
+    "db:clave": "tsx scripts/db/fijar-clave.ts",
     "db:refresh": "tsx scripts/db/refrescar-materializadas.ts",
     "db:probar": "tsx scripts/db/probar-consultas.ts",
     "ingesta": "tsx scripts/ingesta/index.ts",

@@ -101,6 +101,7 @@ uno de fallos al desplegar.
 | `npm run ingesta` | carga COMPETENCIAS y EXPEDIENTES (idempotente) |
 | `npm run db:refresh` | refresca las vistas materializadas |
 | `npm run db:probar` | 18 consultas del tablero, como prueba de humo |
+| `npm run db:clave` | fija la clave de un usuario (`--email`, `--clave`) |
 | `npm run db:studio` | Prisma Studio |
 
 `db:deploy` es el camino normal para migrar. `db:migrate` (migrate dev) necesita
