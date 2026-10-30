@@ -17,7 +17,7 @@ const SIN_SESION = '/ingresar';
 const CON_SESION_INCOMPLETA = '/cambiar-password';
 
 /** Rutas que se pueden abrir sin haber iniciado sesion. */
-const PUBLICAS = new Set(['/', SIN_SESION, CON_SESION_INCOMPLETA]);
+const PUBLICAS = new Set(['/', SIN_SESION, CON_SESION_INCOMPLETA, '/evaluacion']);
 
 export async function middleware(req: NextRequest): Promise<NextResponse> {
   const { pathname, search } = req.nextUrl;
