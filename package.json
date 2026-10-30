@@ -1,0 +1,60 @@
+{
+  "name": "cdh-plataforma",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plataforma de Big Data Disciplinaria del Futbol — Consejo de Honor FVF",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:format": "prisma format",
+    "db:ping": "tsx scripts/db/ping.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:reset": "prisma migrate reset --force",
+    "db:studio": "prisma studio",
+    "db:sql": "prisma db execute --schema prisma/schema.prisma --file",
+    "db:seed:roles": "npm run db:sql -- prisma/seeds/01_roles_permisos.sql",
+    "db:seed:base": "npm run db:sql -- prisma/seeds/02_catalogos_base.sql",
+    "db:seed:catalogos": "tsx prisma/seeds/catalogos.ts",
+    "db:seed:vistas": "npm run db:sql -- prisma/seeds/03_vistas_analiticas.sql",
+    "db:seed:indices": "npm run db:sql -- prisma/seeds/04_indices_y_materializadas.sql",
+    "db:seed:usuario": "tsx prisma/seeds/usuario.ts",
+    "db:refresh": "tsx scripts/db/refrescar-materializadas.ts",
+    "db:probar": "tsx scripts/db/probar-consultas.ts",
+    "ingesta": "tsx scripts/ingesta/index.ts",
+    "db:setup": "npm run db:generate && npm run db:deploy && npm run db:seed:roles && npm run db:seed:base && npm run db:seed:catalogos && npm run db:seed:vistas && npm run db:seed:indices"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "chart.js": "^4.5.1",
+    "next": "^15.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.4",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.5.0",
+    "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "prisma": "6.19.3",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

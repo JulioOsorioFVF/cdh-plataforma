@@ -1,0 +1,2642 @@
+{
+  "normas": [
+    {
+      "codigo": "RD",
+      "nombre": "Reglamento Disciplinario",
+      "documentos": []
+    },
+    {
+      "codigo": "RD_FVF",
+      "nombre": "Reglamento Disciplinario FVF",
+      "documentos": []
+    },
+    {
+      "codigo": "NRLFJ",
+      "nombre": "Normas Reguladoras Liga FUTVE Junior",
+      "documentos": []
+    },
+    {
+      "codigo": "NRLFF",
+      "nombre": "Normas Reguladoras Liga FUTVE Femenina",
+      "documentos": []
+    },
+    {
+      "codigo": "NR",
+      "nombre": "Normas Reguladoras",
+      "documentos": []
+    },
+    {
+      "codigo": "RGC",
+      "nombre": "Reglamento General de Competencias",
+      "documentos": []
+    },
+    {
+      "codigo": "RJ",
+      "nombre": "Reglamento de Justicia",
+      "documentos": []
+    },
+    {
+      "codigo": "E_FVF",
+      "nombre": "Estatutos FVF",
+      "documentos": []
+    },
+    {
+      "codigo": "LODAFEF",
+      "nombre": "Ley Orgánica del Deporte, Actividad Física y Educación Física",
+      "documentos": []
+    },
+    {
+      "codigo": "LEY_DEL_DEPORTE",
+      "nombre": "Ley del Deporte",
+      "documentos": []
+    },
+    {
+      "codigo": "CD_FIFA",
+      "nombre": "Código Disciplinario FIFA",
+      "documentos": []
+    },
+    {
+      "codigo": "FIFA",
+      "nombre": "Reglamento FIFA",
+      "documentos": []
+    },
+    {
+      "codigo": "FVF",
+      "nombre": "Reglamento FVF",
+      "documentos": []
+    },
+    {
+      "codigo": "IFAB",
+      "nombre": "Leyes del Juego IFAB",
+      "documentos": []
+    },
+    {
+      "codigo": "REGLAS_DE_JUEGO",
+      "nombre": "Reglas de Juego",
+      "documentos": []
+    },
+    {
+      "codigo": "ESTATUTOS",
+      "nombre": "Estatutos FVF",
+      "documentos": []
+    }
+  ],
+  "articulos": [
+    {
+      "codigo": "67-6",
+      "norma": "RD",
+      "usos": 9987
+    },
+    {
+      "codigo": "67-UP",
+      "norma": "RD",
+      "usos": 1751
+    },
+    {
+      "codigo": "43",
+      "norma": "RD",
+      "usos": 1641
+    },
+    {
+      "codigo": "41",
+      "norma": "RD",
+      "usos": 1484
+    },
+    {
+      "codigo": "67",
+      "norma": "RD",
+      "usos": 1359
+    },
+    {
+      "codigo": "132",
+      "norma": "RD",
+      "usos": 1234
+    },
+    {
+      "codigo": "67-2",
+      "norma": "RD",
+      "usos": 1224
+    },
+    {
+      "codigo": "66-5",
+      "norma": "RD",
+      "usos": 1154
+    },
+    {
+      "codigo": "67-3",
+      "norma": "RD",
+      "usos": 1100
+    },
+    {
+      "codigo": "54",
+      "norma": "RD",
+      "usos": 1041
+    },
+    {
+      "codigo": "10",
+      "norma": "RD",
+      "usos": 976
+    },
+    {
+      "codigo": "52",
+      "norma": "RD",
+      "usos": 815
+    },
+    {
+      "codigo": "55",
+      "norma": "RD",
+      "usos": 744
+    },
+    {
+      "codigo": "67-5",
+      "norma": "RD",
+      "usos": 713
+    },
+    {
+      "codigo": "204",
+      "norma": "RD",
+      "usos": 669
+    },
+    {
+      "codigo": "53",
+      "norma": "RD",
+      "usos": 616
+    },
+    {
+      "codigo": "8",
+      "norma": "RD",
+      "usos": 573
+    },
+    {
+      "codigo": "15",
+      "norma": "RD",
+      "usos": 527
+    },
+    {
+      "codigo": "49",
+      "norma": "RD",
+      "usos": 512
+    },
+    {
+      "codigo": "46",
+      "norma": "RD",
+      "usos": 506
+    },
+    {
+      "codigo": "24-3",
+      "norma": "RD",
+      "usos": 495
+    },
+    {
+      "codigo": "12",
+      "norma": "RD",
+      "usos": 463
+    },
+    {
+      "codigo": "47",
+      "norma": "RD",
+      "usos": 438
+    },
+    {
+      "codigo": "44",
+      "norma": "RD",
+      "usos": 436
+    },
+    {
+      "codigo": "5",
+      "norma": "RD",
+      "usos": 430
+    },
+    {
+      "codigo": "35 E",
+      "norma": "RD",
+      "usos": 362
+    },
+    {
+      "codigo": "64-1",
+      "norma": "RD",
+      "usos": 353
+    },
+    {
+      "codigo": "69",
+      "norma": "RD",
+      "usos": 350
+    },
+    {
+      "codigo": "36",
+      "norma": "RD",
+      "usos": 342
+    },
+    {
+      "codigo": "67-4",
+      "norma": "RD",
+      "usos": 264
+    },
+    {
+      "codigo": "35 D",
+      "norma": "RD",
+      "usos": 221
+    },
+    {
+      "codigo": "35 A",
+      "norma": "RD",
+      "usos": 210
+    },
+    {
+      "codigo": "24 3",
+      "norma": "RD",
+      "usos": 202
+    },
+    {
+      "codigo": "16-2",
+      "norma": "RD",
+      "usos": 201
+    },
+    {
+      "codigo": "58",
+      "norma": "RD",
+      "usos": 190
+    },
+    {
+      "codigo": "10 C",
+      "norma": "RD",
+      "usos": 174
+    },
+    {
+      "codigo": "87",
+      "norma": "RD",
+      "usos": 168
+    },
+    {
+      "codigo": "77-1",
+      "norma": "RD",
+      "usos": 167
+    },
+    {
+      "codigo": "76",
+      "norma": "RD",
+      "usos": 156
+    },
+    {
+      "codigo": "24",
+      "norma": "RD",
+      "usos": 156
+    },
+    {
+      "codigo": "RD",
+      "norma": "RD",
+      "usos": 155
+    },
+    {
+      "codigo": "85",
+      "norma": "RD",
+      "usos": 153
+    },
+    {
+      "codigo": "142",
+      "norma": "RD",
+      "usos": 125
+    },
+    {
+      "codigo": "66-3",
+      "norma": "RD",
+      "usos": 121
+    },
+    {
+      "codigo": "97",
+      "norma": "RD",
+      "usos": 109
+    },
+    {
+      "codigo": "37",
+      "norma": "RD",
+      "usos": 109
+    },
+    {
+      "codigo": "66-4",
+      "norma": "RD",
+      "usos": 102
+    },
+    {
+      "codigo": "65-3",
+      "norma": "RD",
+      "usos": 101
+    },
+    {
+      "codigo": "19",
+      "norma": "RD",
+      "usos": 95
+    },
+    {
+      "codigo": "51",
+      "norma": "RD",
+      "usos": 87
+    },
+    {
+      "codigo": "16 2",
+      "norma": "RD",
+      "usos": 85
+    },
+    {
+      "codigo": "77-3",
+      "norma": "RD",
+      "usos": 85
+    },
+    {
+      "codigo": "36 B",
+      "norma": "RD",
+      "usos": 63
+    },
+    {
+      "codigo": "16",
+      "norma": "RD",
+      "usos": 63
+    },
+    {
+      "codigo": "13",
+      "norma": "RD",
+      "usos": 61
+    },
+    {
+      "codigo": "35",
+      "norma": "RD",
+      "usos": 61
+    },
+    {
+      "codigo": "10NR",
+      "norma": "RD",
+      "usos": 60
+    },
+    {
+      "codigo": "50",
+      "norma": "RD",
+      "usos": 60
+    },
+    {
+      "codigo": "24-1",
+      "norma": "RD",
+      "usos": 59
+    },
+    {
+      "codigo": "68",
+      "norma": "RD",
+      "usos": 58
+    },
+    {
+      "codigo": "86",
+      "norma": "RD",
+      "usos": 57
+    },
+    {
+      "codigo": "11",
+      "norma": "RD",
+      "usos": 56
+    },
+    {
+      "codigo": "66-1",
+      "norma": "RD",
+      "usos": 56
+    },
+    {
+      "codigo": "24-2",
+      "norma": "RD",
+      "usos": 56
+    },
+    {
+      "codigo": "8RD",
+      "norma": "RD",
+      "usos": 53
+    },
+    {
+      "codigo": "18",
+      "norma": "RD",
+      "usos": 49
+    },
+    {
+      "codigo": "57",
+      "norma": "RD",
+      "usos": 49
+    },
+    {
+      "codigo": "67-1",
+      "norma": "RD",
+      "usos": 48
+    },
+    {
+      "codigo": "40",
+      "norma": "RD",
+      "usos": 48
+    },
+    {
+      "codigo": "2",
+      "norma": "RD",
+      "usos": 47
+    },
+    {
+      "codigo": "5-12",
+      "norma": "RD",
+      "usos": 46
+    },
+    {
+      "codigo": "36 E",
+      "norma": "RD",
+      "usos": 45
+    },
+    {
+      "codigo": "82 B",
+      "norma": "RD",
+      "usos": 44
+    },
+    {
+      "codigo": "36 D",
+      "norma": "RD",
+      "usos": 43
+    },
+    {
+      "codigo": "5Y12RJ",
+      "norma": "RD",
+      "usos": 35
+    },
+    {
+      "codigo": "70",
+      "norma": "RD",
+      "usos": 34
+    },
+    {
+      "codigo": "65-1",
+      "norma": "RD",
+      "usos": 32
+    },
+    {
+      "codigo": "14",
+      "norma": "RD",
+      "usos": 31
+    },
+    {
+      "codigo": "88 D",
+      "norma": "RD",
+      "usos": 30
+    },
+    {
+      "codigo": "35 C",
+      "norma": "RD",
+      "usos": 29
+    },
+    {
+      "codigo": "42",
+      "norma": "RD",
+      "usos": 29
+    },
+    {
+      "codigo": "35-E",
+      "norma": "RD",
+      "usos": 29
+    },
+    {
+      "codigo": "31",
+      "norma": "RD",
+      "usos": 28
+    },
+    {
+      "codigo": "20",
+      "norma": "RD",
+      "usos": 27
+    },
+    {
+      "codigo": "48",
+      "norma": "RD",
+      "usos": 27
+    },
+    {
+      "codigo": "67 ÚNICO APARTE",
+      "norma": "RD",
+      "usos": 27
+    },
+    {
+      "codigo": "36 A",
+      "norma": "RD",
+      "usos": 26
+    },
+    {
+      "codigo": "39",
+      "norma": "RD",
+      "usos": 26
+    },
+    {
+      "codigo": "67 UA",
+      "norma": "RD",
+      "usos": 25
+    },
+    {
+      "codigo": "65-2",
+      "norma": "RD",
+      "usos": 24
+    },
+    {
+      "codigo": "93",
+      "norma": "RD",
+      "usos": 24
+    },
+    {
+      "codigo": "82",
+      "norma": "RD",
+      "usos": 23
+    },
+    {
+      "codigo": "124-1",
+      "norma": "RD",
+      "usos": 22
+    },
+    {
+      "codigo": "25",
+      "norma": "RD",
+      "usos": 22
+    },
+    {
+      "codigo": "66",
+      "norma": "RD",
+      "usos": 22
+    },
+    {
+      "codigo": "77-5",
+      "norma": "RD",
+      "usos": 21
+    },
+    {
+      "codigo": "82 C",
+      "norma": "RD",
+      "usos": 21
+    },
+    {
+      "codigo": "50 F",
+      "norma": "RD",
+      "usos": 20
+    },
+    {
+      "codigo": "114-3",
+      "norma": "RD",
+      "usos": 20
+    },
+    {
+      "codigo": "26",
+      "norma": "RD",
+      "usos": 20
+    },
+    {
+      "codigo": "136-1",
+      "norma": "RD",
+      "usos": 20
+    },
+    {
+      "codigo": "50 E",
+      "norma": "RD",
+      "usos": 20
+    },
+    {
+      "codigo": "101",
+      "norma": "RD",
+      "usos": 20
+    },
+    {
+      "codigo": "3",
+      "norma": "RD",
+      "usos": 19
+    },
+    {
+      "codigo": "35-A",
+      "norma": "RD",
+      "usos": 19
+    },
+    {
+      "codigo": "43 N",
+      "norma": "RD",
+      "usos": 18
+    },
+    {
+      "codigo": "49 I",
+      "norma": "RD",
+      "usos": 17
+    },
+    {
+      "codigo": "29",
+      "norma": "RD",
+      "usos": 17
+    },
+    {
+      "codigo": "RD-8",
+      "norma": "RD",
+      "usos": 17
+    },
+    {
+      "codigo": "100",
+      "norma": "RD",
+      "usos": 17
+    },
+    {
+      "codigo": "84",
+      "norma": "RD",
+      "usos": 16
+    },
+    {
+      "codigo": "86 D",
+      "norma": "RD",
+      "usos": 16
+    },
+    {
+      "codigo": "185",
+      "norma": "RD",
+      "usos": 15
+    },
+    {
+      "codigo": "5 Y 12RJ",
+      "norma": "RD",
+      "usos": 15
+    },
+    {
+      "codigo": "10 LITERAL \"C\"",
+      "norma": "RD",
+      "usos": 15
+    },
+    {
+      "codigo": "135",
+      "norma": "RD",
+      "usos": 14
+    },
+    {
+      "codigo": "81",
+      "norma": "RD",
+      "usos": 14
+    },
+    {
+      "codigo": "33",
+      "norma": "RD",
+      "usos": 14
+    },
+    {
+      "codigo": "77",
+      "norma": "RD",
+      "usos": 14
+    },
+    {
+      "codigo": "10-C",
+      "norma": "RD",
+      "usos": 14
+    },
+    {
+      "codigo": "61",
+      "norma": "RD",
+      "usos": 14
+    },
+    {
+      "codigo": "66 C",
+      "norma": "RD",
+      "usos": 14
+    },
+    {
+      "codigo": "66 G",
+      "norma": "RD",
+      "usos": 13
+    },
+    {
+      "codigo": "75",
+      "norma": "RD",
+      "usos": 12
+    },
+    {
+      "codigo": "N/A",
+      "norma": "RD",
+      "usos": 12
+    },
+    {
+      "codigo": "RJ-5Y12",
+      "norma": "RD",
+      "usos": 12
+    },
+    {
+      "codigo": "35-D",
+      "norma": "RD",
+      "usos": 12
+    },
+    {
+      "codigo": "32",
+      "norma": "RD",
+      "usos": 11
+    },
+    {
+      "codigo": "77-2",
+      "norma": "RD",
+      "usos": 11
+    },
+    {
+      "codigo": "72",
+      "norma": "RD",
+      "usos": 11
+    },
+    {
+      "codigo": "35 LITERAL \"D\"",
+      "norma": "RD",
+      "usos": 11
+    },
+    {
+      "codigo": "133",
+      "norma": "RD",
+      "usos": 11
+    },
+    {
+      "codigo": "114 3",
+      "norma": "RD",
+      "usos": 10
+    },
+    {
+      "codigo": "63 H",
+      "norma": "RD",
+      "usos": 10
+    },
+    {
+      "codigo": "35 LITERAL \"E\"",
+      "norma": "RD",
+      "usos": 10
+    },
+    {
+      "codigo": "176",
+      "norma": "RD",
+      "usos": 10
+    },
+    {
+      "codigo": "133-3",
+      "norma": "RD",
+      "usos": 10
+    },
+    {
+      "codigo": "114",
+      "norma": "RD",
+      "usos": 10
+    },
+    {
+      "codigo": "49 D",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "45",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "16.2",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "75 C",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "136",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "74",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "86-D",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "5 Y 12RJ.",
+      "norma": "RD",
+      "usos": 9
+    },
+    {
+      "codigo": "36 C",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "43 J",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "67-U.P",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "125-3",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "67-UP.",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "131",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "77 C",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "67 ÚNICO",
+      "norma": "RD",
+      "usos": 8
+    },
+    {
+      "codigo": "28 4",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "28 3",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "63",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "27",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "77 B",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "5Y12",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "128-1",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "9",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "75 E",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "6",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "36-B",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "38",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "66-2",
+      "norma": "RD",
+      "usos": 7
+    },
+    {
+      "codigo": "63 I",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "70 P2",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "64-2",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "28",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "124",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "66 H",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "43 C",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "136-3",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "82-B",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "37-UP",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "73",
+      "norma": "RD",
+      "usos": 6
+    },
+    {
+      "codigo": "49 E",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "5-12RJ",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "141",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "10 NR",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "5-12 RJ",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "8 RD",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "36 LITERAL \"E\"",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "82 LITERAL \"B\"",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "99",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "5 Y 12",
+      "norma": "RD",
+      "usos": 5
+    },
+    {
+      "codigo": "134 1",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "50 D",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "28-2",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "28-4",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "41 P2",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "133-2",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "125 1",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "68-UP",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "128-2",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "75 F",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "67 G",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "75 D",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "77 B VII",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "43 I",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "60",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "134",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "125-2",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "82 LITERAL \"C\"",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "NR-10",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "75-C",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "35 LITERAL D",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "36-E",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "79-8",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "77 F",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "85 PARÁGRAFO ÚNICO",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "23",
+      "norma": "RD",
+      "usos": 4
+    },
+    {
+      "codigo": "49 H",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "136 1",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "18 B",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "77-6",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "52 A",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "41 P1",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "124-2",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "49 C",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "165",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "133 3",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "10.RJ-5Y12",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "24 2",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "43.54",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "77 B-VII",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "129-2",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "CAP3 3.3MT 67UP",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "130",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "3.3",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "66-C",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "75-F",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "85 C",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "78",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "E",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "35 LITERAL E",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "50 C",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "78 C",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "15 PARÁGRAFO ÚNICO",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "36 LITERAL \"A\"",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "36 LITERAL \"D\"",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "10 NR RJ 5-12 RD 8",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "85 ÚNICO APARTE",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "75-D",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "49-I",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "70 P.2",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "43.55",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "86 C",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "48 P1",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "60 P1 B",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "50-E",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "NR10-",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "RGC",
+      "norma": "RD",
+      "usos": 3
+    },
+    {
+      "codigo": "133 2",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "28-1",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "124-3; 24-3",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "28-3",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "70 PARÁGRAFO SEGUNDO",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "79 8",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "113 1 A",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "113 1 B",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "113 2 A K",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "65-4",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "204RD",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "10RJ",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "10 LITERAL C",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "953",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "67UP",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "67 D",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "66 D",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "16-3",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "14 J",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "77 A IV",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "75 B",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "65-5",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "44 D",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "19-4",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "35 LITERAL \"C\"",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "35 LITERAL \"A\"",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "88 LITERAL \"D\"",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "129-1",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "134-1",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "67-8",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "15 ÚNICO APARTE",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "66-H",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "63-D",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "67 UNICO APARTE",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "64 NUMERAL 1",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "10.8",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "36-A",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "36 P4",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "36 P3",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "39-UP",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "136-2",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "60 P3",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "2.RJ5Y12",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "93 H",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "67 H",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "90",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "66-A",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "43-N",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "133.3",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "83",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "77-4",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "RD-8 66-5",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "36-D",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "145",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "76 C",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "130-4",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "175",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "77 A VII",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "NRLFJ",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "RD FVF",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "59",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "79",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "57UP",
+      "norma": "RD",
+      "usos": 2
+    },
+    {
+      "codigo": "63 F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "50 H",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "49 J",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "50 G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "52-A",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "130 1",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "130 FIN",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "10 RJ 5-12",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "5Y12R.J",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "11 G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "113-1-G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77 LITERAL B INCISO VII",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "11 LITERAL G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "88",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77 2 A A",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "82 LITERAL B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "82 LITERAL C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "65",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "46.49",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77 VII",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77 VII B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "14 C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "17",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "CAP 3MT",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "BRD5",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "12RJ",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "71",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "5970406",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "95",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "78 E",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77 ESTATUTOS",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "66 I",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "66 F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "25 RGC",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "X",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "66 LITERAL G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "66 LITERAL F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "PARÁGRAFO ÚNICO",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "75 LITERAL F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "PARÁGRAFO PRIMERO",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "LITERAL C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "75 LITERAL B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "44 B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "44 F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "43 O",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "10-G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "146",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "200",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "66-G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "75-B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "52-C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "50-D",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "125",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "66 NUMERAL 5",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "36 LITERAL B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "71-A",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "10-",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "RGC-6-C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "86-E",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77-A-VII",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "43 E",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "50 N",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "44 G",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "37 PARÁGRAFO ÚNICO",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "60 PARÁGRAFO 1 F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "2.RJ5Y12.RD-8",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "2.8.15Y12",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "2.RJSY12 RD-NR",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "2. RJ5Y12.RD-B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "2.RJ5V12 RD-8",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "2.RSY 12.RD-6",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "68 F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "30",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "133 1",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "J",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "B",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77 D",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "D",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "67 F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "173",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "69 PARAGRAFO UNICO",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "43-C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "78-C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "43-J",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "43-D",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "50-F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "119",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "43 D",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77-1 Y 3",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "2 Y 3",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "NR-2",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "RJ5Y12.RD",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "6-C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "NR10.RJ--5Y12",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "77-II",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "IV",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "XI",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "8R",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "10NR. 8RD",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "129",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "S/A",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "133-1",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "36-C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "82-C",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "94",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "10 F",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "156",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "158",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "85 PÁRRAFO ÚNICO",
+      "norma": "RD",
+      "usos": 1
+    },
+    {
+      "codigo": "86 E",
+      "norma": "RD",
+      "usos": 1
+    }
+  ],
+  "observaciones": [
+    {
+      "observacion": "2DA AMONESTACIÓN EN EL MISMO JUEGO",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "4TA AMONESTACIÓN (ACUMULACIÓN)",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "ACCESOS/PERÍMETRO DEL CAMPO",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "AGRESIÓN A JUGADOR",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "ALINEACIÓN INDEBIDA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "AMBULANCIA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "AMONESTACIÓN (TARJETA AMARILLA)",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "ARQUERÍAS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "BALONES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "BANCA DE SUPLENTES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "CAMERINO DE ÁRBITROS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "CAMERINO VISITANTE",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "CAMILLA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "CAMPO DE JUEGO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "CONDUCTA ANTIDEPORTIVA",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "CONDUCTA INJURIOSA (INSULTAR)",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "CONDUCTA INJURIOSA (PROTESTAR)",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "CONDUCTA VIOLENTA",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "DELEGADO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "DEMARCACIÓN DE CAMPO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "DESACATO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "DIRECTOR TÉCNICO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "DOBLE AMONESTACIÓN",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "DOCUMENTACIÓN",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "EQUIPO DE COMPUTACIÓN",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "FALTA GRAVE",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "FÉMINA C.T.",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "FISIOTERAPEUTA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "FISIOTERAPEUTA O MÉDICO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "HECHOS CONTRA LA SEGURIDAD",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "HIDRATACIÓN SIN CONDICIONES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "INCOMPARECENCIA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "INCURRIR EN ACTOS OBSCENOS",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "INDEMNIZACIÓN POR DAÑOS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "INFRINGIR REGLAS PERSISTENTEMENTE",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "INGRESAR AL TERRENO DE JUEGO",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "INHABILITACIÓN PREVENTIVA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "INSULTAR A JUGADOR",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "INSULTAR AL ÁRBITRO, JUGADORES, TÉCNICOS Y AUXILIARES",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "INTERRUPCIÓN INJUSTIFICADA",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "IRRESPETO AL ÁRBITRO",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "JUEGO BRUSCO GRAVE",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "JUEGO NO CELEBRADO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "MALLAS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "MASTILES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "MÉDICO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "MEDIDA DISCIPLINARIA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "MENOSPRECIAR PÚBLICAMENTE LA AUTORIDAD DEL ÁRBITRO",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "MESA TÉCNICA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "NO CONSIGNAR IMPLEMENTOS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PARLANTES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PERÍMETRO DEL CAMPO SIN CONDICIONES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PREPARADOR FÍSICO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PROHIBICIÓN DE ACCESO A ESTADIOS",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "PROTESTAR AIRADA Y OBSTENCIBLEMENTE",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "PROTESTAR DECISIÓN ARBITRAL",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "PROTOCOLO DE PARTIDO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PROVOCAR AL ADVERSARIO",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "PROVOCAR LA ANIMOSIDAD DEL PÚBLICO",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "PÚBLICO VIOLENTO",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "RETARDAR REANUDACIÓN",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "RETRASO INJUSTIFICADO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "RETRASO PARTIDO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "SALIR Y ENTRAR AL TERRENO DE JUEGO",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "SEGURIDAD DE PARTIDO",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "SERVICIOS GENERALES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "TARJETA AMARILLA",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "TERRENO DE JUEGO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "UNIFORMES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "AMENACE, COACCIONE, SUJETE O EMPUJE AL ÁRBITRO",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "ASISTENTE TÉCNICO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "DESPOJARSE DE LA CAMISETA AL MARCAR UN GOL",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "DIRECTIVO VIOLENTO",
+      "tipoInfraccion": "CONDUCTA ANTIDEPORTIVA"
+    },
+    {
+      "observacion": "ESCUPIR A JUGADOR",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "GRABACIÓN DE ENCUENTRO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "HIMNO NACIONAL",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "IMPLEMENTOS DEPORTIVOS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "INCITAR RIÑA COLECTIVA",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "INCURRIR EN ACTOS OBCENOS",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "INFRAESTRUCTURA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "INSULTAR AL ARBITRO, JUGADORES, TÉCNICOS Y AUXILIARES",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "JUEGO NO CELEBRADO - REPROGRAMACIÓN",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "OFICIO COMPETICIONES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "OFICIO REGISTROS Y COMPETICIONES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "OFICIO COMISIÓN NACIONAL DE ÁRBITROS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PARTIDO SUSPENDIDO POR COMISIÓN DE COMPETICIONES FVF",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PÉRDIDA DE PARTIDO POR RETIRADA O RENUNCIA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PIZARRA DE RESULTADO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PIZARRA ELECTRÓNICA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PROHIBICIÓN DE ACCESO A ESTADIO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "RECOGE BALONES",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "RESPONSABLE DE VIDEO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "SEGURIDAD FUERZA PÚBLICA",
+      "tipoInfraccion": "VIOLENCIA / SEGURIDAD"
+    },
+    {
+      "observacion": "UTILERO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "INFRINGIR REGLAS PERSISTENTE",
+      "tipoInfraccion": "TARJETAS ROJAS"
+    },
+    {
+      "observacion": "RETIRADA DEL TERRENO DE JUEGO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "ACCESOS / PERÍMETRO DEL CAMPO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "PÉRDIDA DE PARTIDO",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "DEDUCCIÓN DE PUNTOS",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "JEFE DE PRENSA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "3RA AMONESTACIÓN (ACUMULACIÓN)",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    },
+    {
+      "observacion": "CONMUTACIÓN DE SUSPENSIÓN A MULTA",
+      "tipoInfraccion": "OPERATIVAS / ADMINISTRATIVAS"
+    }
+  ],
+  "tiposInfraccion": [
+    "CONDUCTA ANTIDEPORTIVA",
+    "OPERATIVAS / ADMINISTRATIVAS",
+    "TARJETAS ROJAS",
+    "VIOLENCIA / SEGURIDAD"
+  ]
+}

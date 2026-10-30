@@ -1,0 +1,1263 @@
+// =============================================================================
+// CONSEJO DE HONOR FVF — Esquema de datos
+// Big Data Disciplinaria del Fútbol
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Conexion de la aplicacion. En la nube debe apuntar al endpoint CON POOLER
+  // (Neon/Supabase lo llaman "pooled connection"), porque las conexiones
+  // directas no escalan y los proveedores las limitan.
+  url = env("DATABASE_URL")
+  // Conexion DIRECTA, sin pooler. Prisma la usa automaticamente para
+  // `migrate`, `db push` y `studio`: las migraciones necesitan DDL y una
+  // sesion estable, y sobre un pooler fallan. En local ambas son iguales.
+  directUrl = env("DIRECT_URL")
+}
+
+// =============================================================================
+// ENUMERACIONES
+// =============================================================================
+
+enum PolaridadKpi {
+  MAYOR_MEJOR
+  MENOR_MEJOR
+  IGUAL_META
+}
+
+enum EstadoObjetivo {
+  NO_INICIADO
+  EN_CURSO
+  ALCANZADO
+  SUPERADO
+  DETENIDO
+}
+
+enum EstadoExpediente {
+  RECIBIDO
+  EN_ESTUDIO
+  RESUELTO
+  NOTIFICADO
+  EN_RECURSO
+  ARCHIVADO
+  DESESTIMADO
+  REMITIDO
+}
+
+enum EstadoIngesta {
+  PENDIENTE
+  PROCESANDO
+  VALIDADO
+  CARGADO
+  CON_ERRORES
+  DESCARTADO
+}
+
+enum EstadoOcr {
+  PENDIENTE
+  PROCESANDO
+  REVISADO
+  APROBADO
+  RECHAZADO
+  ERROR
+}
+
+enum TipoParte {
+  JUGADOR
+  CUERPO_TECNICO
+  CLUB
+  COMISION
+  LIGA
+  ORGANIZADOR
+  FVF
+  OTRO
+}
+
+enum TipoMovimientoExpediente {
+  AUTO
+  PROVIDENCIA
+  RESOLUCION
+  SENTENCIA
+  AUTO_ADMISORIO
+  /// Recurso de reconsideracion ("Ejercieron Reconsideracion" / "FECHA R.R.").
+  RECONSIDERACION
+  /// Segunda instancia: apelacion ante la Comision de Control de Entrenamiento.
+  SEGUNDA_INSTANCIA
+  REMISION
+  NOTIFICACION
+  CONSIGNACION
+  ARIETE
+  OTRO
+}
+
+enum RolHabitual {
+  JUGADOR
+  DIRECTOR_TECNICO
+  ASISTENTE_TECNICO
+  PREPARADOR_FISICO
+  DELEGADO
+  ARBITRO
+  ASISTENTE_ARBITRO
+  MEDICO
+  FISIOTERAPEUTA
+  UTILLERO
+  CAMILLERO
+  DIRIGENTE
+  OTRO
+}
+
+enum Catalogo {
+  TIPO_DE_SANCIONADO
+  TIPO
+  MOTIVO
+  TIPO_DE_INFRACCION
+  INCIDENCIA_LICENCIA
+  DETALLE_INCIDENCIA
+  FUENTE_NORMA
+  TIPO_DE_REGISTRO
+  SALDO
+}
+
+// =============================================================================
+// DIMENSIONES
+// =============================================================================
+
+/// Calendario fiscal-deportivo. Se puebla de forma incremental.
+model dim_fecha {
+  id Int      @id @default(autoincrement()) @map("id")
+  fecha DateTime @unique @db.Date @map("fecha")
+  anio Int @map("anio")
+  trimestre Int @map("trimestre")
+  mes Int @map("mes")
+  dia Int @map("dia")
+  semanaIso Int @map("semana_iso")
+  diaSemana Int @map("dia_semana")
+  nombreMes String @map("nombre_mes")
+  nombreTrimestre String @map("nombre_trimestre")
+  esFinSemana Boolean  @default(false) @map("es_fin_semana")
+  esFeriado Boolean  @default(false) @map("es_feriado")
+
+  partidos   fact_partido[]
+  sanciones  fact_sancion[]
+  incidentes fact_expediente[]
+  multas     fact_admin_multa[]
+
+  @@index([anio, mes])
+  @@index([anio, trimestre])
+  @@map("dim_fecha")
+}
+
+/// Torneo. Columna `TORNEO` de la data.
+model dim_torneo {
+  id Int      @id @default(autoincrement()) @map("id")
+  codigo String?  @unique @map("codigo")
+  nombre String   @unique @map("nombre")
+  temporada Int? @map("temporada")
+  temporadaSlug String? @map("temporada_slug")
+  vigente Boolean  @default(true) @map("vigente")
+  notas String? @map("notas")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  categorias dim_torneo_categoria[]
+  fases      dim_fase[]
+  rondas     dim_ronda[]
+  jornadas   dim_jornada[]
+  partidos   fact_partido[]
+  sanciones  fact_sancion[]
+  incidentes fact_expediente[]
+  multas     fact_admin_multa[]
+
+  @@index([temporada])
+  @@map("dim_torneo")
+}
+
+model dim_torneo_categoria {
+  torneoId Int @map("torneo_id")
+  categoriaId Int @map("categoria_id")
+
+  torneo    dim_torneo    @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+  categoria dim_categoria @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
+
+  @@id([torneoId, categoriaId])
+  @@index([categoriaId])
+  @@map("dim_torneo_categoria")
+}
+
+/// Categoría: SUB-18, SUB-21, FUTSAL, FEMENINO, PROFESIONAL, RESERVA...
+model dim_categoria {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String? @unique @map("codigo")
+  nombre String  @unique @map("nombre")
+  orden Int     @default(0) @map("orden")
+  subdivision String? @map("subdivision")
+  vigente Boolean @default(true) @map("vigente")
+
+  conductores dim_categoria_conductor[]
+  torneos     dim_torneo_categoria[]
+  partidos    fact_partido[]
+  sanciones   fact_sancion[]
+  incidentes  fact_expediente[]
+  clubes      dim_club_categoria[]
+  multas      fact_admin_multa[]
+
+  @@index([orden])
+  @@map("dim_categoria")
+}
+
+model dim_fase {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String? @map("codigo")
+  nombre String @map("nombre")
+  orden Int     @default(0) @map("orden")
+  temporada Int? @map("temporada")
+
+  torneoId Int @map("torneo_id")
+  torneo   dim_torneo @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+
+  partidos  fact_partido[]
+  sanciones fact_sancion[]
+
+  @@unique([torneoId, nombre])
+  @@index([nombre])
+  @@index([orden])
+  @@map("dim_fase")
+}
+
+model dim_ronda {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String? @map("codigo")
+  nombre String @map("nombre")
+  orden Int     @default(0) @map("orden")
+  temporada Int? @map("temporada")
+
+  torneoId Int @map("torneo_id")
+  torneo   dim_torneo @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+
+  partidos  fact_partido[]
+  sanciones fact_sancion[]
+
+  @@unique([torneoId, nombre])
+  @@index([nombre])
+  @@map("dim_ronda")
+}
+
+model dim_jornada {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String? @map("codigo")
+  nombre String @map("nombre")
+  numero Int? @map("numero")
+  orden Int     @default(0) @map("orden")
+  temporada Int? @map("temporada")
+
+  torneoId Int @map("torneo_id")
+  torneo   dim_torneo @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+
+  partidos  fact_partido[]
+  sanciones fact_sancion[]
+
+  @@unique([torneoId, nombre])
+  @@index([numero])
+  @@index([nombre])
+  @@map("dim_jornada")
+}
+
+/// Club. `nombre` es la clave natural; `nombreNormalizado` para deduplicar.
+model dim_club {
+  id Int      @id @default(autoincrement()) @map("id")
+  codigo String?  @unique @map("codigo")
+  nombre String   @unique @map("nombre")
+  nombreNormalizado String   @unique @map("nombre_normalizado")
+  nombreCorto String? @map("nombre_corto")
+  alias String[] @map("alias")
+  grupo String? @map("grupo")
+  liga String? @map("liga")
+  vigente Boolean  @default(true) @map("vigente")
+  notas String? @map("notas")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  categorias        dim_club_categoria[]
+  partidosLocal     fact_partido[]          @relation("partido_local")
+  partidosVisitante fact_partido[]          @relation("partido_visitante")
+  sanciones         fact_sancion[]
+  personas          dim_persona[]
+  incidentesParte1  fact_expediente_parte[] @relation("exp_parte1_club")
+  incidentesParte2  fact_expediente_parte[] @relation("exp_parte2_club")
+  multas            fact_admin_multa[]
+
+  @@index([grupo])
+  @@map("dim_club")
+}
+
+model dim_club_categoria {
+  clubId Int @map("club_id")
+  categoriaId Int @map("categoria_id")
+  temporada Int? @map("temporada")
+  grupo String? @map("grupo")
+  vigente Boolean @default(true) @map("vigente")
+
+  club      dim_club      @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  categoria dim_categoria @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
+
+  @@id([clubId, categoriaId])
+  @@index([categoriaId])
+  @@map("dim_club_categoria")
+}
+
+/// Un club puede tener varios conductores (Juez Único, Delegado...).
+model dim_categoria_conductor {
+  id Int         @id @default(autoincrement()) @map("id")
+  categoriaId Int @map("categoria_id")
+  conductorId Int @map("conductor_id")
+  rol RolHabitual @map("rol")
+  temporada Int? @map("temporada")
+  notas String? @map("notas")
+
+  categoria dim_categoria @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
+  conductor dim_persona   @relation(fields: [conductorId], references: [id], onDelete: Cascade)
+
+  @@unique([categoriaId, conductorId, rol, temporada])
+  @@index([conductorId])
+  @@map("dim_categoria_conductor")
+}
+
+/// Persona: jugador, cuerpo técnico, árbitro, etc. Clave natural: cédula.
+model dim_persona {
+  id Int          @id @default(autoincrement()) @map("id")
+  cedula String       @unique @map("cedula")
+  nombres String? @map("nombres")
+  apellidos String? @map("apellidos")
+  nombreCompleto String @map("nombre_completo")
+  nombreNormalizado String       @unique @map("nombre_normalizado")
+  rolHabitual RolHabitual? @map("rol_habitual")
+  rolTexto String? @map("rol_texto")
+  clubId Int? @map("club_id")
+  email String? @map("email")
+  telefono String? @map("telefono")
+  activo Boolean      @default(true) @map("activo")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  club             dim_club?                 @relation(fields: [clubId], references: [id], onDelete: SetNull)
+  conduce          dim_categoria_conductor[]
+  sanciones        fact_sancion[]
+  incidentesParte1 fact_expediente_parte[]   @relation("exp_parte1_persona")
+  incidentesParte2 fact_expediente_parte[]   @relation("exp_parte2_persona")
+
+  @@index([nombreNormalizado])
+  @@index([rolHabitual])
+  @@index([clubId])
+  @@map("dim_persona")
+}
+
+model dim_tipo_sancionado {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String  @unique @map("codigo")
+  nombre String  @unique @map("nombre")
+  orden Int     @default(0) @map("orden")
+  aplicaAPersona Boolean @default(true) @map("aplica_a_persona")
+  aplicaAClub Boolean @default(true) @map("aplica_a_club")
+
+  sanciones fact_sancion[]
+
+  @@index([orden])
+  @@map("dim_tipo_sancionado")
+}
+
+model dim_tipo_decision {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String  @unique @map("codigo")
+  nombre String  @unique @map("nombre")
+  orden Int     @default(0) @map("orden")
+  aplicaAPersona Boolean @default(true) @map("aplica_a_persona")
+  aplicaAClub Boolean @default(true) @map("aplica_a_club")
+  aplicaAComision Boolean @default(true) @map("aplica_a_comision")
+  esMulta Boolean @default(false) @map("es_multa")
+  esSuspension Boolean @default(false) @map("es_suspension")
+
+  sanciones fact_sancion[]
+  motivos   dim_motivo[]
+
+  @@index([orden])
+  @@map("dim_tipo_decision")
+}
+
+model dim_motivo {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String? @unique @map("codigo")
+  nombre String  @unique @map("nombre")
+  tipoDecisionId Int? @map("tipo_decision_id")
+  orden Int     @default(0) @map("orden")
+  requiereArticulo Boolean @default(true) @map("requiere_articulo")
+  vigente Boolean @default(true) @map("vigente")
+
+  tipoDecision dim_tipo_decision? @relation(fields: [tipoDecisionId], references: [id], onDelete: SetNull)
+  sanciones    fact_sancion[]
+
+  @@index([orden])
+  @@map("dim_motivo")
+}
+
+model dim_tipo_infraccion {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String? @unique @map("codigo")
+  nombre String  @unique @map("nombre")
+  orden Int     @default(0) @map("orden")
+  ambito String? @map("ambito")
+
+  observaciones dim_observacion[]
+  sanciones     fact_sancion[]
+
+  @@index([orden])
+  @@map("dim_tipo_infraccion")
+}
+
+model dim_observacion {
+  id Int     @id @default(autoincrement()) @map("id")
+  texto String @map("texto")
+  textoNormalizado String  @unique @map("texto_normalizado")
+  tipoInfraccionId Int? @map("tipo_infraccion_id")
+  vigente Boolean @default(true) @map("vigente")
+
+  tipoInfraccion dim_tipo_infraccion? @relation(fields: [tipoInfraccionId], references: [id], onDelete: SetNull)
+  sanciones      fact_sancion[]
+
+  @@index([tipoInfraccionId])
+  @@map("dim_observacion")
+}
+
+/// Norma: RD, NR, RGC, E-FVF, CD-FIFA, LOD, RP1-LOD...
+model dim_norma {
+  id Int      @id @default(autoincrement()) @map("id")
+  codigo String   @unique @map("codigo")
+  nombre String @map("nombre")
+  descripcion String? @map("descripcion")
+  documentos String[] @map("documentos")
+  vigente Boolean  @default(true) @map("vigente")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  articulos     dim_articulo[]
+  sanciones     fact_sancion[]
+  normasCitadas fact_sancion_norma[]
+
+  @@map("dim_norma")
+}
+
+/// Artículo de una norma. Grano: un artículo por fila.
+model dim_articulo {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String @map("codigo")
+  codigoNormalizado String @map("codigo_normalizado")
+  descripcion String? @map("descripcion")
+  texto String? @map("texto")
+  vigente Boolean @default(true) @map("vigente")
+
+  normaId Int @map("norma_id")
+  norma   dim_norma @relation(fields: [normaId], references: [id], onDelete: Cascade)
+
+  sanciones fact_sancion_articulo[]
+
+  @@unique([normaId, codigoNormalizado])
+  @@index([normaId])
+  @@map("dim_articulo")
+}
+
+model dim_incidencia_licencia {
+  id Int    @id @default(autoincrement()) @map("id")
+  codigo String @unique @map("codigo")
+  nombre String @unique @map("nombre")
+  orden Int    @default(0) @map("orden")
+
+  detalle   dim_detalle_incidencia[]
+  sanciones fact_sancion[]
+
+  @@index([orden])
+  @@map("dim_incidencia_licencia")
+}
+
+model dim_detalle_incidencia {
+  id Int                     @id @default(autoincrement()) @map("id")
+  codigo String                  @unique @map("codigo")
+  /// No es unico: un mismo detalle puede darse bajo varias incidencias de
+  /// licencia ("UNIFORMES" aparece en DEPORTIVA, ADMINISTRATIVA e
+  /// INFRAESTRUCTURA). La unicidad va por el par incidencia + detalle.
+  nombre String                  @map("nombre")
+  orden Int                     @default(0) @map("orden")
+  incidenciaId Int @map("incidencia_id")
+  incidencia   dim_incidencia_licencia @relation(fields: [incidenciaId], references: [id], onDelete: Cascade)
+
+  sanciones fact_sancion[]
+
+  @@unique([incidenciaId, nombre])
+  @@index([incidenciaId])
+  @@map("dim_detalle_incidencia")
+}
+
+/// Tasa de conversión Unidad Convertible -> USD (BCV), con vigencia.
+model dim_tasa_uc {
+  id Int      @id @default(autoincrement()) @map("id")
+  fechaVigencia DateTime @unique @db.Date @map("fecha_vigencia")
+  valorUcUsd Decimal  @db.Decimal(18, 6) @map("valor_uc_usd")
+  fuente String? @map("fuente")
+  notas String? @map("notas")
+
+  multas fact_admin_multa[]
+
+  @@index([fechaVigencia])
+  @@map("dim_tasa_uc")
+}
+
+// =============================================================================
+// HECHOS
+// =============================================================================
+
+/// Partido del calendario. Grano: un encuentro.
+model fact_partido {
+  id Int       @id @default(autoincrement()) @map("id")
+  /// `ID Encuentro CDH` (ej. 2025-0001)
+  cdhId String?   @unique @map("cdh_id")
+  /// `Id_Partido` de la data
+  idPartido String? @map("id_partido")
+  /// `PARTIDO`: texto libre "A VS. B"
+  descripcion String @map("descripcion")
+  local String? @map("local")
+  visitante String? @map("visitante")
+  marcador String? @map("marcador")
+  fechaActa DateTime? @db.Date @map("fecha_acta")
+  numeroActa String? @map("numero_acta")
+  acta String? @map("acta")
+  numeroJornada String? @map("numero_jornada")
+  suspendido Boolean   @default(false) @map("suspendido")
+  observaciones String? @map("observaciones")
+
+  fechaId Int? @map("fecha_id")
+  fecha         dim_fecha?     @relation(fields: [fechaId], references: [id], onDelete: SetNull)
+  torneoId Int? @map("torneo_id")
+  torneo        dim_torneo?    @relation(fields: [torneoId], references: [id], onDelete: SetNull)
+  categoriaId Int? @map("categoria_id")
+  categoria     dim_categoria? @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+  faseId Int? @map("fase_id")
+  fase          dim_fase?      @relation(fields: [faseId], references: [id], onDelete: SetNull)
+  rondaId Int? @map("ronda_id")
+  ronda         dim_ronda?     @relation(fields: [rondaId], references: [id], onDelete: SetNull)
+  jornadaId Int? @map("jornada_id")
+  jornada       dim_jornada?   @relation(fields: [jornadaId], references: [id], onDelete: SetNull)
+  localId Int? @map("local_id")
+  localClub     dim_club?      @relation("partido_local", fields: [localId], references: [id], onDelete: SetNull)
+  visitanteId Int? @map("visitante_id")
+  visitanteClub dim_club?      @relation("partido_visitante", fields: [visitanteId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  sanciones  fact_sancion[]
+  incidentes fact_expediente_partido[]
+
+  @@index([torneoId, categoriaId, jornadaId])
+  @@index([fechaId])
+  @@index([localId])
+  @@index([visitanteId])
+  @@index([descripcion])
+  @@map("fact_partido")
+}
+
+/// Sanción / incidencia de acta disciplinaria.
+/// Grano: una fila de la hoja `DATA`.
+model fact_sancion {
+  id BigInt  @id @default(autoincrement()) @map("id")
+  /// Hash del contenido de origen: idempotencia de la ingesta.
+  hashOrigen String  @unique @map("hash_origen")
+  origenFila Int? @map("origen_fila")
+  origenArchivo String? @map("origen_archivo")
+  origenGid String? @map("origen_gid")
+
+  fecha DateTime @db.Date @map("fecha")
+
+  personaId Int? @map("persona_id")
+  clubId Int? @map("club_id")
+
+  /// PARTIDOS/JORNADAS de sanción.
+  sanctionJuegos Int? @map("sanction_juegos")
+  /// Duración en días, para suspensiones calendarizadas.
+  sanctionDias Int? @map("sanction_dias")
+  /// Monto en Unidad Convertible.
+  multaUc Decimal? @db.Decimal(18, 4) @map("multa_uc")
+  /// Monto convertido a USD con dim_tasa_uc.
+  multaUsd Decimal? @db.Decimal(18, 2) @map("multa_usd")
+  tasaUsd Decimal? @db.Decimal(18, 6) @map("tasa_usd")
+
+  reintegro Boolean @default(false) @map("reintegro")
+  alertaSuspension Boolean @default(false) @map("alerta_suspension")
+  /// Comisión que resolvió.
+  proc String? @map("proc")
+  /// Texto crudo de cada columna de la hoja, para trazabilidad y reproceso.
+  motivoRaw String? @map("motivo_raw")
+  observacionRaw String? @map("observacion_raw")
+  detalleIncidenciaRaw String? @map("detalle_incidencia_raw")
+  articulosRaw String? @map("articulos_raw")
+  normaRaw String? @map("norma_raw")
+  nombreRaw String? @map("nombre_raw")
+  cedulaRaw String? @map("cedula_raw")
+  /// Marca "N/A" en columnas numéricas.
+  esNulo Boolean @default(false) @map("es_nulo")
+
+  fechaId Int? @map("fecha_id")
+  fechaDim            dim_fecha?               @relation(fields: [fechaId], references: [id], onDelete: SetNull)
+  torneoId Int? @map("torneo_id")
+  torneo              dim_torneo?              @relation(fields: [torneoId], references: [id], onDelete: SetNull)
+  categoriaId Int? @map("categoria_id")
+  categoria           dim_categoria?           @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+  faseId Int? @map("fase_id")
+  fase                dim_fase?                @relation(fields: [faseId], references: [id], onDelete: SetNull)
+  rondaId Int? @map("ronda_id")
+  ronda               dim_ronda?               @relation(fields: [rondaId], references: [id], onDelete: SetNull)
+  jornadaId Int? @map("jornada_id")
+  jornada             dim_jornada?             @relation(fields: [jornadaId], references: [id], onDelete: SetNull)
+  partidoId Int? @map("partido_id")
+  partido             fact_partido?            @relation(fields: [partidoId], references: [id], onDelete: SetNull)
+  tipoSancionadoId Int? @map("tipo_sancionado_id")
+  tipoSancionado      dim_tipo_sancionado?     @relation(fields: [tipoSancionadoId], references: [id], onDelete: SetNull)
+  tipoDecisionId Int? @map("tipo_decision_id")
+  tipoDecision        dim_tipo_decision?       @relation(fields: [tipoDecisionId], references: [id], onDelete: SetNull)
+  motivoId Int? @map("motivo_id")
+  motivo              dim_motivo?              @relation(fields: [motivoId], references: [id], onDelete: SetNull)
+  tipoInfraccionId Int? @map("tipo_infraccion_id")
+  tipoInfraccion      dim_tipo_infraccion?     @relation(fields: [tipoInfraccionId], references: [id], onDelete: SetNull)
+  observacionId Int? @map("observacion_id")
+  observacion         dim_observacion?         @relation(fields: [observacionId], references: [id], onDelete: SetNull)
+  normaId Int? @map("norma_id")
+  norma               dim_norma?               @relation(fields: [normaId], references: [id], onDelete: SetNull)
+  incidenciaId Int? @map("incidencia_id")
+  incidencia          dim_incidencia_licencia? @relation(fields: [incidenciaId], references: [id], onDelete: SetNull)
+  detalleIncidenciaId Int? @map("detalle_incidencia_id")
+  detalleIncidencia   dim_detalle_incidencia?  @relation(fields: [detalleIncidenciaId], references: [id], onDelete: SetNull)
+  persona             dim_persona?             @relation(fields: [personaId], references: [id], onDelete: SetNull)
+  club                dim_club?                @relation(fields: [clubId], references: [id], onDelete: SetNull)
+
+  /// SHEETS | OCR | MANUAL
+  origenRegistro String   @default("SHEETS") @map("origen_registro")
+  ocrJobId Int? @map("ocr_job_id")
+  creadoPorId Int? @map("creado_por_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  archivado Boolean  @default(false) @map("archivado")
+
+  creadoPor usuario?                  @relation("sancion_creada_por", fields: [creadoPorId], references: [id], onDelete: SetNull)
+  ocrJob     ocr_job?                  @relation("ocr_sanciones", fields: [ocrJobId], references: [id], onDelete: SetNull)
+  articulos  fact_sancion_articulo[]
+  flags      fact_sancion_flag[]
+  normas     fact_sancion_norma[]
+  incidentes fact_sancion_expediente[]
+
+  @@index([fechaId])
+  @@index([torneoId, categoriaId])
+  @@index([clubId, fechaId])
+  @@index([personaId, fechaId])
+  @@index([partidoId])
+  @@index([tipoDecisionId, motivoId])
+  @@index([normaId])
+  @@index([origenRegistro])
+  @@index([archivado, fecha])
+  @@map("fact_sancion")
+}
+
+/// Puente N:M sanción-artículo. Un registro puede citar varios.
+model fact_sancion_articulo {
+  sancionId BigInt @map("sancion_id")
+  articuloId Int @map("articulo_id")
+  /// Texto tal como venía en la hoja ("43, 54").
+  literal String? @map("literal")
+  orden Int     @default(0) @map("orden")
+
+  sancion  fact_sancion @relation(fields: [sancionId], references: [id], onDelete: Cascade)
+  articulo dim_articulo @relation(fields: [articuloId], references: [id], onDelete: Cascade)
+
+  @@id([sancionId, articuloId])
+  @@index([articuloId])
+  @@map("fact_sancion_articulo")
+}
+
+/// Flags de procedencia normativa / oficio.
+model fact_sancion_flag {
+  id Int     @id @default(autoincrement()) @map("id")
+  sancionId BigInt @map("sancion_id")
+  flag String @map("flag")
+  activo Boolean @default(true) @map("activo")
+
+  sancion fact_sancion @relation(fields: [sancionId], references: [id], onDelete: Cascade)
+
+  @@unique([sancionId, flag])
+  @@index([flag])
+  @@map("fact_sancion_flag")
+}
+
+/// Puente N:M sancion-norma. La columna NORMA de la hoja contiene una
+/// combinacion de reglamentos ("RD, LOD, RGC"), por lo que no cabe en un
+/// unico campo. `fact_sancion.normaId` conserva la norma principal para
+/// indexar y mostrar; este puente guarda la combinacion completa.
+model fact_sancion_norma {
+  sancionId BigInt @map("sancion_id")
+  normaId Int @map("norma_id")
+  /// NORMA principal segun el orden en que aparece en la hoja.
+  principal Boolean @default(false) @map("principal")
+  /// Texto tal como venía en la celda, para trazabilidad.
+  literal String? @map("literal")
+
+  sancion fact_sancion @relation(fields: [sancionId], references: [id], onDelete: Cascade)
+  norma   dim_norma    @relation(fields: [normaId], references: [id], onDelete: Cascade)
+
+  @@id([sancionId, normaId])
+  @@index([normaId])
+  @@map("fact_sancion_norma")
+}
+
+// -----------------------------------------------------------------------------
+// EXPEDIENTES
+// -----------------------------------------------------------------------------
+
+model fact_expediente {
+  id Int              @id @default(autoincrement()) @map("id")
+  /// `N Exp` del CUADRO DE EXPEDIENTES ("001"). El numero se REUTILIZA cada
+  /// ano (001 existe en 2022..2026), asi que la clave natural es la pareja
+  /// con `anio`, que se expresa como "001/2022".
+  numero String @map("numero")
+  anio Int @map("anio")
+  /// `Asunto de Exp` / `Nombre dado al Expediente`.
+  nombre String? @map("nombre")
+  /// `Motivo`
+  motivo String? @map("motivo")
+  subMotivo String? @map("sub_motivo")
+  /// `Torneo o Categoria`
+  ligaTorneo String? @map("liga_torneo")
+  nombreTorneo String? @map("nombre_torneo")
+  /// `Auto de Entrada (A.E.) o Inicio de Investigacion`
+  autoEntrada String? @map("auto_entrada")
+  fechaAutoEntrada DateTime?        @db.Date @map("fecha_auto_entrada")
+  /// `Equipos`: texto libre "A Vs. B" (238 de 563 filas lo tienen).
+  equipos String? @map("equipos")
+  /// `Trámite`
+  tramiteRaw String? @map("tramite_raw")
+  /// `Modalidad`: Fisico | Mixto | Digital
+  modalidad String? @map("modalidad")
+  /// `ASIGNADO`: jueces responsables, separados por coma.
+  asignado String? @map("asignado")
+  fechaAsignacion DateTime?        @db.Date @map("fecha_asignacion")
+  fechaSeguimiento DateTime?        @db.Date @map("fecha_seguimiento")
+  /// `ALERTA`
+  alerta String? @map("alerta")
+  /// `STATUS` tal como viene de la hoja.
+  estatus String @map("estatus")
+  estado EstadoExpediente @default(RECIBIDO) @map("estado")
+
+  fechaRecepcion DateTime? @db.Date @map("fecha_recepcion")
+  fechaResolucion DateTime? @db.Date @map("fecha_resolucion")
+  diasTramitacion Int? @map("dias_tramitacion")
+  tipo String? @map("tipo")
+  notas String? @map("notas")
+
+  /// `Nº Auto y/o Decisión`: codigo del auto/resolucion principal.
+  numeroDecision String? @map("numero_decision")
+  /// `Sanción`: texto libre de la resolucion.
+  sancionRaw String? @map("sancion_raw")
+  /// `Sancionado`: nombre tal como viene en la resolucion.
+  sancionadoRaw String? @map("sancionado_raw")
+  multaUc Decimal? @db.Decimal(18, 4) @map("multa_uc")
+  multaUsd Decimal? @db.Decimal(18, 2) @map("multa_usd")
+  /// `CUMPLIMIENTO DE LA DECISIÓN`: SI | NO | FALTA PAGO DE LA MULTA.
+  cumplimientoDecision String? @map("cumplimiento_decision")
+  /// `MOTIVO` (columna 35): motivo del incumplimiento o del estado de pago.
+  motivoCumplimiento String? @map("motivo_cumplimiento")
+  archivoOrigen String? @map("archivo_origen")
+  filaOrigen Int? @map("fila_origen")
+  hashOrigen String?  @unique @map("hash_origen")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  fechaId Int? @map("fecha_id")
+  fecha       dim_fecha?     @relation(fields: [fechaId], references: [id], onDelete: SetNull)
+  torneoId Int? @map("torneo_id")
+  torneo      dim_torneo?    @relation(fields: [torneoId], references: [id], onDelete: SetNull)
+  categoriaId Int? @map("categoria_id")
+  categoria   dim_categoria? @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+  creadoPorId Int? @map("creado_por_id")
+
+  creadoPor usuario?                     @relation("expediente_creado_por", fields: [creadoPorId], references: [id], onDelete: SetNull)
+  movimientos fact_expediente_movimiento[]
+  partes      fact_expediente_parte[]
+  partidos    fact_expediente_partido[]
+  sanciones   fact_sancion_expediente[]
+  documentos  expediente_documento[]
+  multas      fact_admin_multa[]
+
+  @@unique([anio, numero])
+  @@index([anio, estado])
+  @@index([fechaId])
+  @@index([torneoId, categoriaId])
+  @@index([estatus])
+  @@index([tramiteRaw])
+  @@map("fact_expediente")
+}
+
+model fact_expediente_movimiento {
+  id Int                      @id @default(autoincrement()) @map("id")
+  expedienteId Int @map("expediente_id")
+  fecha DateTime?                @db.Date @map("fecha")
+  tipo TipoMovimientoExpediente @map("tipo")
+  /// `Código`, p.ej. 012/2025.
+  codigo String? @map("codigo")
+  descripcion String? @map("descripcion")
+  orden Int                      @default(0) @map("orden")
+
+  expediente fact_expediente @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+
+  @@index([expedienteId, fecha])
+  @@index([tipo])
+  @@map("fact_expediente_movimiento")
+}
+
+/// Una o dos partes (persona o club) por expediente.
+model fact_expediente_parte {
+  id Int       @id @default(autoincrement()) @map("id")
+  expedienteId Int @map("expediente_id")
+  /// 1 | 2
+  orden Int @map("orden")
+  tipo TipoParte @map("tipo")
+  /// Nombre mostrado, tal como viene de la hoja.
+  nombre String @map("nombre")
+  cedula String? @map("cedula")
+
+  personaId1 Int? @map("persona_id1")
+  persona1   dim_persona? @relation("exp_parte1_persona", fields: [personaId1], references: [id], onDelete: SetNull)
+  clubId1 Int? @map("club_id1")
+  club1      dim_club?    @relation("exp_parte1_club", fields: [clubId1], references: [id], onDelete: SetNull)
+
+  personaId2 Int? @map("persona_id2")
+  persona2   dim_persona? @relation("exp_parte2_persona", fields: [personaId2], references: [id], onDelete: SetNull)
+  clubId2 Int? @map("club_id2")
+  club2      dim_club?    @relation("exp_parte2_club", fields: [clubId2], references: [id], onDelete: SetNull)
+
+  expediente fact_expediente @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+
+  @@unique([expedienteId, orden])
+  @@index([personaId1])
+  @@index([personaId2])
+  @@index([clubId1])
+  @@index([clubId2])
+  @@map("fact_expediente_parte")
+}
+
+model fact_expediente_partido {
+  id Int     @id @default(autoincrement()) @map("id")
+  expedienteId Int @map("expediente_id")
+  partidoId Int @map("partido_id")
+  rol String? @map("rol")
+
+  expediente fact_expediente @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  partido    fact_partido    @relation(fields: [partidoId], references: [id], onDelete: Cascade)
+
+  @@unique([expedienteId, partidoId])
+  @@index([partidoId])
+  @@map("fact_expediente_partido")
+}
+
+/// Vínculo incidencia -> expediente (automático o manual).
+model fact_sancion_expediente {
+  id Int      @id @default(autoincrement()) @map("id")
+  sancionId BigInt @map("sancion_id")
+  expedienteId Int @map("expediente_id")
+  /// AUTOMATICO | MANUAL
+  vinculo String   @default("AUTOMATICO") @map("vinculo")
+  confianza Decimal? @db.Decimal(5, 2) @map("confianza")
+
+  sancion    fact_sancion    @relation(fields: [sancionId], references: [id], onDelete: Cascade)
+  expediente fact_expediente @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+
+  @@unique([sancionId, expedienteId])
+  @@index([expedienteId])
+  @@map("fact_sancion_expediente")
+}
+
+/// Documento adjunto a un expediente.
+model expediente_documento {
+  id Int      @id @default(autoincrement()) @map("id")
+  expedienteId Int @map("expediente_id")
+  nombre String @map("nombre")
+  ruta String @map("ruta")
+  mimeType String @map("mime_type")
+  tamanoBytes Int @map("tamano_bytes")
+  tipo String   @default("PDF") @map("tipo")
+  subidoEn DateTime @default(now()) @map("subido_en")
+
+  expediente fact_expediente @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+
+  @@index([expedienteId])
+  @@map("expediente_documento")
+}
+
+// -----------------------------------------------------------------------------
+// ADMINISTRACIÓN / FINANZAS (hoja ADMINISTRACION)
+// -----------------------------------------------------------------------------
+
+model fact_admin_multa {
+  id Int       @id @default(autoincrement()) @map("id")
+  fechaRegistro DateTime? @db.Date @map("fecha_registro")
+  fechaRecepcionResol DateTime? @db.Date @map("fecha_recepcion_resol")
+  fechaPago DateTime? @db.Date @map("fecha_pago")
+  fechaFactura DateTime? @db.Date @map("fecha_factura")
+
+  torneoNombre String? @map("torneo_nombre")
+  clubNombre String? @map("club_nombre")
+  categoriaNombre String? @map("categoria_nombre")
+  tipoRegistro String? @map("tipo_registro")
+  temporada String? @map("temporada")
+  faseNombre String? @map("fase_nombre")
+  jornadaNombre String? @map("jornada_nombre")
+  numeroResolucion String? @map("numero_resolucion")
+  unidadConvertible Decimal? @db.Decimal(18, 4) @map("unidad_convertible")
+  totalMulta Decimal? @db.Decimal(18, 4) @map("total_multa")
+  pagadoBs Decimal? @db.Decimal(18, 2) @map("pagado_bs")
+  tasaBcv Decimal? @db.Decimal(18, 6) @map("tasa_bcv")
+  pagadoUsd Decimal? @db.Decimal(18, 2) @map("pagado_usd")
+  numeroFactura String? @map("numero_factura")
+  numeroComprobante String? @map("numero_comprobante")
+  observaciones String? @map("observaciones")
+  saldo Decimal? @db.Decimal(18, 2) @map("saldo")
+  pagado Boolean  @default(false) @map("pagado")
+  filaOrigen Int? @map("fila_origen")
+  hashOrigen String?  @unique @map("hash_origen")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  fechaId Int? @map("fecha_id")
+  fecha        dim_fecha?       @relation(fields: [fechaId], references: [id], onDelete: SetNull)
+  tasaId Int? @map("tasa_id")
+  tasa         dim_tasa_uc?     @relation(fields: [tasaId], references: [id], onDelete: SetNull)
+  torneoId Int? @map("torneo_id")
+  torneo       dim_torneo?      @relation(fields: [torneoId], references: [id], onDelete: SetNull)
+  categoriaId Int? @map("categoria_id")
+  categoria    dim_categoria?   @relation(fields: [categoriaId], references: [id], onDelete: SetNull)
+  clubId Int? @map("club_id")
+  club         dim_club?        @relation(fields: [clubId], references: [id], onDelete: SetNull)
+  expedienteId Int? @map("expediente_id")
+  expediente   fact_expediente? @relation(fields: [expedienteId], references: [id], onDelete: SetNull)
+
+  @@index([clubId, fechaRegistro])
+  @@index([pagado])
+  @@index([temporada])
+  @@map("fact_admin_multa")
+}
+
+// =============================================================================
+// OPERACIÓN: usuarios, roles, auditoría, ingesta, OCR
+// =============================================================================
+
+model usuario {
+  id Int       @id @default(autoincrement()) @map("id")
+  email String    @unique @map("email")
+  nombre String @map("nombre")
+  passwordHash String @map("password_hash")
+  /// true cuando la clave es la estandar entregada por el administrador o la
+  /// inicial del seed. El middleware y las acciones fuerzan el cambio antes de
+  /// dejar entrar a la aplicacion.
+  debeCambiarPassword Boolean @default(false) @map("debe_cambiar_password")
+  /// Momento del ultimo cambio de clave. Actua como version de sesion: si
+  /// cambia, todos los tokens emitidos antes dejan de ser validos.
+  passwordActualizadoEn DateTime? @map("password_actualizado_en")
+  /// Cantidad de veces que el usuario ha cambiado su clave por su cuenta.
+  cambiosPassword Int       @default(0) @map("cambios_password")
+  activo Boolean   @default(true) @map("activo")
+  ultimoAcceso DateTime? @map("ultimo_acceso")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  roles              usuario_rol[]
+  sancionesCreadas   fact_sancion[]    @relation("sancion_creada_por")
+  expedientesCreados fact_expediente[] @relation("expediente_creado_por")
+  ingestaLogs        ingesta_log[]
+  ocrJobs            ocr_job[]
+
+  @@map("usuario")
+}
+
+model rol {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String  @unique @map("codigo")
+  nombre String @map("nombre")
+  descripcion String? @map("descripcion")
+
+  usuarios usuario_rol[]
+  permisos rol_permiso[]
+
+  @@map("rol")
+}
+
+model usuario_rol {
+  usuarioId Int @map("usuario_id")
+  rolId Int @map("rol_id")
+
+  usuario usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  rol rol     @relation(fields: [rolId], references: [id], onDelete: Cascade)
+
+  @@id([usuarioId, rolId])
+  @@index([rolId])
+  @@map("usuario_rol")
+}
+
+model permiso {
+  id Int     @id @default(autoincrement()) @map("id")
+  codigo String  @unique @map("codigo")
+  modulo String @map("modulo")
+  descripcion String? @map("descripcion")
+
+  roles rol_permiso[]
+
+  @@index([modulo])
+  @@map("permiso")
+}
+
+model rol_permiso {
+  rolId Int @map("rol_id")
+  permisoId Int @map("permiso_id")
+
+  rol rol     @relation(fields: [rolId], references: [id], onDelete: Cascade)
+  permiso permiso @relation(fields: [permisoId], references: [id], onDelete: Cascade)
+
+  @@id([rolId, permisoId])
+  @@index([permisoId])
+  @@map("rol_permiso")
+}
+
+/// Bitácora append-only: quién hizo qué y cuándo.
+model bitacora_auditoria {
+  id BigInt   @id @default(autoincrement()) @map("id")
+  entidad String @map("entidad")
+  entidadId String @map("entidad_id")
+  /// CREATE | UPDATE | DELETE | LOGIN | LOGOUT | EXPORT | OCR_REVIEW | INGESTA
+  operacion String @map("operacion")
+  cambios Json? @map("cambios")
+  ip String? @map("ip")
+  userAgent String? @map("user_agent")
+  usuarioId Int? @map("usuario_id")
+  usuarioNombre String? @map("usuario_nombre")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([entidad, entidadId])
+  @@index([usuarioId, createdAt])
+  @@index([createdAt])
+  @@map("bitacora_auditoria")
+}
+
+model ingesta_log {
+  id Int           @id @default(autoincrement()) @map("id")
+  /// GOOGLE_SHEETS | XLSX
+  fuente String @map("fuente")
+  /// COMPETENCIAS | EXPEDIENTES | ADMINISTRACION | JORNADAS
+  documento String @map("documento")
+  url String? @map("url")
+  hojaGid String? @map("hoja_gid")
+  estado EstadoIngesta @default(PENDIENTE) @map("estado")
+  filasLeidas Int           @default(0) @map("filas_leidas")
+  filasInsertadas Int           @default(0) @map("filas_insertadas")
+  filasActualizadas Int           @default(0) @map("filas_actualizadas")
+  filasOmitidas Int           @default(0) @map("filas_omitidas")
+  filasConError Int           @default(0) @map("filas_con_error")
+  duracionMs Int? @map("duracion_ms")
+  mensaje String? @map("mensaje")
+  detalle Json? @map("detalle")
+  iniciadaEn DateTime      @default(now()) @map("iniciada_en")
+  finalizadaEn DateTime? @map("finalizada_en")
+  usuarioId Int? @map("usuario_id")
+
+  usuario usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+
+  @@index([documento, iniciadaEn])
+  @@index([estado])
+  @@map("ingesta_log")
+}
+
+model ocr_job {
+  id Int       @id @default(autoincrement()) @map("id")
+  /// ACTA_DISCIPLINARIA | EXPEDIENTE | RESOLUCION
+  tipoDocumento String @map("tipo_documento")
+  archivo String @map("archivo")
+  ruta String @map("ruta")
+  mimeType String @map("mime_type")
+  tamanoBytes Int @map("tamano_bytes")
+  estado EstadoOcr @default(PENDIENTE) @map("estado")
+  /// CLAUDE | GOOGLE_DOCUMENT_AI
+  motor String? @map("motor")
+  confianza Decimal?  @db.Decimal(5, 2) @map("confianza")
+  /// Extracción cruda.
+  resultado Json? @map("resultado")
+  /// Datos mapeados a columnas destino, pendientes de aprobación.
+  borrador Json? @map("borrador")
+  observaciones String? @map("observaciones")
+  iniciadoEn DateTime  @default(now()) @map("iniciado_en")
+  revisadoEn DateTime? @map("revisado_en")
+  usuarioId Int? @map("usuario_id")
+
+  usuario usuario?       @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  sanciones fact_sancion[] @relation("ocr_sanciones")
+
+  @@index([estado])
+  @@index([tipoDocumento])
+  @@map("ocr_job")
+}
+
+// =============================================================================
+// CONTENIDO INSPIRACIONAL / PLAN DE ACCIÓN / PILARES / KPI
+// =============================================================================
+
+model plan_accion {
+  id Int      @id @default(autoincrement()) @map("id")
+  titulo String @map("titulo")
+  anio Int @map("anio")
+  /// Contenido inspiracional.
+  descripcion String? @map("descripcion")
+  contexto String? @map("contexto")
+  vigente Boolean  @default(true) @map("vigente")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  objetivoGeneral objetivo_general[]
+  pilares pilar[]
+  kpis            kpi_definicion[]
+
+  @@unique([titulo, anio])
+  @@index([anio])
+  @@map("plan_accion")
+}
+
+model objetivo_general {
+  id Int     @id @default(autoincrement()) @map("id")
+  planId Int @map("plan_id")
+  enunciado String @map("enunciado")
+  descripcion String? @map("descripcion")
+  orden Int     @default(0) @map("orden")
+
+  plan        plan_accion           @relation(fields: [planId], references: [id], onDelete: Cascade)
+  especificos objetivo_especifico[]
+
+  @@index([planId])
+  @@map("objetivo_general")
+}
+
+model objetivo_especifico {
+  id Int            @id @default(autoincrement()) @map("id")
+  objetivoId Int @map("objetivo_id")
+  enunciado String @map("enunciado")
+  descripcion String? @map("descripcion")
+  meta Decimal?       @db.Decimal(18, 4) @map("meta")
+  avance Decimal?       @db.Decimal(18, 4) @map("avance")
+  estado EstadoObjetivo @default(NO_INICIADO) @map("estado")
+  orden Int            @default(0) @map("orden")
+
+  objetivo objetivo_general @relation(fields: [objetivoId], references: [id], onDelete: Cascade)
+  pilares pilar[]
+
+  @@index([objetivoId])
+  @@map("objetivo_especifico")
+}
+
+model pilar {
+  id Int      @id @default(autoincrement()) @map("id")
+  planId Int @map("plan_id")
+  objetivoId Int? @map("objetivo_id")
+  codigo String? @map("codigo")
+  nombre String @map("nombre")
+  descripcion String? @map("descripcion")
+  color String? @map("color")
+  orden Int      @default(0) @map("orden")
+  peso Decimal? @db.Decimal(5, 2) @map("peso")
+
+  plan     plan_accion?         @relation(fields: [planId], references: [id], onDelete: Cascade)
+  objetivo objetivo_especifico? @relation(fields: [objetivoId], references: [id], onDelete: SetNull)
+  kpis     kpi_definicion[]
+
+  @@index([planId])
+  @@index([objetivoId])
+  @@map("pilar")
+}
+
+/// Definición de KPI: fórmula declarativa + meta + polaridad.
+model kpi_definicion {
+  id Int          @id @default(autoincrement()) @map("id")
+  planId Int @map("plan_id")
+  pilarId Int? @map("pilar_id")
+  codigo String @map("codigo")
+  nombre String @map("nombre")
+  descripcion String? @map("descripcion")
+  /// Fórmula declarativa en JSON. Ejemplo:
+  /// { "tipo": "PROPORCION", "numerador": { "agg": "count",
+  ///   "filtros": { "tipoDecision": "SUSPENSION" } },
+  ///   "denominador": { "agg": "count", "filtros": {} } }
+  formula Json @map("formula")
+  /// % | ABS | USD | PARTIDOS | DIAS | U.C.
+  unidad String @map("unidad")
+  meta Decimal?     @db.Decimal(18, 4) @map("meta")
+  polaridad PolaridadKpi @default(MAYOR_MEJOR) @map("polaridad")
+  /// DIARIA | SEMANAL | MENSUAL | TRIMESTRAL | ANUAL
+  periodicidad String       @default("MENSUAL") @map("periodicidad")
+  activa Boolean      @default(true) @map("activa")
+  orden Int          @default(0) @map("orden")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  plan       plan_accion?   @relation(fields: [planId], references: [id], onDelete: Cascade)
+  pilar pilar?         @relation(fields: [pilarId], references: [id], onDelete: Cascade)
+  mediciones kpi_medicion[]
+
+  @@unique([planId, codigo])
+  @@index([pilarId])
+  @@map("kpi_definicion")
+}
+
+/// Snapshot de un KPI por período, para evolución histórica.
+model kpi_medicion {
+  id Int      @id @default(autoincrement()) @map("id")
+  kpiId Int @map("kpi_id")
+  /// Primer día del período.
+  periodo DateTime @db.Date @map("periodo")
+  /// DIA | SEMANA | MES | TRIMESTRE | ANIO
+  granularidad String @map("granularidad")
+  valor Decimal  @db.Decimal(18, 4) @map("valor")
+  meta Decimal? @db.Decimal(18, 4) @map("meta")
+  cumplio Boolean? @map("cumplio")
+  calculadoEn DateTime @default(now()) @map("calculado_en")
+
+  kpi kpi_definicion @relation(fields: [kpiId], references: [id], onDelete: Cascade)
+
+  @@unique([kpiId, periodo, granularidad])
+  @@index([periodo])
+  @@map("kpi_medicion")
+}
+
+// =============================================================================
+// CATÁLOGOS GENÉRICOS (sincronizables con las hojas CAT_*)
+// =============================================================================
+
+model catalogo_item {
+  id Int      @id @default(autoincrement()) @map("id")
+  catalogo Catalogo @map("catalogo")
+  codigo String @map("codigo")
+  nombre String @map("nombre")
+  /// Agrupador adicional, p.ej. MOTIVO -> CATEGORIA_INFRACCION.
+  grupo String? @map("grupo")
+  orden Int      @default(0) @map("orden")
+  activo Boolean  @default(true) @map("activo")
+  metadata Json? @map("metadata")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([catalogo, codigo])
+  @@index([catalogo, orden])
+  @@map("catalogo_item")
+}

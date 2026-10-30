@@ -1,0 +1,437 @@
+/* =============================================================================
+   CONSEJO DE HONOR FVF — Design System
+   Paleta extraida del logo oficial FVF (mi-logo.png):
+     Vinotinto  #3C0C24  (10.66% del logo)
+     Dorado     #B49054  (13.43% del logo)
+     Bandera VE #CC0C0C / #003060 / #FCC000
+   Escala derivada en espacio OKLCH para perceptualmente uniforme.
+   ========================================================================== */
+
+@import 'tailwindcss';
+
+@theme {
+  /* --- Vinotinto FVF: escala 50-950 --- */
+  --color-vin-50: oklch(0.97 0.014 350);
+  --color-vin-100: oklch(0.93 0.032 350);
+  --color-vin-200: oklch(0.86 0.058 350);
+  --color-vin-300: oklch(0.76 0.092 350);
+  --color-vin-400: oklch(0.62 0.128 350);
+  --color-vin-500: oklch(0.48 0.155 350);
+  --color-vin-600: oklch(0.37 0.14 350);
+  --color-vin-700: oklch(0.29 0.112 350);
+  --color-vin-800: oklch(0.22 0.082 350);
+  --color-vin-900: #3c0c24;
+  --color-vin-950: oklch(0.13 0.048 350);
+
+  /* --- Dorado FVF --- */
+  --color-oro-50: oklch(0.98 0.014 85);
+  --color-oro-100: oklch(0.95 0.032 85);
+  --color-oro-200: oklch(0.9 0.062 85);
+  --color-oro-300: oklch(0.84 0.092 85);
+  --color-oro-400: oklch(0.78 0.108 85);
+  --color-oro-500: #b49054;
+  --color-oro-600: oklch(0.62 0.098 82);
+  --color-oro-700: oklch(0.5 0.08 80);
+  --color-oro-800: oklch(0.39 0.06 78);
+  --color-oro-900: oklch(0.28 0.042 76);
+  --color-oro-950: oklch(0.19 0.028 74);
+
+  /* --- Bandera de Venezuela (acentos semanticos) --- */
+  --color-vene-rojo: #cc0c0c;
+  --color-vene-azul: #003060;
+  --color-vene-amarillo: #fcc000;
+
+  /* --- Semanticos: disciplinary --- */
+  --color-amarilla: oklch(0.85 0.17 95);
+  --color-roja: oklch(0.58 0.22 25);
+  --color-roja-indirecta: oklch(0.68 0.19 45);
+  --color-suspension: oklch(0.62 0.19 285);
+  --color-multa: oklch(0.66 0.15 155);
+  --color-advertencia: oklch(0.8 0.16 75);
+
+  /* --- Superficies y texto (modo claro) --- */
+  --color-canvas: oklch(0.985 0.004 90);
+  --color-surface: oklch(1 0 0);
+  --color-surface-2: oklch(0.975 0.006 90);
+  --color-surface-3: oklch(0.955 0.008 90);
+  --color-border: oklch(0.9 0.008 90);
+  --color-border-strong: oklch(0.82 0.01 90);
+  --color-ink: oklch(0.2 0.01 350);
+  --color-ink-soft: oklch(0.45 0.012 350);
+  --color-ink-faint: oklch(0.62 0.01 350);
+  --color-ink-invert: oklch(0.99 0 0);
+
+  /* --- Tipografia --- */
+  --font-display: var(--font-oswald), 'Oswald', system-ui, sans-serif;
+  --font-sans: var(--font-jost), 'Jost', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+
+  /* --- Radios y sombras --- */
+  --radius-card: 0.875rem;
+  --radius-control: 0.625rem;
+
+  --shadow-card: 0 1px 2px oklch(0.2 0.01 350 / 0.04), 0 4px 12px oklch(0.2 0.01 350 / 0.06);
+  --shadow-pop: 0 8px 28px oklch(0.2 0.01 350 / 0.14), 0 2px 6px oklch(0.2 0.01 350 / 0.08);
+  --shadow-focus: 0 0 0 3px oklch(0.72 0.13 350 / 0.35);
+
+  /* --- Motion --- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =============================================================================
+   MODO OSCURO
+   ========================================================================== */
+@layer theme {
+  .dark {
+    --color-canvas: oklch(0.16 0.012 350);
+    --color-surface: oklch(0.205 0.014 350);
+    --color-surface-2: oklch(0.245 0.016 350);
+    --color-surface-3: oklch(0.285 0.018 350);
+    --color-border: oklch(0.31 0.018 350);
+    --color-border-strong: oklch(0.42 0.022 350);
+    --color-ink: oklch(0.96 0.004 90);
+    --color-ink-soft: oklch(0.78 0.01 90);
+    --color-ink-faint: oklch(0.62 0.012 90);
+    --color-ink-invert: oklch(0.18 0.012 350);
+
+    --color-vin-50: oklch(0.2 0.045 350);
+    --color-vin-100: oklch(0.25 0.062 350);
+    --color-vin-200: oklch(0.31 0.08 350);
+    --color-vin-300: oklch(0.4 0.1 350);
+    --color-vin-400: oklch(0.55 0.125 350);
+    --color-vin-500: oklch(0.68 0.14 350);
+    --color-vin-600: oklch(0.76 0.12 350);
+    --color-vin-700: oklch(0.83 0.09 350);
+    --color-vin-800: oklch(0.89 0.055 350);
+    --color-vin-900: oklch(0.94 0.025 350);
+    --color-vin-950: oklch(0.97 0.012 350);
+
+    --shadow-card: 0 1px 2px oklch(0 0 0 / 0.3), 0 4px 12px oklch(0 0 0 / 0.35);
+    --shadow-pop: 0 8px 28px oklch(0 0 0 / 0.5), 0 2px 6px oklch(0 0 0 / 0.4);
+  }
+}
+
+/* =============================================================================
+   BASE
+   ========================================================================== */
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Foco visible y consistente (accesibilidad AA) */
+  :focus-visible {
+    outline: 2px solid var(--color-oro-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Scrollbar discreto */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 999px;
+    border: 2px solid var(--color-canvas);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-faint);
+  }
+}
+
+/* =============================================================================
+   COMPONENTES
+   ========================================================================== */
+@layer components {
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    padding-inline: 1rem;
+    border-radius: var(--radius-control);
+    font-weight: 500;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition:
+      background-color 0.15s var(--ease-out-soft),
+      border-color 0.15s var(--ease-out-soft),
+      transform 0.1s var(--ease-spring),
+      box-shadow 0.15s var(--ease-out-soft);
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.975);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--color-vin-900);
+    color: var(--color-ink-invert);
+    box-shadow: var(--shadow-card);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-vin-800);
+  }
+
+  .btn-accent {
+    background: var(--color-oro-500);
+    color: oklch(0.18 0.02 85);
+  }
+  .btn-accent:hover:not(:disabled) {
+    background: var(--color-oro-400);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink-soft);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--color-surface-2);
+    color: var(--color-ink);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
+  .btn-outline:hover:not(:disabled) {
+    background: var(--color-surface-2);
+  }
+
+  .btn-danger {
+    background: var(--color-vene-rojo);
+    color: white;
+  }
+  .btn-danger:hover:not(:disabled) {
+    filter: brightness(0.92);
+  }
+
+  .input {
+    width: 100%;
+    height: 2.5rem;
+    padding-inline: 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-control);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-oro-500);
+    box-shadow: var(--shadow-focus);
+  }
+  .input::placeholder {
+    color: var(--color-ink-faint);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  /* Semaforo de KPI */
+  .semaforo-cumple {
+    background: oklch(0.92 0.06 155);
+    color: oklch(0.38 0.12 155);
+  }
+  .semaforo-riesgo {
+    background: oklch(0.93 0.07 85);
+    color: oklch(0.45 0.12 70);
+  }
+  .semaforo-critico {
+    background: oklch(0.91 0.06 25);
+    color: oklch(0.44 0.18 25);
+  }
+  .semaforo-neutro {
+    background: var(--color-surface-3);
+    color: var(--color-ink-soft);
+  }
+  .dark .semaforo-cumple {
+    background: oklch(0.32 0.08 155);
+    color: oklch(0.88 0.1 155);
+  }
+  .dark .semaforo-riesgo {
+    background: oklch(0.33 0.08 85);
+    color: oklch(0.9 0.1 80);
+  }
+  .dark .semaforo-critico {
+    background: oklch(0.32 0.1 25);
+    color: oklch(0.9 0.08 25);
+  }
+
+  /* Tarjetas de tipo de sancion */
+  .badge-amarilla {
+    background: var(--color-amarilla);
+    color: oklch(0.25 0.1 95);
+  }
+  .badge-roja {
+    background: var(--color-roja);
+    color: white;
+  }
+  .badge-roja-indirecta {
+    background: var(--color-roja-indirecta);
+    color: white;
+  }
+  .badge-suspension {
+    background: var(--color-suspension);
+    color: white;
+  }
+  .badge-multa {
+    background: var(--color-multa);
+    color: white;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+  }
+  .table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--color-surface-2);
+    color: var(--color-ink-soft);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 0.625rem 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+  }
+  .table tbody td {
+    padding: 0.625rem 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+  }
+  .table tbody tr {
+    transition: background-color 0.12s;
+  }
+  .table tbody tr:hover {
+    background: var(--color-surface-2);
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface-2) 25%,
+      var(--color-surface-3) 50%,
+      var(--color-surface-2) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite linear;
+    border-radius: 0.5rem;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.35s var(--ease-out-soft) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Utilidades de layout */
+.kpi-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.chart-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+}
