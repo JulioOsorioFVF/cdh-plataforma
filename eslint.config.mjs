@@ -9,7 +9,8 @@ const compat = new FlatCompat({
 const config = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
-    ignores: ['.next/**', 'node_modules/**', 'prisma/migrations/**'],
+    // next-env.d.ts lo genera Next.js en cada build; no se versiona ni se lintea.
+    ignores: ['.next/**', 'node_modules/**', 'prisma/migrations/**', 'next-env.d.ts'],
   },
   {
     rules: {

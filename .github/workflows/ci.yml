@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    name: Typecheck, lint y build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cdh
+          POSTGRES_PASSWORD: cdh_ci
+          POSTGRES_DB: cdh_plataforma
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cdh -d cdh_plataforma"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # Credenciales efimeras: viven solo mientras corre el job.
+      DATABASE_URL: postgresql://cdh:cdh_ci@localhost:5432/cdh_plataforma?schema=public
+      DIRECT_URL: postgresql://cdh:cdh_ci@localhost:5432/cdh_plataforma?schema=public
+      AUTH_SECRET: ci-secret-solo-para-pruebas
+      ADMIN_EMAIL: ci@example.com
+      ADMIN_PASSWORD: ci-password-123
+      ADMIN_NOMBRE: Integracion Continua
+      NEXT_PUBLIC_APP_NAME: Consejo de Honor FVF
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Generar cliente Prisma
+        run: npm run db:generate
+
+      - name: Aplicar migraciones
+        run: npm run db:deploy
+
+      - name: Sembrar roles y permisos
+        run: npm run db:seed:roles
+
+      - name: Sembrar catalogos base
+        run: npm run db:seed:base
+
+      - name: Sembrar catalogos del RD
+        run: npm run db:seed:catalogos
+
+      - name: Crear vistas analiticas
+        run: npm run db:seed:vistas
+
+      - name: Crear indices y materializadas
+        run: npm run db:seed:indices
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
