@@ -5,8 +5,8 @@ import { EstadoExpediente } from '@prisma/client';
 import {
   obtenerDetalleExpedienteConJurisprudencia,
   moverEstadoExpedienteKanban,
-  COLUMNAS_KANBAN_CONFIG,
 } from '@/server/expedientes/acciones';
+import { COLUMNAS_KANBAN_CONFIG } from '@/types/kanban';
 import type { PrecedenteJurisprudencial } from '@/server/ia/agente-disciplinario';
 import { BotonAsistenteIA } from '@/components/ia/boton-asistente-ia';
 

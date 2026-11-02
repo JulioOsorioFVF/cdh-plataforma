@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { EstadoExpediente, TipoParte } from '@prisma/client';
-import { crearExpedienteEnSupabase, type CrearExpedienteInput } from '@/server/expedientes/acciones';
+import { crearExpedienteEnSupabase } from '@/server/expedientes/acciones';
+import type { CrearExpedienteInput } from '@/types/kanban';
 
 interface ModalCrearExpedienteProps {
   abierto: boolean;

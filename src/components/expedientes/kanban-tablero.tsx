@@ -5,9 +5,8 @@ import { EstadoExpediente } from '@prisma/client';
 import {
   obtenerTableroKanban,
   moverEstadoExpedienteKanban,
-  type ColumnaKanban,
-  type ExpedienteTarjetaKanban,
 } from '@/server/expedientes/acciones';
+import type { ColumnaKanban, ExpedienteTarjetaKanban } from '@/types/kanban';
 import { ModalCrearExpediente } from './modal-crear-expediente';
 import { ModalDetalleExpediente } from './modal-detalle-expediente';
 import { AsistenteDisciplinarioModal } from '@/components/ia/asistente-disciplinario-modal';
