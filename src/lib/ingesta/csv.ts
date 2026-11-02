@@ -144,3 +144,21 @@ export function celdaCruda(fila: string[], indice: number): string {
   const v = fila[indice];
   return v === undefined ? '' : v;
 }
+
+/**
+ * Escapa una celda para CSV (RFC 4180).
+ *
+ * Se comilla cuando el valor trae el separador, comillas o saltos de linea. Si
+ * no se hiciera, un motivo con una coma partiria la fila en dos y el archivo de
+ * rechazos quedaria desalineado justo donde hay que corregirlo.
+ */
+export function escaparCelda(valor: string, separador = ','): string {
+  const necesita =
+    valor.includes(separador) || valor.includes('"') || valor.includes('\n') || valor.includes('\r');
+  return necesita ? `"${valor.replaceAll('"', '""')}"` : valor;
+}
+
+/** Serializa una matriz de celdas a texto CSV, con CRLF (el que espera Excel). */
+export function generarCsv(filas: string[][], separador = ','): string {
+  return filas.map((f) => f.map((c) => escaparCelda(c ?? '', separador)).join(separador)).join('\r\n');
+}

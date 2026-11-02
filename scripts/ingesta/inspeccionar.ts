@@ -7,7 +7,7 @@
  * EXPEDIENTES los nombres se repiten), numero real de filas y una muestra.
  */
 import { readFileSync } from 'node:fs';
-import { leerTabla, celda } from './csv.js';
+import { leerTabla, celda } from '../../src/lib/ingesta/csv.js';
 
 const ruta = process.argv[2];
 if (!ruta) {

@@ -18,6 +18,14 @@ import { PrismaClient } from '@prisma/client';
 import { aCodigo, compacta, normalizar, separarNombre, textoONulo } from './util.js';
 
 type Cliente = PrismaClient;
+type Fila = Record<string, unknown>;
+type ClienteDinamico = Record<
+  string,
+  {
+    findMany(args: { select: Record<string, unknown> }): Promise<Fila[]>;
+    createMany(args: { data: Fila[]; skipDuplicates: true }): Promise<{ count: number }>;
+  }
+>;
 
 const MESES = [
   'Enero',
@@ -38,7 +46,7 @@ export class Dimensiones {
   private readonly prisma: Cliente;
 
   /** clave -> datos pendientes de insertar */
-  private readonly cola = new Map<string, { modelo: string; datos: any }>();
+  private readonly cola = new Map<string, { modelo: string; datos: Fila }>();
   /** clave -> id ya existente en la base */
   private readonly ids = new Map<string, number>();
   /**
@@ -62,7 +70,7 @@ export class Dimensiones {
    * Los campos `__*` viajan solo dentro de la cola: sirven para resolver el
    * padre y se eliminan antes de insertar.
    */
-  private registrar(modelo: string, clave: string, construir: () => any): string {
+  private registrar(modelo: string, clave: string, construir: () => Fila): string {
     const k = `${modelo}::${clave}`;
     if (this.ids.has(k)) return k;
     if (!this.cola.has(k)) {
@@ -159,7 +167,7 @@ export class Dimensiones {
     torneoNombre: string | null,
     modelo: string,
     prefijo: string,
-    extra?: Record<string, any>,
+    extra?: Record<string, unknown>,
   ): string | null {
     const n = textoONulo(nombre);
     if (!n) return null;
@@ -211,8 +219,7 @@ export class Dimensiones {
    * sintetizada que luego choca con la fila real de la base.
    */
   async cargarIndicePersonas(): Promise<void> {
-    const p = this.prisma as any;
-    const g = await p.dim_persona.findMany({
+    const g = await this.prisma.dim_persona.findMany({
       select: { cedula: true, nombreNormalizado: true },
     });
     for (const fila of g) {
@@ -418,9 +425,7 @@ export class Dimensiones {
     [];
 
   async cargarCatalogos(): Promise<void> {
-    const p = this.prisma as any;
-
-    for (const n of await p.dim_norma.findMany({ select: { id: true, codigo: true } })) {
+    for (const n of await this.prisma.dim_norma.findMany({ select: { id: true, codigo: true } })) {
       this.registrarAliasNorma(n.codigo, n.id);
       this.prefijosNorma.push({
         prefijo: normalizar(n.codigo),
@@ -436,7 +441,7 @@ export class Dimensiones {
     // "RD-". Sin ordenar, "NRLFJ-..." se resolveria contra la norma NR.
     this.prefijosNorma.sort((a, b) => b.prefijo.length - a.prefijo.length);
 
-    for (const a of await p.dim_articulo.findMany({
+    for (const a of await this.prisma.dim_articulo.findMany({
       select: { id: true, codigo: true, normaId: true },
     })) {
       let porCodigo = this.indiceArticulo.get(a.normaId);
@@ -595,11 +600,16 @@ export class Dimensiones {
    * seed) y despues se inserta solo lo que de verdad falta.
    */
   async volcar(): Promise<Record<string, number>> {
-    const p = this.prisma as any;
+    const p = this.prisma as unknown as ClienteDinamico;
     const resumen: Record<string, number> = {};
+    const delegado = (modelo: string) => {
+      const resultado = p[modelo];
+      if (!resultado) throw new Error(`Delegate Prisma no definido para ${modelo}`);
+      return resultado;
+    };
 
     /** Quita los campos auxiliares `__*` que solo sirven dentro de la cola. */
-    const limpiar = (d: any) => {
+    const limpiar = (d: Fila): Fila => {
       const { __torneo, __club, __tipoDecision, __incidencia, ...limpio } = d;
       void __torneo;
       void __club;
@@ -652,15 +662,29 @@ export class Dimensiones {
       // quedaria apuntando a undefined, que es como si no existiera.
       // `include` y `select` son excluyentes en Prisma, asi que la relacion del
       // padre va anidada dentro del propio `select`.
-      const select: Record<string, any> = Object.fromEntries(
+      const select: Record<string, unknown> = Object.fromEntries(
         [...cfg.campos, 'id'].map((c) => [c, true]),
       );
       if (cfg.incluir) select[cfg.incluir] = { select: { nombre: true } };
-      const g = await p[modelo].findMany({ select });
+      const g = await delegado(modelo).findMany({ select });
       for (const fila of g) {
-        const padre = cfg.incluir ? (fila[cfg.incluir]?.nombre ?? '') : '';
+        const relacion = cfg.incluir ? fila[cfg.incluir] : undefined;
+        const padre =
+          typeof relacion === 'object' &&
+          relacion !== null &&
+          'nombre' in relacion &&
+          typeof relacion.nombre === 'string'
+            ? relacion.nombre
+            : '';
+        if (typeof fila.id !== 'number') {
+          throw new Error(`La consulta de ${modelo} no devolvio un id numerico`);
+        }
         this.ids.set(this.claveDe(modelo, fila, padre), fila.id);
-        if (modelo === 'dim_persona' && fila.nombreNormalizado && fila.cedula) {
+        if (
+          modelo === 'dim_persona' &&
+          typeof fila.nombreNormalizado === 'string' &&
+          typeof fila.cedula === 'string'
+        ) {
           this.cedulaPorNombre.set(fila.nombreNormalizado, fila.cedula);
         }
       }
@@ -671,11 +695,11 @@ export class Dimensiones {
     }
 
     // --- 2. Insertar lo que falta, en orden de dependencia ------------------
-    const insertar = async (modelo: string, preparar?: (d: any) => any) => {
+    const insertar = async (modelo: string, preparar?: (d: Fila) => Fila) => {
       const entradas = pendientes(modelo);
       if (!entradas.length) return;
       const datos = entradas.map(([, v]) => (preparar ? preparar(v.datos) : limpiar(v.datos)));
-      const r = await p[modelo].createMany({ data: datos, skipDuplicates: true });
+      const r = await delegado(modelo).createMany({ data: datos, skipDuplicates: true });
       resumen[modelo] = (resumen[modelo] ?? 0) + r.count;
       if (r.count < entradas.length) {
         console.warn(
@@ -708,23 +732,31 @@ export class Dimensiones {
     for (const modelo of ['dim_fase', 'dim_ronda', 'dim_jornada'] as const) {
       await insertar(modelo, (d) => ({
         ...limpiar(d),
-        torneoId: this.ids.get(`dim_torneo::${this.canonico(d.__torneo ?? '')}`) ?? 0,
+        torneoId:
+          this.ids.get(
+            `dim_torneo::${this.canonico(typeof d.__torneo === 'string' ? d.__torneo : '')}`,
+          ) ?? 0,
       }));
     }
 
     await insertar('dim_persona', (d) => ({
       ...limpiar(d),
-      clubId: this.idDeNombre('dim_club', d.__club),
+      clubId: this.idDeNombre('dim_club', typeof d.__club === 'string' ? d.__club : null),
     }));
 
     await insertar('dim_motivo', (d) => ({
       ...limpiar(d),
-      tipoDecisionId: this.idDeNombre('dim_tipo_decision', d.__tipoDecision),
+      tipoDecisionId:
+        this.idDeNombre('dim_tipo_decision', typeof d.__tipoDecision === 'string' ? d.__tipoDecision : null),
     }));
 
     await insertar('dim_detalle_incidencia', (d) => ({
       ...limpiar(d),
-      incidenciaId: this.idDeNombre('dim_incidencia_licencia', d.__incidencia) ?? 0,
+      incidenciaId:
+        this.idDeNombre(
+          'dim_incidencia_licencia',
+          typeof d.__incidencia === 'string' ? d.__incidencia : null,
+        ) ?? 0,
     }));
 
     // --- 3. Aviso de claves sin resolver ------------------------------------
@@ -746,31 +778,31 @@ export class Dimensiones {
   }
 
   /** Reconstruye la clave local de una fila ya existente en la base. */
-  private claveDe(modelo: string, fila: any, padreNombre: string): string {
+  private claveDe(modelo: string, fila: Fila, padreNombre: string): string {
     switch (modelo) {
       case 'dim_fecha':
-        return `${modelo}::${isoDe(fila.fecha)}`;
+        return `${modelo}::${isoDe(fila.fecha instanceof Date ? fila.fecha : new Date(String(fila.fecha)))}`;
       case 'dim_observacion':
-        return `${modelo}::${fila.textoNormalizado}`;
+        return `${modelo}::${String(fila.textoNormalizado ?? '')}`;
       case 'dim_persona':
-        return `${modelo}::C:${fila.cedula}`;
+        return `${modelo}::C:${String(fila.cedula ?? '')}`;
       case 'fact_partido':
         // Mismo criterio que en `partido()`: si la fila se creo sin ID PARTIDO,
         // su clave es la descripcion normalizada, no `I:SIN-ID-...`.
-        return fila.idPartido?.startsWith('SIN-ID-')
-          ? `${modelo}::D:${normalizar(fila.descripcion ?? '')}`
-          : `${modelo}::I:${fila.idPartido}`;
+        return typeof fila.idPartido === 'string' && fila.idPartido.startsWith('SIN-ID-')
+          ? `${modelo}::D:${normalizar(String(fila.descripcion ?? ''))}`
+          : `${modelo}::I:${String(fila.idPartido ?? '')}`;
       case 'dim_fase':
       case 'dim_ronda':
       case 'dim_jornada':
-        return `${modelo}::${this.canonico(padreNombre)}::${this.canonico(fila.nombre)}`;
+        return `${modelo}::${this.canonico(padreNombre)}::${this.canonico(String(fila.nombre ?? ''))}`;
       case 'dim_detalle_incidencia':
-        return `${modelo}::${normalizar(padreNombre)}::${normalizar(fila.nombre)}`;
+        return `${modelo}::${normalizar(padreNombre)}::${normalizar(String(fila.nombre ?? ''))}`;
       case 'dim_torneo':
       case 'dim_categoria':
-        return `${modelo}::${this.canonico(fila.nombre)}`;
+        return `${modelo}::${this.canonico(String(fila.nombre ?? ''))}`;
       default:
-        return `${modelo}::${normalizar(fila.nombre)}`;
+        return `${modelo}::${normalizar(String(fila.nombre ?? ''))}`;
     }
   }
 }

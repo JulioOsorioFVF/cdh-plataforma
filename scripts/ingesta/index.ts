@@ -12,9 +12,9 @@
 import { Prisma, PrismaClient, EstadoIngesta } from '@prisma/client';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { leerTabla } from './csv.js';
-import { ingestaCompetencias } from './competencias.js';
-import { ingestaExpedientes } from './expedientes.js';
+import { leerTabla } from '../../src/lib/ingesta/csv.js';
+import { ingestaCompetencias } from '../../src/lib/ingesta/competencias.js';
+import { ingestaExpedientes } from '../../src/lib/ingesta/expedientes.js';
 
 const FUENTES = {
   competencias: {
@@ -107,7 +107,7 @@ async function main(): Promise<void> {
           } else {
             // OJO: `fact_expediente_parte`, `fact_expediente_movimiento`,
             // `fact_expediente_partido`, `fact_expediente_documento` y
-            // `fact_sancion_expediente` están en CASCADE desde
+            // `fact_sancion_expediente` estÃ¡n en CASCADE desde
             // `fact_expediente` (verificado en `pg_constraint`), asi que este
             // deleteMany se los lleva puesto.
             //

@@ -5,7 +5,7 @@
  *   npx tsx scripts/ingesta/valores.ts <archivo.csv> 0,7,9,10,...
  */
 import { readFileSync } from 'node:fs';
-import { leerTabla, celda } from './csv.js';
+import { leerTabla, celda } from '../../src/lib/ingesta/csv.js';
 
 const [ruta, lista] = process.argv.slice(2);
 if (!ruta || !lista) {

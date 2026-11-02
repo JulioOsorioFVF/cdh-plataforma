@@ -1,6 +1,6 @@
-// =============================================================================
-// CONSEJO DE HONOR FVF — Esquema de datos
-// Big Data Disciplinaria del Fútbol
+﻿// =============================================================================
+// CONSEJO DE HONOR FVF â€” Esquema de datos
+// Big Data Disciplinaria del FÃºtbol
 // =============================================================================
 
 generator client {
@@ -188,7 +188,7 @@ model dim_torneo_categoria {
   @@map("dim_torneo_categoria")
 }
 
-/// Categoría: SUB-18, SUB-21, FUTSAL, FEMENINO, PROFESIONAL, RESERVA...
+/// CategorÃ­a: SUB-18, SUB-21, FUTSAL, FEMENINO, PROFESIONAL, RESERVA...
 model dim_categoria {
   id Int     @id @default(autoincrement()) @map("id")
   codigo String? @unique @map("codigo")
@@ -309,7 +309,7 @@ model dim_club_categoria {
   @@map("dim_club_categoria")
 }
 
-/// Un club puede tener varios conductores (Juez Único, Delegado...).
+/// Un club puede tener varios conductores (Juez Ãšnico, Delegado...).
 model dim_categoria_conductor {
   id Int         @id @default(autoincrement()) @map("id")
   categoriaId Int @map("categoria_id")
@@ -326,7 +326,7 @@ model dim_categoria_conductor {
   @@map("dim_categoria_conductor")
 }
 
-/// Persona: jugador, cuerpo técnico, árbitro, etc. Clave natural: cédula.
+/// Persona: jugador, cuerpo tÃ©cnico, Ã¡rbitro, etc. Clave natural: cÃ©dula.
 model dim_persona {
   id Int          @id @default(autoincrement()) @map("id")
   cedula String       @unique @map("cedula")
@@ -449,7 +449,7 @@ model dim_norma {
   @@map("dim_norma")
 }
 
-/// Artículo de una norma. Grano: un artículo por fila.
+/// ArtÃ­culo de una norma. Grano: un artÃ­culo por fila.
 model dim_articulo {
   id Int     @id @default(autoincrement()) @map("id")
   codigo String @map("codigo")
@@ -499,7 +499,7 @@ model dim_detalle_incidencia {
   @@map("dim_detalle_incidencia")
 }
 
-/// Tasa de conversión Unidad Convertible -> USD (BCV), con vigencia.
+/// Tasa de conversiÃ³n Unidad Convertible -> USD (BCV), con vigencia.
 model dim_tasa_uc {
   id Int      @id @default(autoincrement()) @map("id")
   fechaVigencia DateTime @unique @db.Date @map("fecha_vigencia")
@@ -567,7 +567,7 @@ model fact_partido {
   @@map("fact_partido")
 }
 
-/// Sanción / incidencia de acta disciplinaria.
+/// SanciÃ³n / incidencia de acta disciplinaria.
 /// Grano: una fila de la hoja `DATA`.
 model fact_sancion {
   id BigInt  @id @default(autoincrement()) @map("id")
@@ -582,9 +582,9 @@ model fact_sancion {
   personaId Int? @map("persona_id")
   clubId Int? @map("club_id")
 
-  /// PARTIDOS/JORNADAS de sanción.
+  /// PARTIDOS/JORNADAS de sanciÃ³n.
   sanctionJuegos Int? @map("sanction_juegos")
-  /// Duración en días, para suspensiones calendarizadas.
+  /// DuraciÃ³n en dÃ­as, para suspensiones calendarizadas.
   sanctionDias Int? @map("sanction_dias")
   /// Monto en Unidad Convertible.
   multaUc Decimal? @db.Decimal(18, 4) @map("multa_uc")
@@ -594,7 +594,7 @@ model fact_sancion {
 
   reintegro Boolean @default(false) @map("reintegro")
   alertaSuspension Boolean @default(false) @map("alerta_suspension")
-  /// Comisión que resolvió.
+  /// ComisiÃ³n que resolviÃ³.
   proc String? @map("proc")
   /// Texto crudo de cada columna de la hoja, para trazabilidad y reproceso.
   motivoRaw String? @map("motivo_raw")
@@ -604,7 +604,7 @@ model fact_sancion {
   normaRaw String? @map("norma_raw")
   nombreRaw String? @map("nombre_raw")
   cedulaRaw String? @map("cedula_raw")
-  /// Marca "N/A" en columnas numéricas.
+  /// Marca "N/A" en columnas numÃ©ricas.
   esNulo Boolean @default(false) @map("es_nulo")
 
   fechaId Int? @map("fecha_id")
@@ -667,11 +667,11 @@ model fact_sancion {
   @@map("fact_sancion")
 }
 
-/// Puente N:M sanción-artículo. Un registro puede citar varios.
+/// Puente N:M sanciÃ³n-artÃ­culo. Un registro puede citar varios.
 model fact_sancion_articulo {
   sancionId BigInt @map("sancion_id")
   articuloId Int @map("articulo_id")
-  /// Texto tal como venía en la hoja ("43, 54").
+  /// Texto tal como venÃ­a en la hoja ("43, 54").
   literal String? @map("literal")
   orden Int     @default(0) @map("orden")
 
@@ -706,7 +706,7 @@ model fact_sancion_norma {
   normaId Int @map("norma_id")
   /// NORMA principal segun el orden en que aparece en la hoja.
   principal Boolean @default(false) @map("principal")
-  /// Texto tal como venía en la celda, para trazabilidad.
+  /// Texto tal como venÃ­a en la celda, para trazabilidad.
   literal String? @map("literal")
 
   sancion fact_sancion @relation(fields: [sancionId], references: [id], onDelete: Cascade)
@@ -741,7 +741,7 @@ model fact_expediente {
   fechaAutoEntrada DateTime?        @db.Date @map("fecha_auto_entrada")
   /// `Equipos`: texto libre "A Vs. B" (238 de 563 filas lo tienen).
   equipos String? @map("equipos")
-  /// `Trámite`
+  /// `TrÃ¡mite`
   tramiteRaw String? @map("tramite_raw")
   /// `Modalidad`: Fisico | Mixto | Digital
   modalidad String? @map("modalidad")
@@ -761,15 +761,15 @@ model fact_expediente {
   tipo String? @map("tipo")
   notas String? @map("notas")
 
-  /// `Nº Auto y/o Decisión`: codigo del auto/resolucion principal.
+  /// `NÂº Auto y/o DecisiÃ³n`: codigo del auto/resolucion principal.
   numeroDecision String? @map("numero_decision")
-  /// `Sanción`: texto libre de la resolucion.
+  /// `SanciÃ³n`: texto libre de la resolucion.
   sancionRaw String? @map("sancion_raw")
   /// `Sancionado`: nombre tal como viene en la resolucion.
   sancionadoRaw String? @map("sancionado_raw")
   multaUc Decimal? @db.Decimal(18, 4) @map("multa_uc")
   multaUsd Decimal? @db.Decimal(18, 2) @map("multa_usd")
-  /// `CUMPLIMIENTO DE LA DECISIÓN`: SI | NO | FALTA PAGO DE LA MULTA.
+  /// `CUMPLIMIENTO DE LA DECISIÃ“N`: SI | NO | FALTA PAGO DE LA MULTA.
   cumplimientoDecision String? @map("cumplimiento_decision")
   /// `MOTIVO` (columna 35): motivo del incumplimiento o del estado de pago.
   motivoCumplimiento String? @map("motivo_cumplimiento")
@@ -810,7 +810,7 @@ model fact_expediente_movimiento {
   expedienteId Int @map("expediente_id")
   fecha DateTime?                @db.Date @map("fecha")
   tipo TipoMovimientoExpediente @map("tipo")
-  /// `Código`, p.ej. 012/2025.
+  /// `CÃ³digo`, p.ej. 012/2025.
   codigo String? @map("codigo")
   descripcion String? @map("descripcion")
   orden Int                      @default(0) @map("orden")
@@ -867,7 +867,7 @@ model fact_expediente_partido {
   @@map("fact_expediente_partido")
 }
 
-/// Vínculo incidencia -> expediente (automático o manual).
+/// VÃ­nculo incidencia -> expediente (automÃ¡tico o manual).
 model fact_sancion_expediente {
   id Int      @id @default(autoincrement()) @map("id")
   sancionId BigInt @map("sancion_id")
@@ -902,7 +902,7 @@ model expediente_documento {
 }
 
 // -----------------------------------------------------------------------------
-// ADMINISTRACIÓN / FINANZAS (hoja ADMINISTRACION)
+// ADMINISTRACIÃ“N / FINANZAS (hoja ADMINISTRACION)
 // -----------------------------------------------------------------------------
 
 model fact_admin_multa {
@@ -956,7 +956,7 @@ model fact_admin_multa {
 }
 
 // =============================================================================
-// OPERACIÓN: usuarios, roles, auditoría, ingesta, OCR
+// OPERACIÃ“N: usuarios, roles, auditorÃ­a, ingesta, OCR
 // =============================================================================
 
 model usuario {
@@ -983,6 +983,7 @@ model usuario {
   expedientesCreados fact_expediente[] @relation("expediente_creado_por")
   ingestaLogs        ingesta_log[]
   ocrJobs            ocr_job[]
+  lotesIngesta       stg_lote[]        @relation("lotes_ingesta")
 
   @@map("usuario")
 }
@@ -1035,7 +1036,7 @@ model rol_permiso {
   @@map("rol_permiso")
 }
 
-/// Bitácora append-only: quién hizo qué y cuándo.
+/// BitÃ¡cora append-only: quiÃ©n hizo quÃ© y cuÃ¡ndo.
 model bitacora_auditoria {
   id BigInt   @id @default(autoincrement()) @map("id")
   entidad String @map("entidad")
@@ -1095,9 +1096,9 @@ model ocr_job {
   /// CLAUDE | GOOGLE_DOCUMENT_AI
   motor String? @map("motor")
   confianza Decimal?  @db.Decimal(5, 2) @map("confianza")
-  /// Extracción cruda.
+  /// ExtracciÃ³n cruda.
   resultado Json? @map("resultado")
-  /// Datos mapeados a columnas destino, pendientes de aprobación.
+  /// Datos mapeados a columnas destino, pendientes de aprobaciÃ³n.
   borrador Json? @map("borrador")
   observaciones String? @map("observaciones")
   iniciadoEn DateTime  @default(now()) @map("iniciado_en")
@@ -1113,7 +1114,7 @@ model ocr_job {
 }
 
 // =============================================================================
-// CONTENIDO INSPIRACIONAL / PLAN DE ACCIÓN / PILARES / KPI
+// CONTENIDO INSPIRACIONAL / PLAN DE ACCIÃ“N / PILARES / KPI
 // =============================================================================
 
 model plan_accion {
@@ -1187,7 +1188,7 @@ model pilar {
   @@map("pilar")
 }
 
-/// Definición de KPI: fórmula declarativa + meta + polaridad.
+/// DefiniciÃ³n de KPI: fÃ³rmula declarativa + meta + polaridad.
 model kpi_definicion {
   id Int          @id @default(autoincrement()) @map("id")
   planId Int @map("plan_id")
@@ -1195,7 +1196,7 @@ model kpi_definicion {
   codigo String @map("codigo")
   nombre String @map("nombre")
   descripcion String? @map("descripcion")
-  /// Fórmula declarativa en JSON. Ejemplo:
+  /// FÃ³rmula declarativa en JSON. Ejemplo:
   /// { "tipo": "PROPORCION", "numerador": { "agg": "count",
   ///   "filtros": { "tipoDecision": "SUSPENSION" } },
   ///   "denominador": { "agg": "count", "filtros": {} } }
@@ -1220,11 +1221,11 @@ model kpi_definicion {
   @@map("kpi_definicion")
 }
 
-/// Snapshot de un KPI por período, para evolución histórica.
+/// Snapshot de un KPI por perÃ­odo, para evoluciÃ³n histÃ³rica.
 model kpi_medicion {
   id Int      @id @default(autoincrement()) @map("id")
   kpiId Int @map("kpi_id")
-  /// Primer día del período.
+  /// Primer dÃ­a del perÃ­odo.
   periodo DateTime @db.Date @map("periodo")
   /// DIA | SEMANA | MES | TRIMESTRE | ANIO
   granularidad String @map("granularidad")
@@ -1241,7 +1242,7 @@ model kpi_medicion {
 }
 
 // =============================================================================
-// CATÁLOGOS GENÉRICOS (sincronizables con las hojas CAT_*)
+// CATÃLOGOS GENÃ‰RICOS (sincronizables con las hojas CAT_*)
 // =============================================================================
 
 model catalogo_item {
@@ -1260,4 +1261,586 @@ model catalogo_item {
   @@unique([catalogo, codigo])
   @@index([catalogo, orden])
   @@map("catalogo_item")
+}
+
+// =============================================================================
+// CAPA DE INGESTA (staging)
+//
+// Zona de aterrizaje intermedia entre la fuente (Google Sheets o un archivo) y
+// las tablas de hechos. Cada corrida crea un LOTE; cada fila del CSV deja una
+// huella (`hash`) y, si tuvo problemas, el contenido crudo para poder
+// diagnosticarla. Las filas limpias solo guardan la huella: el lote es el
+// contrato de idempotencia, no una copia de los datos.
+// =============================================================================
+
+enum EstadoFila {
+  VALIDA
+  ADVERTENCIA
+  RECHAZADA
+  CARGADA
+}
+
+model stg_lote {
+  id     Int    @id @default(autoincrement()) @map("id")
+  /// COMPETENCIAS | EXPEDIENTES
+  documento String @map("documento")
+  /// GOOGLE_SHEETS | ARCHIVO
+  fuente String @map("fuente")
+  url    String? @map("url")
+  /// Nombre del archivo cuando la fuente es una carga manual.
+  archivo String? @map("archivo")
+  /// sha256 del contenido: dos corridas del mismo archivo son el mismo lote.
+  huella String? @map("huella")
+  separador String? @map("separador")
+  encabezados Json? @map("encabezados")
+  /// false si el archivo no trae todas las columnas del contrato.
+  esquemaOk Boolean @default(true) @map("esquema_ok")
+  columnasFaltantes Json? @map("columnas_faltantes")
+
+  filasLeidas      Int @default(0) @map("filas_leidas")
+  filasValidas     Int @default(0) @map("filas_validas")
+  filasAdvertencia Int @default(0) @map("filas_advertencia")
+  filasRechazadas  Int @default(0) @map("filas_rechazadas")
+  filasCargadas    Int @default(0) @map("filas_cargadas")
+  filasOmitidas    Int @default(0) @map("filas_omitidas")
+
+  /// Perfil de columnas calculado durante la estandarizacion (nulos, distintos, top).
+  perfil        Json? @map("perfil")
+  /// Version del contrato de estandarizacion usado, para reproducir un lote viejo.
+  motorVersion  String @default("1") @map("motor_version")
+  estado        EstadoIngesta @default(PENDIENTE) @map("estado")
+  /// RECIBIDO | ESTANDARIZADO | CARGANDO | TERMINADO | ERROR
+  fase          String @default("RECIBIDO") @map("fase")
+  mensaje       String? @map("mensaje")
+  duracionMs    Int? @map("duracion_ms")
+
+  usuarioId    Int? @map("usuario_id")
+  ingestaLogId Int? @map("ingesta_log_id")
+
+  iniciadaEn   DateTime  @default(now()) @map("iniciada_en")
+  finalizadaEn DateTime? @map("finalizada_en")
+
+  usuario usuario?   @relation("lotes_ingesta", fields: [usuarioId], references: [id], onDelete: SetNull)
+  filas   stg_fila[]
+
+  @@index([documento, iniciadaEn])
+  @@index([estado])
+  @@map("stg_lote")
+}
+
+model stg_fila {
+  id         BigInt     @id @default(autoincrement()) @map("id")
+  loteId     Int        @map("lote_id")
+  /// Numero de fila del CSV (1 = primera fila de datos, el encabezado no cuenta).
+  numeroFila Int        @map("numero_fila")
+  /// Huella del contenido normalizado: identifica la fila aunque cambie el archivo.
+  hash       String     @map("hash")
+  estado     EstadoFila @default(VALIDA) @map("estado")
+  /// Motivos que impiden cargar la fila (codigo + detalle).
+  errores    Json?      @map("errores")
+  /// Observaciones que no impiden la carga.
+  avisos     Json?      @map("avisos")
+  /// Contenido original, solo en filas con problemas: sirve para diagnosticar.
+  crudo      Json?      @map("crudo")
+
+  lote stg_lote @relation(fields: [loteId], references: [id], onDelete: Cascade)
+
+  @@index([loteId, estado])
+  @@index([hash])
+  @@map("stg_fila")
+}
+
+// Agregar al final de prisma/schema.prisma
+
+model ExpedienteJuridico {
+  id                        Int       @id @default(autoincrement())
+  numeroExp                 String    @map("numero_exp")              // Col A: N Exp (ej. "001")
+  anio                      Int                                       // Col B: AÃ±o (ej. 2022..2026)
+  autoEntrada               String?   @map("auto_entrada")            // Col C: Auto de Entrada (A.E.) o Inicio
+  fechaAutoEntrada          DateTime? @map("fecha_auto_entrada")      // Col D: Fecha Auto de Entrada
+  motivoEntrada             String?   @map("motivo_entrada")          // Col E: Motivo
+  asunto                    String?                                   // Col F: Asunto de Exp
+  parteDemandante           String?   @map("parte_demandante")        // Col G: Parte demandante
+  parteDemandada            String?   @map("parte_demandada")         // Col H: Parte demandada
+  torneoCategoria           String?   @map("torneo_categoria")        // Col I: Torneo o Categoria
+  equipos                   String?                                   // Col J: Equipos
+  tramite                   String?                                   // Col K: Decidido | Inadmisible | En InstrucciÃ³n
+  modalidad                 String?                                   // Col L: FÃ­sico | Digital
+  asignadoA                 String?   @map("asignado_a")              // Col M: ASIGNADO (Abogado/Analista)
+  statusKanban              String?   @map("status_kanban")           // Col N: STATUS (Etapa Trello/Flujo)
+  fechaAsignacion           DateTime? @map("fecha_asignacion")        // Col O: FECHA DE ASIGNACIÃ“N
+  fechaSeguimiento          DateTime? @map("fecha_seguimiento")       // Col P: FECHA DE SEGUIMIENTO
+  alerta                    String?                                   // Col Q: ALERTA (SemÃ¡foro SLA)
+  fechaDecision             DateTime? @map("fecha_decision")          // Col R: Fecha de Auto y/o DecisiÃ³n
+  anioDecision              Int?      @map("anio_decision")           // Col S: AÃ±o de decisiÃ³n
+  mesDecision               Int?      @map("mes_decision")            // Col T: Mes de decisiÃ³n
+  numeroAutoDecision        String?   @map("numero_auto_decision")    // Col U: NÂ° Auto y/o DecisiÃ³n (Res. / Auto)
+  textoDecision             String?   @map("texto_decision")          // Col V: DecisiÃ³n (Dispositiva 1ra instancia)
+  numeroUsurpacionFecha     String?   @map("numero_usurpacion_fecha") // Col W: NÂ° de usurpaciÃ³n y Fecha
+  segundaDecisionFlag       String?   @map("segunda_decision_flag")   // Col X: Segunda DecisiÃ³n
+  recursoEjercido           String?   @map("recurso_ejercido")        // Col Y: Ejercieron ReconsideraciÃ³n o ApelaciÃ³n
+  fechaRecurso              DateTime? @map("fecha_recurso")           // Col Z: FECHA R.R. o R.A.
+  numeroDecisionRecurso     String?   @map("numero_decision_recurso") // Col AA: Nro. DecisiÃ³n (Recurso)
+  fechaEmisionRecurso       DateTime? @map("fecha_emision_recurso")   // Col AB: Fecha de emisiÃ³n
+  textoDecisionRecurso      String?   @map("texto_decision_recurso")  // Col AC: DecisiÃ³n (Recurso)
+  observaciones             String?                                   // Col AD: Observaciones
+  sancionResumen            String?   @map("sancion_resumen")         // Col AE: SanciÃ³n
+  sancionadoNombre          String?   @map("sancionado_nombre")       // Col AF: Sancionado
+  multaUcfvf                Decimal   @default(0) @map("multa_ucfvf") // Col AG: Multa UCFVF
+  multaUsd                  Decimal   @default(0) @map("multa_usd")   // Col AH: Multa $
+  cumplimientoDecision      String?   @map("cumplimiento_decision")   // Col AI: CUMPLIMIENTO (SI / NO / PARCIAL)
+  motivoCumplimiento        String?   @map("motivo_cumplimiento")     // Col AJ: MOTIVO (Cierre/EjecuciÃ³n)
+
+  // Campos enriquecidos automÃ¡ticamente por IA y PMO
+  diasSustanciacion         Int?      @map("dias_sustanciacion")
+  articulosVioladosIA       String[]  @map("articulos_violados_ia")
+  categoriaInfraccionIA     String?   @map("categoria_infraccion_ia")
+  riesgoIntegridadIA        Boolean   @default(false) @map("riesgo_integridad_ia")
+  resumenEjecutivoIA        String?   @map("resumen_ejecutivo_ia")
+  actualizadoEn             DateTime  @updatedAt @map("actualizado_en")
+
+  @@unique([numeroExp, anio], name: "exp_anio_unico")
+  @@index([anio, tramite])
+  @@index([asignadoA, statusKanban])
+  @@map("expediente_juridico")
+}
+
+model InformePartidoIA {
+  id                  Int      @id @default(autoincrement())
+  torneo              String
+  jornada             Int
+  partido             String
+  fechaPartido        DateTime
+  origenInforme       String   // ARBITRO | DELEGADO | COMISION_REGIONAL
+  textoBruto          String
+  infraccionesIA      Json     // ExtracciÃ³n estructurada: jugadores, cuerpo tÃ©cnico, pÃºblico, infraestructura
+  articulosSugeridos  String[]
+  multaSugeridaUcfvf  Decimal  @default(0)
+  alertaSeveridad     String   // BAJA | MEDIA | ALTA | CRITICA_INTEGRIDAD
+  procesadoEnActa     Boolean  @default(false)
+  creadoEn            DateTime @default(now())
+
+  @@index([torneo, jornada])
+  @@map("informe_partido_ia")
+}
+
+// ============================================================================
+// MÃ“DULO DE TRÃMITE INTEGRAL DE EXPEDIENTES DISCIPLINARIOS (SUPABASE)
+// ============================================================================
+
+enum EtapaProcesal {
+  ENTRADA                  // RecepciÃ³n en SecretarÃ­a / Mesa de Partes
+  OFICIOS_PREVIOS          // Solicitud de informes a Competiciones / COMET / CNA
+  AUTO_DE_INICIO           // AdmisiÃ³n o Inadmisibilidad (Art. 169 / 170 RDFVF)
+  RECEPCION_RECAUDOS       // Lapso probatorio y descargos de las partes
+  LAPSO_RESOLUCION         // SustanciaciÃ³n cerrada, en manos del Juez Ãšnico / Ponente
+  PROYECTO_RESOLUCION      // Borrador redactado por Especialista Legal para reuniÃ³n
+  PUBLICACION_NOTIFICACION // Firmado en reuniÃ³n ordinaria/extraordinaria y notificado
+  EJECUCION_CUMPLIMIENTO   // Seguimiento de pago de multas (UCFVF) y cÃ³mputo de partidos
+  ARCHIVADO                // Caso cerrado con solvencia o resoluciÃ³n firme
+}
+
+enum EstadoTramite {
+  EN_INSTRUCCION
+  DECIDIDO
+  INADMISIBLE
+  SOBRESEIDO
+  EN_RECURSO
+  EN_TAS
+}
+
+model ExpedienteDisciplinario {
+  id                     Int           @id @default(autoincrement())
+  codigoExpediente       String        @unique @map("codigo_expediente") // Ej: "EXP-049-2026"
+  numeroCorrelativo      Int           @map("numero_correlativo")        // Col A Sheet: 49
+  anio                   Int                                             // Col B Sheet: 2026
+  modalidad              String        @default("Digital")               // Digital | FÃ­sico
+  viaIngreso             String        @map("via_ingreso")               // PROTESTA | DENUNCIA | INFORME_ARBITRAL | INFORME_DELEGADO | OFICIO_INTEGRIDAD | REMISION_ELECTORAL
+
+  // ClasificaciÃ³n Deportiva y Partes
+  torneoCategoria        String        @map("torneo_categoria")          // Liga FUTVE, Futsal 1, Junior, etc.
+  jornada                String?
+  partido                String?                                         // Equipos involucrados
+  motivoPrincipal        String        @map("motivo_principal")          // AlineaciÃ³n indebida, Hechos violentos, Deuda, etc.
+  asuntoDetallado        String        @map("asunto_detallado")
+  parteDemandante        String?       @map("parte_demandante")
+  parteDemandada         String        @map("parte_demandada")
+
+  // Control de Admisibilidad (Filtro PedagÃ³gico Art. 169 y 170 RDFVF)
+  requiereCaucion        Boolean       @default(false) @map("requiere_caucion")
+  caucionVerificada      Boolean       @default(false) @map("caucion_verificada")
+  articulosInvocados     Boolean       @default(true)  @map("articulos_invocados")
+  enLapsoReglamentario   Boolean       @default(true)  @map("en_lapso_reglamentario")
+  causaInadmisibilidad   String?       @map("causa_inadmisibilidad")
+
+  // Estado Procesal y AsignaciÃ³n PMO (Sustituye Trello + Columnas M-Q Sheet)
+  etapaActual            EtapaProcesal @default(ENTRADA) @map("etapa_actual")
+  estadoTramite          EstadoTramite @default(EN_INSTRUCCION) @map("estado_tramite")
+  juezUnicoAsignado      String?       @map("juez_unico_asignado")
+  especialistaAsignado   String?       @map("especialista_asignado")
+  analistaSeguimiento    String?       @map("analista_seguimiento")
+  prioridadSla           String        @default("NORMAL") @map("prioridad_sla") // URGENTE_24H | ALTA | NORMAL
+  fechaApertura          DateTime      @default(now()) @map("fecha_apertura")
+  fechaAsignacion        DateTime?     @map("fecha_asignacion")
+  fechaVencimientoSla    DateTime?     @map("fecha_vencimiento_sla")
+  fechaCierreDecision    DateTime?     @map("fecha_cierre_decision")
+
+  // Relaciones del TrÃ¡mite Integral
+  actuaciones            ActuacionProcesal[]
+  sanciones              SancionExpediente[]
+  recursos               RecursoExpediente[]
+  documentos             DocumentoExpediente[]
+  reportesPago           ReportePagoAfectado[]
+
+  creadoEn               DateTime      @default(now()) @map("creado_en")
+  actualizadoEn          DateTime      @updatedAt @map("actualizado_en")
+
+  @@index([anio, estadoTramite])
+  @@index([etapaActual, especialistaAsignado])
+  @@index([torneoCategoria])
+  @@map("expediente_disciplinario")
+}
+
+// Registra las 233 "Referencias" (antes Autos), Oficios, Cierres de InstrucciÃ³n y Decisiones
+model ActuacionProcesal {
+  id                  Int                     @id @default(autoincrement())
+  expedienteId        Int                     @map("expediente_id")
+  expediente          ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  tipoActuacion       String                  @map("tipo_actuacion") // REFERENCIA | AUTO_INICIO | OFICIO_COMET | DECISION_1RA_INSTANCIA | ACTA_REUNION
+  numeroActuacion     String?                 @map("numero_actuacion") // Ej: "Ref. 085/2026" o "Res. 046/2026"
+  fechaActuacion      DateTime                @default(now()) @map("fecha_actuacion")
+  etapaDestino        EtapaProcesal           @map("etapa_destino")
+  resumenDispositivo  String                  @map("resumen_dispositivo")
+  organosNotificados  String[]                @map("organos_notificados") // ["COMET", "LICENCIA_CLUBES", "CNA", "ADMINISTRACION"]
+  creadoPor           String                  @map("creado_por")
+  archivoUrlSupabase  String?                 @map("archivo_url_supabase")
+
+  @@index([expedienteId, fechaActuacion])
+  @@map("actuacion_procesal")
+}
+
+// Permite mÃºltiples sancionados y control financiero exacto (UCFVF / USD / Cumplimiento)
+model SancionExpediente {
+  id                     Int                     @id @default(autoincrement())
+  expedienteId           Int                     @map("expediente_id")
+  expediente             ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  reportesPago           ReportePagoAfectado[]
+  sujetoSancionado       String                  @map("sujeto_sancionado")
+  tipoSujeto             String                  @map("tipo_sujeto") // CLUB | JUGADOR | CUERPO_TECNICO | DIRIGENTE | ARBITRO
+  articulosAplicados     String                  @map("articulos_aplicados") // Ej: "Art. 77.2 y 108 RDFVF"
+  tipoSancionDeportiva   String?                 @map("tipo_sancion_deportiva") // SUSPENSION_PARTIDOS | SUSPENSION_TIEMPO | PERDIDA_PUNTOS | DEDUCCION | ADVERTENCIA
+  cantidadPartidosMeses  String?                 @map("cantidad_partidos_meses")
+  multaUcfvf             Decimal                 @default(0) @map("multa_ucfvf")
+  tasaUcfvfUsd           Decimal                 @default(3.0) @map("tasa_ucfvf_usd")
+  multaUsd               Decimal                 @default(0) @map("multa_usd")
+  estadoCumplimiento     String                  @default("PENDIENTE") @map("estado_cumplimiento") // PENDIENTE | PAGADO_CUMPLIDO | EN_MORA_BLOQUEADO | EXONERADO_PARCIAL
+  referenciaPago         String?                 @map("referencia_pago") // Ej: "Transf. #00094474 Bco. Venezuela"
+  fechaCumplimiento      DateTime?               @map("fecha_cumplimiento")
+  observacionEjecucion   String?                 @map("observacion_ejecucion")
+
+  @@index([expedienteId, estadoCumplimiento])
+  @@map("sancion_expediente")
+}
+
+// Gestiona Reconsideraciones, Apelaciones y casos ante el TAS
+model RecursoExpediente {
+  id                  Int                     @id @default(autoincrement())
+  expedienteId        Int                     @map("expediente_id")
+  expediente          ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  tipoRecurso         String                  @map("tipo_recurso") // RECONSIDERACION | APELACION | TAS
+  fechaInterposicion  DateTime                @map("fecha_interposicion")
+  numeroResolucion    String?                 @map("numero_resolucion")
+  fechaResolucion     DateTime?               @map("fecha_resolucion")
+  resultadoRecurso    String?                 @map("resultado_recurso") // SIN_LUGAR_RATIFICADO | CON_LUGAR | PARCIALMENTE_CON_LUGAR | INADMISIBLE
+  detalleDecision     String?                 @map("detalle_decision")
+
+  @@map("recurso_expediente")
+}
+
+// Almacenamiento de evidencias en Supabase Storage
+model DocumentoExpediente {
+  id             Int                     @id @default(autoincrement())
+  expedienteId   Int                     @map("expediente_id")
+  expediente     ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  nombreArchivo  String                  @map("nombre_archivo")
+  categoria      String                  // DENUNCIA | INFORME_ARBITRO | INFORME_DELEGADO | VIDEO_PRUEBA | CAUCION | REFERENCIA_PDF | DECISION_PDF
+  bucketPath     String                  @map("bucket_path") // Ruta en Supabase Storage
+  subidoPor      String                  @map("subido_por")
+  creadoEn       DateTime                @default(now()) @map("creado_en")
+
+  @@map("documento_expediente")
+}
+// ============================================================================
+// MÃ“DULO FINANCIERO Y PORTAL DE PAGOS / AFECTADOS (SUPABASE)
+// ============================================================================
+
+enum EstadoReportePago {
+  PENDIENTE_VERIFICACION  // Enviado por el club/afectado, en revisiÃ³n por AdministraciÃ³n
+  VERIFICADO_CONCILIADO   // Aprobado por AdministraciÃ³n y Consejo de Honor
+  RECHAZADO_INCORRECTO    // Comprobante invÃ¡lido o monto incompleto
+}
+
+model ReportePagoAfectado {
+  id                    Int                     @id @default(autoincrement())
+  expedienteId          Int                     @map("expediente_id")
+  expediente            ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  sancionId             Int?                    @map("sancion_id")
+  sancion               SancionExpediente?      @relation(fields: [sancionId], references: [id], onDelete: SetNull)
+  
+  // Datos aportados por el Afectado
+  entidadEmisor         String                  @map("entidad_emisor")         // Banco o instituciÃ³n de origen
+  referenciaBancaria    String                  @map("referencia_bancaria")    // NÂ° de transferencia o depÃ³sito
+  montoPagadoUsd        Decimal                 @map("monto_pagado_usd")       // Monto reportado en USD
+  montoPagadoUcfvf      Decimal                 @map("monto_pagado_ucfvf")     // Equivalente en UCFVF
+  fechaPago             DateTime                @map("fecha_pago")
+  comprobanteUrl        String                  @map("comprobante_url")        // URL en Supabase Storage
+  observacionesAfectado String?                 @map("observaciones_afectado")
+
+  // Estado y ConciliaciÃ³n Administrativa
+  estado                EstadoReportePago       @default(PENDIENTE_VERIFICACION)
+  conciliadoPor         String?                 @map("conciliado_por")         // Usuario de AdministraciÃ³n
+  fechaConciliacion     DateTime?               @map("fecha_conciliacion")
+  observacionAdmin      String?                 @map("observacion_admin")
+
+  // Trazabilidad de notificaciones a otras unidades
+  notificadoAdmin       Boolean                 @default(true) @map("notificado_admin")
+  notificadoLicencias   Boolean                 @default(false) @map("notificado_licencias")
+  notificadoCdh         Boolean                 @default(true) @map("notificado_cdh")
+
+  creadoEn              DateTime                @default(now()) @map("creado_en")
+  actualizadoEn         DateTime                @updatedAt @map("actualizado_en")
+
+  @@index([expedienteId, estado])
+  @@map("reporte_pago_afectado")
+}
+// ============================================================================
+// REPOSITORIO DE INTELIGENCIA ARTIFICIAL, ACTAS Y MEMORIA VECTORIAL (PGVECTOR)
+// ============================================================================
+
+enum OrigenIncidenciaPartido {
+  INFORME_ARBITRAL
+  INFORME_DELEGADO
+  OFICIO_COMPETICIONES
+  UNIDAD_INTEGRIDAD
+  DENUNCIA_CLUB
+}
+
+enum CategoriaIncidencia {
+  DEPORTIVA_JUGADOR          // Tarjetas, agresiones, acumulaciÃ³n 4 amarillas
+  CUERPO_TECNICO             // Protestas airadas, expulsiÃ³n DT/asistentes
+  INFRAESTRUCTURA_CAMERINOS  // Camerinos de Ã¡rbitros, terreno de juego, iluminaciÃ³n
+  FUERZA_PUBLICA_SEGURIDAD   // Fuerza pÃºblica insuficiente, invasiÃ³n de cancha, violencia
+  PROTOCOLO_MATERIAL         // Balones, recogepelotas, retraso de inicio, ambulancia
+  DOCUMENTACION_ALINEACION   // AlineaciÃ³n indebida, usurpaciÃ³n de identidad, COMET
+  FINANCIERA_ARBITRAJE       // Falta de pago de honorarios/viÃ¡ticos arbitrales, deudas
+  INTEGRIDAD_AMANO           // ManipulaciÃ³n de partidos / infracciÃ³n Ã©tica
+}
+
+// 1. Cabecera del Acta Disciplinaria por Jornada y Torneo (471 jornadas / 30 torneos)
+model ActaDisciplinariaJornada {
+  id                  Int                     @id @default(autoincrement())
+  codigoActa          String                  @unique @map("codigo_acta") // Ej: "ACTA-FUTVE1-2026-J12"
+  anio                Int
+  semestre            String                  // "2025-2" | "2026-1" | "2026-2"
+  torneo              String                  // Liga FUTVE, Liga FUTVE 2, Futsal 1, Junior, etc.
+  jornadaNumero       Int                     @map("jornada_numero")
+  partidosAnalizados  Int                     @default(0) @map("partidos_analizados")
+  juezUnicoPonente    String                  @map("juez_unico_ponente")
+  especialistaLegal   String                  @map("especialista_legal")
+  analistaAsignado    String                  @map("analista_asignado")
+  totalMultasUcfvf    Decimal                 @default(0) @map("total_multas_ucfvf")
+  totalMultasUsd      Decimal                 @default(0) @map("total_multas_usd")
+  estadoActa          String                  @default("BORRADOR_IA") @map("estado_acta") // BORRADOR_IA | REVISADA | PUBLICADA
+  fechaSesionCdh      DateTime?               @map("fecha_sesion_cdh")
+  incidencias         IncidenciaActaPartido[]
+  creadoEn            DateTime                @default(now()) @map("creado_en")
+
+  @@index([torneo, anio, jornadaNumero])
+  @@map("acta_disciplinaria_jornada")
+}
+
+// 2. Detalle de cada incidencia extraÃ­da de Informes de Ãrbitros y Delegados
+model IncidenciaActaPartido {
+  id                    Int                      @id @default(autoincrement())
+  actaId                Int                      @map("acta_id")
+  acta                  ActaDisciplinariaJornada @relation(fields: [actaId], references: [id], onDelete: Cascade)
+  partido               String                   // Ej: "Centauros de Caracas vs Bambi Futsal"
+  fechaPartido          DateTime?                @map("fecha_partido")
+  origen                OrigenIncidenciaPartido
+  categoria             CategoriaIncidencia
+  lugarIncidencia       String?                  @map("lugar_incidencia") // Campo de juego, Camerinos, Camerinos de Ãrbitros, Tribuna
+  motivoEstandarizado   String                   @map("motivo_estandarizado") // Ej: "ACUMULACIÃ“N 4 AMARILLAS", "FUERZA PÃšBLICA INSUFICIENTE"
+  clubInvolucrado       String                   @map("club_involucrado")
+  sujetoSancionado      String                   @map("sujeto_sancionado")
+  tipoSujeto            String                   @map("tipo_sujeto") // CLUB | JUGADOR | CUERPO_TECNICO | OFICIAL_PARTIDO
+  cedulaOCometId        String?                  @map("cedula_o_comet_id")
+  extractoInformeBruto  String                   @map("extracto_informe_bruto")
+  articulosRdfvf        String[]                 @map("articulos_rdfvf")
+  tipoSancion           String                   @map("tipo_sancion") // ADVERTENCIA | AMONESTACION | SUSPENSION | MULTA | EXPULSION
+  partidosSuspension    Int                      @default(0) @map("partidos_suspension")
+  multaUcfvf            Decimal                  @default(0) @map("multa_ucfvf")
+  multaUsd              Decimal                  @default(0) @map("multa_usd")
+  esReincidente         Boolean                  @default(false) @map("es_reincidente")
+  derivaEnExpediente    Boolean                  @default(false) @map("deriva_en_expediente")
+  confianzaExtraccionIA Float                    @default(1.0) @map("confianza_extraccion_ia")
+
+  @@index([clubInvolucrado, motivoEstandarizado])
+  @@index([sujetoSancionado, tipoSancion])
+  @@map("incidencia_acta_partido")
+}
+
+// 3. Feature Store de Sujetos Disciplinarios (Para cÃ¡lculo instantÃ¡neo de Reincidencia y Solvencia)
+model HistorialDisciplinarioSujeto {
+  id                       Int      @id @default(autoincrement())
+  identificadorUnico       String   @unique @map("identificador_unico") // COMET ID o Slug Normalizado
+  nombreCompleto           String   @map("nombre_completo")
+  tipoSujeto               String   @map("tipo_sujeto") // CLUB | JUGADOR | CUERPO_TECNICO | DIRIGENTE
+  clubActual               String?  @map("club_actual")
+  torneoPrincipal          String?  @map("torneo_principal")
+  amarillasAcumuladasCiclo Int      @default(0) @map("amarillas_acumuladas_ciclo")
+  rojasAcumuladasCiclo     Int      @default(0) @map("rojas_acumuladas_ciclo")
+  expedientesAbiertos      Int      @default(0) @map("expedientes_abiertos")
+  sancionesHistoricas      Int      @default(0) @map("sanciones_historicas")
+  multasAcumuladasUcfvf    Decimal  @default(0) @map("multas_acumuladas_ucfvf")
+  deudaPendienteUsd        Decimal  @default(0) @map("deuda_pendiente_usd")
+  solventeLicenciaClubes   Boolean  @default(true) @map("solvente_licencia_clubes")
+  indiceRiesgoReincidencia Float    @default(0.0) @map("indice_riesgo_reincidencia") // Score ML 0.0 a 1.0
+  actualizadoEn            DateTime @updatedAt @map("actualizado_en")
+
+  @@index([clubActual, solventeLicenciaClubes])
+  @@map("historial_disciplinario_sujeto")
+}
+
+// 4. Memoria Vectorial de Jurisprudencia CDH-FVF y Normativa (RAG con pgvector 768 dimensiones)
+model MemoriaJuridicaVectorial {
+  id                  Int                        @id @default(autoincrement())
+  tipoDocumento       String                     @map("tipo_documento") // DECISION_CDH | REFERENCIA_CDH | ARTICULO_RDFVF | CODIGO_FIFA | LAUDO_TAS
+  codigoReferencia    String                     @unique @map("codigo_referencia") // Ej: "EXP-048-2025" o "RDFVF-ART-170"
+  anio                Int
+  torneo              String?
+  motivoTipificado    String                     @map("motivo_tipificado")
+  articulosClave      String[]                   @map("articulos_clave")
+  extractoHechos      String                     @map("extracto_hechos")
+  criterioJuridico    String                     @map("criterio_juridico") // Ratio decidendi / Dispositiva
+  multaAplicadaUcfvf  Decimal                    @default(0) @map("multa_aplicada_ucfvf")
+  sancionDeportiva    String?                    @map("sancion_deportiva")
+  metadatosJson       Json                       @map("metadatos_json")
+  embedding           Unsupported("vector(768)")?
+  creadoEn            DateTime                   @default(now()) @map("creado_en")
+
+  @@index([tipoDocumento, motivoTipificado])
+  @@map("memoria_juridica_vectorial")
+}
+// ============================================================================
+// EXTENSIÓN AVANZADA CDH-FVF: PLAYBOOKS, AUDIENCIAS, CAUTELARES Y FACTURACIÓN
+// ============================================================================
+
+// 1. Catálogo de Procedimientos y Pasos Obligatorios (El "Cerebro Normativo" del Agente IA)
+model PlantillaProcedimientoCDH {
+  id                        Int      @id @default(autoincrement())
+  codigoTipologia           String   @unique @map("codigo_tipologia") // EJECUCION_CRD | INTEGRIDAD_AMANO | REDES_SOCIALES_ARBITROS | REMISION_JUEZ_UNICO | VIOLENCIA_MENORES_LOPNNA | ACTA_JORNADA
+  nombreProcedimiento       String   @map("nombre_procedimiento")
+  articulosBase             String[] @map("articulos_base")
+  documentosRequeridos      String[] @map("documentos_requeridos")    // Checklist de admisibilidad/certidumbre
+  lapsoDescargosDias        Int      @default(5) @map("lapso_descargos_dias")
+  tipoDiasDescargos         String   @default("HABILES") @map("tipo_dias_descargos") // HABILES | CONTINUOS
+  lapsoCumplimientoDias     Int      @default(30) @map("lapso_cumplimiento_dias")
+  requiereAudiencia         Boolean  @default(false) @map("requiere_audiencia")
+  unidadesNotificarInicio   String[] @map("unidades_notificar_inicio")
+  unidadesNotificarDecision String[] @map("unidades_notificar_decision")
+  pasosJson                 Json     @map("pasos_json")               // Máquina de estados paso a paso
+  preguntasBaseInterrogatorio Json?  @map("preguntas_base_interrogatorio")
+  creadoEn                  DateTime @default(now()) @map("creado_en")
+
+  @@map("plantilla_procedimiento_cdh")
+}
+
+// 2. Audiencias e Interrogatorios (Presenciales o Google Meet - Art. 173.5 y 174 RD-FVF)
+model AudienciaInterrogatorio {
+  id                    Int                     @id @default(autoincrement())
+  expedienteId          Int                     @map("expediente_id")
+  expediente            ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  comparecienteNombre   String                  @map("compareciente_nombre")
+  comparecienteCedula   String?                 @map("compareciente_cedula")
+  rolCompareciente      String                  @map("rol_compareciente") // INVESTIGADO | TESTIGO_PRESENCIAL | TESTIGO_PARTICIPANTE | VICTIMA_MENOR | OFICIAL_PARTIDO | AGENTE_POLICIAL
+  abogadoAsistente      String?                 @map("abogado_asistente") // Ej: IPSA / Inpreabogado
+  modalidad             String                  @default("TELEMATICA_MEET") // PRESENCIAL_SEDE_FVF | TELEMATICA_MEET
+  enlaceMeet            String?                 @map("enlace_meet")
+  fechaProgramada       DateTime                @map("fecha_programada")
+  reprogramada          Boolean                 @default(false)
+  motivoReprogramacion  String?                 @map("motivo_reprogramacion")
+  estadoAudiencia       String                  @default("CITADA") @map("estado_audiencia") // CITADA | REPROGRAMADA | CELEBRADA | INCOMPARECENCIA
+  pliegoPreguntasRespuestas Json                @map("pliego_preguntas_respuestas") // Array de { numero, pregunta, respuesta, contradiccionDetectadaIA }
+  lapsoPruebasExtraDias Int?                    @map("lapso_pruebas_extra_dias") // Ej: 3 días post-audiencia (Exp. 051/26)
+  actaFirmadaUrl        String?                 @map("acta_firmada_url")
+  creadoEn              DateTime                @default(now()) @map("creado_en")
+
+  @@index([expedienteId, fechaProgramada])
+  @@map("audiencia_interrogatorio")
+}
+
+// 3. Control de Medidas Cautelares / Inhabilitaciones Preventivas (Alerta Art. 30 RD-FVF: Máx 30 días continuos)
+model MedidaCautelarDisciplinaria {
+  id                      Int                     @id @default(autoincrement())
+  expedienteId            Int                     @map("expediente_id")
+  expediente              ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  sujetoAfectado          String                  @map("sujeto_afectado")
+  cedulaSujeto            String?                 @map("cedula_sujeto")
+  cargoRol                String                  @map("cargo_rol")
+  tipoMedida              String                  @map("tipo_medida") // INHABILITACION_PREVENTIVA | SUSPENSION_PROVISIONAL | PROHIBICION_ACCESO_ESTADIO
+  dictadaPor              String                  @map("dictada_por") // JUEZ_UNICO | PLENO_CDH
+  fechaInicio             DateTime                @map("fecha_inicio")
+  diasMaximosLegales      Int                     @default(30) @map("dias_maximos_legales") // Art. 30 RD-FVF = 30 días continuos
+  fechaVencimientoFatal   DateTime                @map("fecha_vencimiento_fatal")
+  estadoMedida            String                  @default("VIGENTE") @map("estado_medida") // VIGENTE | LEVANTADA | VENCIDA_ART_30 | ABSORBIDA_EN_DECISION
+  descontarDeSancionFinal Boolean                 @default(true) @map("descontar_de_sancion_final")
+
+  @@index([estadoMedida, fechaVencimientoFatal])
+  @@map("medida_cautelar_disciplinaria")
+}
+
+// 4. Ciclo Completo de Facturación Fiscal y Solvencia (CDH <-> UCA <-> Administración FVF)
+model FacturacionMultaFVF {
+  id                      Int                     @id @default(autoincrement())
+  expedienteId            Int                     @map("expediente_id")
+  expediente              ExpedienteDisciplinario @relation(fields: [expedienteId], references: [id], onDelete: Cascade)
+  numeroDecision          String                  @map("numero_decision") // Ej: "046/2026" o "032/2026"
+  sancionadoNombre        String                  @map("sancionado_nombre")
+  rifSancionado           String?                 @map("rif_sancionado")  // Ej: "V302982186" (Requisito SENIAT/Admin)
+  correoFacturacion       String?                 @map("correo_facturacion")
+  telefonoContacto        String?                 @map("telefono_contacto")
+  multaUcfvf              Decimal                 @map("multa_ucfvf")
+  multaUsd                Decimal                 @map("multa_usd")
+  tasaCambioBs            Decimal?                @map("tasa_cambio_bs")  // Ej: 742.2292 (Exp. 003/26)
+  montoPagadoBs           Decimal?                @map("monto_pagado_bs")
+  referenciasBancarias    String[]                @map("referencias_bancarias") // ["736802742", "428503188"]
+  reportadoEnFormUca      Boolean                 @default(false) @map("reportado_en_form_uca")
+  numeroFacturaFiscal     String?                 @map("numero_factura_fiscal") // Ej: "A00000993" o "A000000768"
+  numeroControlFiscal     String?                 @map("numero_control_fiscal") // Ej: "00-00001345"
+  estadoCobranza          String                  @default("PENDIENTE_DATOS_RIF") @map("estado_cobranza") // PENDIENTE_DATOS_RIF | EN_CONCILIACION_UCA | FACTURADO_CANCELADO
+  requiereCursoIntegridad Boolean                 @default(false) @map("requiere_curso_integridad")
+  cursoIntegridadCumplido Boolean                 @default(false) @map("curso_integridad_cumplido")
+  fechaCursoIntegridad    DateTime?               @map("fecha_curso_integridad")
+  referenciaClausuraCdh   String?                 @map("referencia_clausura_cdh") // Ej: "Ref. 098/2026" o "Ref. 035/2026"
+  actualizadoEn           DateTime                @updatedAt @map("actualizado_en")
+
+  @@index([estadoCobranza, numeroFacturaFiscal])
+  @@map("facturacion_multa_fvf")
+}
+
+// 5. Acumulador de Advertencias a Clubes en Actas de Justicia (Ej: 1ª a 13ª Advertencia DT Exclusivo, Médico, Wifi, Cercado)
+model ContadorAdvertenciaClub {
+  id                  Int      @id @default(autoincrement())
+  club                String
+  torneo              String
+  categoria           String   // Ej: "Sub-15", "Sub-16", "Primera División"
+  motivoAdvertencia   String   @map("motivo_advertencia") // FALTA_MEDICO | FALTA_DT_EXCLUSIVO | VESTUARIO_ARBITRAL_WIFI | CERCADO_PERIMETRAL | SEGURIDAD_BARRAS
+  articulosInfringidos String  @map("articulos_infringidos") // Ej: "Arts. 39 y 43 Normas Reguladoras Liga FUTVE Junior"
+  cantidadAcumulada   Int      @default(1) @map("cantidad_acumulada")
+  ultimaJornada       Int      @map("ultima_jornada")
+  derivaEnMulta       Boolean  @default(false) @map("deriva_en_multa")
+  actualizadoEn       DateTime @updatedAt @map("actualizado_en")
+
+  @@unique([club, torneo, categoria, motivoAdvertencia], name: "club_torneo_adv_unico")
+  @@map("contador_advertencia_club")
 }

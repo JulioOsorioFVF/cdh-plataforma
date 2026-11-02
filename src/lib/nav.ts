@@ -5,6 +5,7 @@ export const NAVEGACION = [
     grupo: 'Analisis',
     items: [
       { href: '/dashboard', etiqueta: 'Tablero general', icono: 'grid' },
+      { href: '/tramite', etiqueta: 'Trámite y Mesa de Partes', icono: 'folder' },
       { href: '/sanciones', etiqueta: 'Sanciones', icono: 'gavel' },
       { href: '/expedientes', etiqueta: 'Expedientes', icono: 'folder' },
       { href: '/incidencias', etiqueta: 'Incidencias', icono: 'alert' },

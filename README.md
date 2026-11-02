@@ -78,6 +78,7 @@ Se copian de `.env.example`. El `.env` real **nunca** se versiona.
 | `GOOGLE_SHEETS_COMPETENCIAS_URL`, `..._GID` | no | origen de la ingesta de sanciones |
 | `GOOGLE_SHEETS_EXPEDIENTES_CSV_URL`, `..._GID` | no | origen de la ingesta de expedientes |
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_PRIVATE_KEY` | no | alternativa a los CSV públicos |
+| `GEMINI_API_KEY` | no | análisis jurídico y embeddings RAG del agente IA |
 | `ANTHROPIC_API_KEY`, `GOOGLE_CLOUD_PROJECT` | no | OCR de actas |
 | `STORAGE_PATH` | no | carpeta de documentos subidos |
 
