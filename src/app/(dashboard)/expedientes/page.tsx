@@ -1,6 +1,7 @@
 import { FiltrosExpedientes } from '@/components/expedientes/filtros-expedientes';
 import { GraficoMultasPorSancionado } from '@/components/expedientes/grafico-multas';
 import { TablaPivotMultas } from '@/components/expedientes/tabla-pivot';
+import { VistaExpedientesContenedor } from '@/components/expedientes/vista-expedientes-contenedor';
 import {
   getAniosExpedientes,
   getEstadosExpedientes,
@@ -13,11 +14,7 @@ import type { FiltrosExpediente } from '@/types/filtros-expedientes';
 import { filtrosExpedienteFromSearch } from '@/types/filtros-expedientes';
 
 /**
- * Vista de Expedientes: multas por expediente disciplinario.
- *
- * Server Component. Los filtros llegan por la query string y toda la lectura
- * ocurre aqui; los tres Client Components de abajo reciben datos ya resueltos
- * y solo se ocupan de la interaccion (plegar, filtrar, dibujar).
+ * Vista de Expedientes: Tablero Kanban (Trello) y Pivot de Multas Disciplinarias.
  */
 
 export const dynamic = 'force-dynamic';
@@ -26,7 +23,6 @@ type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-/** `?anios=2024,2025` puede llegar como string o como string[]. */
 function plano(sp: Record<string, string | string[] | undefined>): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [k, v] of Object.entries(sp)) {
@@ -53,20 +49,10 @@ export default async function PaginaExpedientes({ searchParams }: Props) {
     }),
   ]);
 
-  // `seguro` devuelve `{datos, error}`: se muestra el fallo en pantalla en vez
-  // de dejar la pagina en blanco si la base no esta arriba.
   const error = [filas.error, barras.error, anios.error].find(Boolean) ?? null;
 
-  return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="font-display text-2xl font-semibold text-vin-900">Expedientes</h1>
-        <p className="mt-1 max-w-3xl text-sm text-ink-soft">
-          Multas impuestas en expedientes disciplinarios, agrupadas por año, mes, fecha y número
-          de auto. Clubs y personas aparecen juntos, tal como llegan de la hoja.
-        </p>
-      </header>
-
+  const contenidoPivot = (
+    <>
       {error && (
         <div className="card border-l-4 border-l-roja p-4 text-sm">
           <p className="font-semibold text-roja">No se pudo leer la base de datos.</p>
@@ -85,7 +71,6 @@ export default async function PaginaExpedientes({ searchParams }: Props) {
         total={filas.datos.length}
       />
 
-      {/* Aviso honesto sobre el texto libre: informa, no corrige. */}
       {variantes.datos.variantes > 0 && (
         <aside className="card p-4 text-sm">
           <p className="font-medium text-vin-900">
@@ -115,6 +100,22 @@ export default async function PaginaExpedientes({ searchParams }: Props) {
       />
 
       <GraficoMultasPorSancionado barras={barras.datos} />
+    </>
+  );
+
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="font-display text-2xl font-semibold text-vin-900">
+          Gestión de Expedientes Disciplinarios
+        </h1>
+        <p className="mt-1 max-w-3xl text-sm text-ink-soft">
+          Flujo de tramitación en Tablero Kanban (Trello), asistente con inteligencia artificial orientador del
+          proceso paso a paso, almacenamiento en Supabase y consulta de jurisprudencia disciplinaria.
+        </p>
+      </header>
+
+      <VistaExpedientesContenedor childrenPivot={contenidoPivot} />
     </div>
   );
 }

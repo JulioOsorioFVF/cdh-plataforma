@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { NAVEGACION } from '@/lib/nav';
 import { exigeCambioDeClave, requiereSesion } from '@/server/auth/sesion';
 import { BotonSalir } from './salir';
+import { BotonAsistenteIA } from '@/components/ia/boton-asistente-ia';
 
 /**
  * Marco de la aplicacion.
@@ -20,12 +21,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="flex min-h-dvh">
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-surface lg:flex">
-        <div className="border-b border-border px-5 py-5">
-          <p className="font-display text-[0.65rem] tracking-[0.25em] text-oro-700 uppercase">
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-vin-900 bg-vin-950 lg:flex">
+        <div className="border-b border-white/10 px-5 py-5">
+          <p className="font-display text-[0.65rem] tracking-[0.25em] text-oro-500 uppercase">
             FVF
           </p>
-          <p className="font-display text-lg leading-tight font-semibold text-vin-950">
+          <p className="font-display text-lg leading-tight font-semibold text-white">
             Consejo de Honor
           </p>
         </div>
@@ -33,7 +34,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           {NAVEGACION.map((seccion) => (
             <div key={seccion.grupo} className="mb-5">
-              <p className="px-3 pb-2 text-[0.65rem] font-semibold tracking-widest text-ink-faint uppercase">
+              <p className="px-3 pb-2 text-[0.65rem] font-semibold tracking-widest text-white/40 uppercase">
                 {seccion.grupo}
               </p>
               <ul className="space-y-0.5">
@@ -41,7 +42,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="block rounded-md px-3 py-2 text-sm text-ink-soft transition-colors hover:bg-surface-2 hover:text-vin-950"
+                      className="block rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/8 hover:text-white"
                     >
                       {item.etiqueta}
                     </Link>
@@ -52,12 +53,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
           ))}
         </nav>
 
-        <div className="border-t border-border px-5 py-4">
-          <p className="text-xs text-ink-faint">Sesion activa</p>
-          <p className="text-sm font-medium text-ink" title={sesion.email}>
+        <div className="border-t border-white/10 px-5 py-4">
+          <p className="text-xs text-white/40">Sesion activa</p>
+          <p className="text-sm font-medium text-white/80" title={sesion.email}>
             {sesion.nombre}
           </p>
-          <p className="mb-2 text-[0.7rem] text-ink-faint">
+          <p className="mb-2 text-[0.7rem] text-white/35">
             {esAdmin ? 'Administrador' : sesion.roles.join(', ')}
           </p>
           <BotonSalir />
@@ -70,6 +71,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <p className="font-display text-sm font-semibold text-vin-900">Consejo de Honor</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
+            <BotonAsistenteIA estilo="header" />
             <Link
               href="/cambiar-password"
               className="hidden text-xs text-ink-soft underline-offset-2 hover:underline lg:block"
@@ -80,9 +82,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </header>
 
-        <main id="contenido" className="flex-1 overflow-y-auto p-6">
+        <main id="contenido" className="flex-1 overflow-y-auto p-6 relative">
           {children}
         </main>
+
+        {/* Botón flotante del Asistente IA permanente en toda la plataforma */}
+        <BotonAsistenteIA estilo="flotante" />
       </div>
     </div>
   );
