@@ -80,39 +80,6 @@
 }
 
 /* =============================================================================
-   MODO OSCURO
-   ========================================================================== */
-@layer theme {
-  .dark {
-    --color-canvas: oklch(0.16 0.012 350);
-    --color-surface: oklch(0.205 0.014 350);
-    --color-surface-2: oklch(0.245 0.016 350);
-    --color-surface-3: oklch(0.285 0.018 350);
-    --color-border: oklch(0.31 0.018 350);
-    --color-border-strong: oklch(0.42 0.022 350);
-    --color-ink: oklch(0.96 0.004 90);
-    --color-ink-soft: oklch(0.78 0.01 90);
-    --color-ink-faint: oklch(0.62 0.012 90);
-    --color-ink-invert: oklch(0.18 0.012 350);
-
-    --color-vin-50: oklch(0.2 0.045 350);
-    --color-vin-100: oklch(0.25 0.062 350);
-    --color-vin-200: oklch(0.31 0.08 350);
-    --color-vin-300: oklch(0.4 0.1 350);
-    --color-vin-400: oklch(0.55 0.125 350);
-    --color-vin-500: oklch(0.68 0.14 350);
-    --color-vin-600: oklch(0.76 0.12 350);
-    --color-vin-700: oklch(0.83 0.09 350);
-    --color-vin-800: oklch(0.89 0.055 350);
-    --color-vin-900: oklch(0.94 0.025 350);
-    --color-vin-950: oklch(0.97 0.012 350);
-
-    --shadow-card: 0 1px 2px oklch(0 0 0 / 0.3), 0 4px 12px oklch(0 0 0 / 0.35);
-    --shadow-pop: 0 8px 28px oklch(0 0 0 / 0.5), 0 2px 6px oklch(0 0 0 / 0.4);
-  }
-}
-
-/* =============================================================================
    BASE
    ========================================================================== */
 @layer base {
@@ -123,10 +90,6 @@
   html {
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
-  }
-
-  html.dark {
-    color-scheme: dark;
   }
 
   body {
@@ -304,19 +267,6 @@
     background: var(--color-surface-3);
     color: var(--color-ink-soft);
   }
-  .dark .semaforo-cumple {
-    background: oklch(0.32 0.08 155);
-    color: oklch(0.88 0.1 155);
-  }
-  .dark .semaforo-riesgo {
-    background: oklch(0.33 0.08 85);
-    color: oklch(0.9 0.1 80);
-  }
-  .dark .semaforo-critico {
-    background: oklch(0.32 0.1 25);
-    color: oklch(0.9 0.08 25);
-  }
-
   /* Tarjetas de tipo de sancion */
   .badge-amarilla {
     background: var(--color-amarilla);
@@ -421,6 +371,89 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* El tema de la plataforma permanece claro, incluso en pantallas con paleta propia. */
+html.light-theme,
+html.light-theme body {
+  color-scheme: light !important;
+}
+
+.light-screen .bg-slate-950,
+.light-screen .bg-slate-900,
+.light-screen .bg-slate-900\/90,
+.light-screen .bg-slate-800,
+.light-screen .bg-slate-700 {
+  background-color: var(--color-surface) !important;
+}
+
+.light-screen .bg-slate-800\/40 {
+  background-color: var(--color-surface-2) !important;
+}
+
+.light-screen .bg-blue-950\/60 {
+  background-color: oklch(0.95 0.025 250) !important;
+}
+
+.light-screen .bg-emerald-950 {
+  background-color: oklch(0.95 0.035 155) !important;
+}
+
+.light-screen .bg-amber-950 {
+  background-color: oklch(0.97 0.045 85) !important;
+}
+
+.light-screen .bg-red-950 {
+  background-color: oklch(0.95 0.035 25) !important;
+}
+
+.light-screen .border-slate-800,
+.light-screen .border-slate-800\/80,
+.light-screen .border-slate-700,
+.light-screen .border-slate-600 {
+  border-color: var(--color-border) !important;
+}
+
+.light-screen .divide-slate-800 > :not(:last-child) {
+  border-color: var(--color-border) !important;
+}
+
+.light-screen .text-white:not(button):not(button *) {
+  color: var(--color-ink) !important;
+}
+
+.light-screen .text-slate-100,
+.light-screen .text-slate-200,
+.light-screen .text-slate-300 {
+  color: var(--color-ink) !important;
+}
+
+.light-screen .text-slate-400 {
+  color: var(--color-ink-soft) !important;
+}
+
+.light-screen .text-blue-400 {
+  color: oklch(0.48 0.16 250) !important;
+}
+
+.light-screen .text-emerald-300,
+.light-screen .text-emerald-400 {
+  color: oklch(0.43 0.13 155) !important;
+}
+
+.light-screen .text-amber-300,
+.light-screen .text-amber-400 {
+  color: oklch(0.48 0.11 75) !important;
+}
+
+.light-screen .text-red-300,
+.light-screen .text-red-400 {
+  color: oklch(0.5 0.18 25) !important;
+}
+
+.light-screen .text-purple-300,
+.light-screen .text-purple-400 {
+  color: oklch(0.48 0.16 300) !important;
 }
 
 /* Utilidades de layout */

@@ -1,4 +1,4 @@
-﻿// =============================================================================
+// =============================================================================
 // CONSEJO DE HONOR FVF â€” Esquema de datos
 // Big Data Disciplinaria del FÃºtbol
 // =============================================================================
@@ -1491,6 +1491,9 @@ model ExpedienteDisciplinario {
   recursos               RecursoExpediente[]
   documentos             DocumentoExpediente[]
   reportesPago           ReportePagoAfectado[]
+  audiencias             AudienciaInterrogatorio[]
+  medidasCautelares      MedidaCautelarDisciplinaria[]
+  facturacionesMulta      FacturacionMultaFVF[]
 
   creadoEn               DateTime      @default(now()) @map("creado_en")
   actualizadoEn          DateTime      @updatedAt @map("actualizado_en")

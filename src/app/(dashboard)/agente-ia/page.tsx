@@ -6,17 +6,21 @@ import {
   type DictamenEstructuradoAgenteIA,
   type PrecedenteRecuperadoRAG,
 } from '@/server/ia/agente-jurisdiccional';
+import {
+  orientarInstruccionExpedienteAction,
+  type GuiaInstruccionProcesalIA,
+} from '@/server/ia/director-instruccion-cdh';
 
-const CASOS_PRUEBA_REALES = [
+const CASOS_PRUEBA_ANONIMIZADOS = [
   {
     titulo: '1. Informe Arbitral y Delegado (Hechos Violentos + Fuerza Pública + 4ta Amarilla)',
     torneo: 'Liga FUTVE 2',
     jornada: 11,
     origen: 'INFORME_ARBITRAL' as const,
     texto: `INFORME ARBITRAL Y DEL DELEGADO DE PARTIDO - JORNADA 11 LIGA FUTVE 2.
-Partido: Bolívar SC vs. Angostura FC.
-1) Al minuto 64 fue amonestado el jugador Juan Pérez (Ficha COMET #44910, Bolívar SC) por conducta antideportiva (acumula su 4ta tarjeta amarilla del torneo).
-2) Al minuto 88 fue expulsado con tarjeta roja directa el Director Técnico de Angostura FC por ingresar al terreno de juego sin autorización y menospreciar públicamente al árbitro principal gritándole a viva voz.
+Partido: [CLUB A] vs. [CLUB B].
+1) Al minuto 64 fue amonestado el jugador [PERSONA A] (Ficha COMET [IDENTIFICADOR], [CLUB A]) por conducta antideportiva (acumula su 4ta tarjeta amarilla del torneo).
+2) Al minuto 88 fue expulsado con tarjeta roja directa el Director Técnico de [CLUB B] por ingresar al terreno de juego sin autorización y menospreciar públicamente al árbitro principal gritándole a viva voz.
 3) El Delegado de Partido deja constancia de que en el estadio solo se presentaron 4 efectivos policiales (Fuerza Pública Insuficiente según protocolo), el camerino de árbitros no contaba con suministro de agua ni cerradura segura, y al finalizar el encuentro hubo lanzamiento de objetos desde la tribuna principal hacia el terreno de juego.`,
   },
   {
@@ -25,7 +29,7 @@ Partido: Bolívar SC vs. Angostura FC.
     jornada: 6,
     origen: 'PROTESTA_CLUB' as const,
     texto: `ESCRITO DE PROTESTA DE PARTIDO.
-El club Centauros de Caracas interpone formal protesta contra el club Real Esperanza FC por presunta alineación indebida y usurpación de identidad del jugador dorsal N° 14 en el partido de la Jornada 6 del Torneo Reserva Futsal.
+El [CLUB A] interpone formal protesta contra el [CLUB B] por presunta alineación indebida y usurpación de identidad del jugador dorsal N° 14 en el partido de la Jornada 6 del Torneo Reserva Futsal.
 Nota de Secretaría: El club accionante invoca el Art. 77 y Art. 108 del RDFVF dentro de las 24 horas siguientes al partido, pero NO adjuntó el comprobante de transferencia bancaria correspondiente a la caución reglamentaria exigida en el artículo 170 del Reglamento Disciplinario FVF.`,
   },
   {
@@ -34,7 +38,7 @@ Nota de Secretaría: El club accionante invoca el Art. 77 y Art. 108 del RDFVF d
     jornada: 14,
     origen: 'INFORME_DELEGADO' as const,
     texto: `OFICIO COMISIÓN NACIONAL DE ÁRBITROS (CNA) Y DELEGADO FVF.
-Se reporta formalmente que el club Ureña SC incumplió con el pago de los honorarios y viáticos de la terna arbitral designada para la Jornada 14, acumulando reincidencia en insolvencia operativa. Se solicita apertura de procedimiento y aplicación del Art. 104 RDFVF en concordancia con el Art. 21 del Código Disciplinario de la FIFA.`,
+Se reporta formalmente que el [CLUB A] incumplió con el pago de los honorarios y viáticos de la terna arbitral designada para la Jornada 14, acumulando reincidencia en insolvencia operativa. Se solicita apertura de procedimiento y aplicación del Art. 104 RDFVF en concordancia con el Art. 21 del Código Disciplinario de la FIFA.`,
   },
 ] as const;
 
@@ -42,17 +46,23 @@ export default function ConsolaAgenteJuridicoIAPage() {
   const [torneo, setTorneo] = useState('Liga FUTVE 2');
   const [jornada, setJornada] = useState(11);
   const [origen, setOrigen] = useState<'INFORME_ARBITRAL' | 'INFORME_DELEGADO' | 'PROTESTA_CLUB' | 'CONSULTA_REGIONAL'>('INFORME_ARBITRAL');
-  const [textoInforme, setTextoInforme] = useState<string>(CASOS_PRUEBA_REALES[0].texto);
-  const [guardarEnActa, setGuardarEnActa] = useState(true);
+  const [textoInforme, setTextoInforme] = useState<string>(CASOS_PRUEBA_ANONIMIZADOS[0].texto);
+  const [datosAnonimizadosConfirmados, setDatosAnonimizadosConfirmados] = useState(false);
+  const [guardarEnActa, setGuardarEnActa] = useState(false);
 
   const [cargando, setCargando] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [dictamen, setDictamen] = useState<DictamenEstructuradoAgenteIA | null>(null);
   const [precedentes, setPrecedentes] = useState<PrecedenteRecuperadoRAG[]>([]);
   const [actaCreada, setActaCreada] = useState<string | undefined>(undefined);
+  const [descripcionOrientacion, setDescripcionOrientacion] = useState('');
+  const [orientacionAnonimizada, setOrientacionAnonimizada] = useState(false);
+  const [cargandoOrientacion, setCargandoOrientacion] = useState(false);
+  const [errorOrientacion, setErrorOrientacion] = useState<string | null>(null);
+  const [guiaProcesal, setGuiaProcesal] = useState<GuiaInstruccionProcesalIA | null>(null);
 
   const cargarCasoEjemplo = (idx: number) => {
-    const c = CASOS_PRUEBA_REALES[idx];
+    const c = CASOS_PRUEBA_ANONIMIZADOS[idx];
     if (!c) return;
     setTorneo(c.torneo);
     setJornada(c.jornada);
@@ -70,6 +80,7 @@ export default function ConsolaAgenteJuridicoIAPage() {
         jornada,
         origen,
         textoInforme,
+        datosAnonimizadosConfirmados,
         guardarEnActaSupabase: guardarEnActa,
       });
       setDictamen(resultado.dictamen);
@@ -86,8 +97,25 @@ export default function ConsolaAgenteJuridicoIAPage() {
     }
   };
 
+  const solicitarGuiaProcesal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCargandoOrientacion(true);
+    setErrorOrientacion(null);
+    try {
+      const resultado = await orientarInstruccionExpedienteAction({
+        descripcionCasoNuevosRecaudos: descripcionOrientacion,
+        datosAnonimizadosConfirmados: orientacionAnonimizada,
+      });
+      setGuiaProcesal(resultado);
+    } catch (err: unknown) {
+      setErrorOrientacion(err instanceof Error ? err.message : 'No se pudo generar la guía procesal.');
+    } finally {
+      setCargandoOrientacion(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6">
+    <div className="light-screen min-h-screen bg-surface p-6 space-y-6">
       {/* ENCABEZADO EJECUTIVO */}
       <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
@@ -98,12 +126,12 @@ export default function ConsolaAgenteJuridicoIAPage() {
             Agente IA Jurisdiccional y Procesador de Actas (Árbitros y Delegados)
           </h1>
           <p className="text-sm text-slate-400">
-            Alimentado por el repositorio histórico de expedientes, jurisprudencia CDH-FVF y el Feature Store de reincidencia en Supabase.
+            Usa normativa y precedentes históricos anonimizados que fueron revisados y aprobados por el equipo.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {CASOS_PRUEBA_REALES.map((caso, idx) => (
+          {CASOS_PRUEBA_ANONIMIZADOS.map((caso, idx) => (
             <button
               key={idx}
               type="button"
@@ -115,6 +143,39 @@ export default function ConsolaAgenteJuridicoIAPage() {
           ))}
         </div>
       </header>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-bold text-slate-900">Orientación procesal basada en playbooks</h2>
+        <p className="mt-1 text-sm text-slate-600">
+          Revisa el texto antes de enviarlo. La guía usa los procedimientos configurados en la base
+          de datos y los precedentes históricos aprobados; no reemplaza la revisión del especialista.
+        </p>
+        <form onSubmit={solicitarGuiaProcesal} className="mt-4 space-y-3">
+          <textarea
+            rows={5}
+            required
+            minLength={20}
+            maxLength={100000}
+            value={descripcionOrientacion}
+            onChange={(evento) => setDescripcionOrientacion(evento.target.value)}
+            placeholder="Describe los hechos y recaudos usando referencias genéricas, sin nombres ni datos identificables."
+            className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900"
+          />
+          <label className="flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-950">
+            <input type="checkbox" checked={orientacionAnonimizada} onChange={(evento) => setOrientacionAnonimizada(evento.target.checked)} />
+            <span>Confirmo que eliminé nombres, identificaciones y datos que puedan identificar a las partes o a menores.</span>
+          </label>
+          {errorOrientacion && <p role="alert" className="text-sm text-red-800">{errorOrientacion}</p>}
+          <button type="submit" disabled={cargandoOrientacion || !orientacionAnonimizada} className="rounded-lg bg-vin-900 px-4 py-2 text-sm font-bold text-white disabled:opacity-50">
+            {cargandoOrientacion ? 'Preparando orientación…' : 'Generar orientación procesal'}
+          </button>
+        </form>
+        {guiaProcesal && (
+          <pre className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-800">
+            {JSON.stringify(guiaProcesal, null, 2)}
+          </pre>
+        )}
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* PANEL IZQUIERDO (5 COLUMNAS): INGESTA DE ACTA ARBITRAL / DELEGADO / EXPEDIENTE */}
@@ -178,7 +239,7 @@ export default function ConsolaAgenteJuridicoIAPage() {
 
           <div>
             <label className="text-xs text-slate-400 block mb-1">
-              Texto del Informe Arbitral, Reporte del Delegado o Denuncia
+              Texto anonimizado del informe, reporte o denuncia
             </label>
             <textarea
               rows={10}
@@ -187,6 +248,19 @@ export default function ConsolaAgenteJuridicoIAPage() {
               className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 leading-relaxed font-mono"
             />
           </div>
+
+          <label className="flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs text-amber-950">
+            <input
+              type="checkbox"
+              checked={datosAnonimizadosConfirmados}
+              onChange={(e) => setDatosAnonimizadosConfirmados(e.target.checked)}
+            />
+            <span>
+              Confirmo que revisé el texto y reemplacé nombres, identificaciones y cualquier dato
+              que permita identificar a las partes o a menores. Solo el texto anonimizado se envía
+              al proveedor de IA.
+            </span>
+          </label>
 
           <label className="flex items-center gap-2 text-xs text-slate-300 bg-slate-950 p-3 rounded-xl border border-slate-800">
             <input
@@ -208,12 +282,12 @@ export default function ConsolaAgenteJuridicoIAPage() {
 
           <button
             type="submit"
-            disabled={cargando}
+            disabled={cargando || !datosAnonimizadosConfirmados}
             className="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-sm font-bold text-white transition disabled:opacity-50"
           >
             {cargando
               ? 'Consultando Vector Store (pgvector) y Calculando Sanciones...'
-              : 'Procesar con Agente IA y Liquidar Sanciones RDFVF'}
+              : 'Analizar y generar borrador para revisión'}
           </button>
         </form>
 
@@ -225,7 +299,7 @@ export default function ConsolaAgenteJuridicoIAPage() {
                 Agente Jurisdiccional Listo para Procesar
               </p>
               <p className="text-xs text-slate-500 max-w-lg mx-auto">
-                Selecciona uno de los 3 casos reales en la barra superior o pega un informe arbitral/delegado y presiona el botón morado para ejecutar el cruce RAG + cálculo de multas en UCFVF/USD.
+                Selecciona un caso de prueba anonimizado o pega un informe previamente anonimizado. Las propuestas generadas requieren revisión profesional antes de cualquier uso.
               </p>
             </div>
           ) : (

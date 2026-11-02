@@ -2,8 +2,15 @@
 
 import { GoogleGenAI, Type, Schema } from '@google/genai';
 import { prisma } from '@/lib/prisma';
+import { anonimizarIdentificadoresDirectos } from '@/lib/privacidad/anonimizacion';
+import { requierePermiso } from '@/server/auth/sesion';
+import { buscarPrecedentesSimilaresRAG } from './agente-jurisdiccional';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+function clienteGoogleGenAI(): GoogleGenAI {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('Define GEMINI_API_KEY para usar la guía procesal.');
+  return new GoogleGenAI({ apiKey });
+}
 
 export interface GuiaInstruccionProcesalIA {
   tipologiaDetectada:
@@ -29,7 +36,12 @@ export interface GuiaInstruccionProcesalIA {
     unidadesAFVFInvolucradas: string[];
   }>;
   pliegoInterrogatorioSugerido: Array<{
-    destinatario: 'IMPUTADO' | 'VICTIMA' | 'TESTIGO_PRESENCIAL' | 'OFICIAL_PARTIDO' | 'FUNCIONARIO_POLICIAL';
+    destinatario:
+      | 'IMPUTADO'
+      | 'VICTIMA'
+      | 'TESTIGO_PRESENCIAL'
+      | 'OFICIAL_PARTIDO'
+      | 'FUNCIONARIO_POLICIAL';
     nombreSugerido: string;
     advertenciaJuramento: string;
     preguntasEstrategicas: string[];
@@ -103,13 +115,24 @@ const ESQUEMA_GUIA_INSTRUCCION: Schema = {
         properties: {
           destinatario: {
             type: Type.STRING,
-            enum: ['IMPUTADO', 'VICTIMA', 'TESTIGO_PRESENCIAL', 'OFICIAL_PARTIDO', 'FUNCIONARIO_POLICIAL'],
+            enum: [
+              'IMPUTADO',
+              'VICTIMA',
+              'TESTIGO_PRESENCIAL',
+              'OFICIAL_PARTIDO',
+              'FUNCIONARIO_POLICIAL',
+            ],
           },
           nombreSugerido: { type: Type.STRING },
           advertenciaJuramento: { type: Type.STRING },
           preguntasEstrategicas: { type: Type.ARRAY, items: { type: Type.STRING } },
         },
-        required: ['destinatario', 'nombreSugerido', 'advertenciaJuramento', 'preguntasEstrategicas'],
+        required: [
+          'destinatario',
+          'nombreSugerido',
+          'advertenciaJuramento',
+          'preguntasEstrategicas',
+        ],
       },
     },
     alertasCriticasSLA: {
@@ -139,8 +162,22 @@ const ESQUEMA_GUIA_INSTRUCCION: Schema = {
 
 export async function orientarInstruccionExpedienteAction(params: {
   descripcionCasoNuevosRecaudos: string;
+  datosAnonimizadosConfirmados: boolean;
 }): Promise<GuiaInstruccionProcesalIA> {
-  const playbooks = await prisma.plantillaProcedimientoCDH.findMany();
+  await requierePermiso('ingesta:run');
+  if (!params.datosAnonimizadosConfirmados) {
+    throw new Error('Revisa y anonimiza los datos identificables antes de consultar la guía.');
+  }
+  const textoSeguro = anonimizarIdentificadoresDirectos(
+    params.descripcionCasoNuevosRecaudos.trim(),
+  );
+  if (textoSeguro.length < 20 || textoSeguro.length > 100_000) {
+    throw new Error('La descripción debe tener entre 20 y 100.000 caracteres.');
+  }
+  const [playbooks, precedentes] = await Promise.all([
+    prisma.plantillaProcedimientoCDH.findMany(),
+    buscarPrecedentesSimilaresRAG(textoSeguro, 5),
+  ]);
 
   const prompt = `
 Eres el Agente IA Director de Instrucción Procesal del Consejo de Honor de la Federación Venezolana de Fútbol (FVF).
@@ -156,13 +193,18 @@ REGLAS DE ORO DE LA PRAXIS CDH-FVF (EXTRAÍDAS DE LOS EXPEDIENTES REALES 2026):
 PLAYBOOKS OFICIALES EN BASE DE DATOS:
 ${JSON.stringify(playbooks, null, 2)}
 
+PRECEDENTES HISTÓRICOS ANONIMIZADOS Y APROBADOS:
+${JSON.stringify(precedentes, null, 2)}
+
 CASO / DOCUMENTACIÓN RECIBIDA A ORIENTAR:
 """
-${params.descripcionCasoNuevosRecaudos}
+${textoSeguro}
 """
+Usa los precedentes solo como orientación, cita el código cuando sea pertinente y distingue
+siempre el antecedente de la norma vigente. Señala la norma que el especialista debe verificar.
 `;
 
-  const res = await ai.models.generateContent({
+  const res = await clienteGoogleGenAI().models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     config: {

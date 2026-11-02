@@ -56,7 +56,7 @@ export default function ModuloFinancieroTesoreriaPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6">
+    <div className="light-screen min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6">
       <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
           <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">

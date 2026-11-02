@@ -11,9 +11,9 @@
  * el CUADRO DE EXPEDIENTES los encabezados se repiten ("Año" en la columna 1 y
  * en la 18, "Decisión" en la 21 y en la 28).
  */
-import { parseFecha } from './util.js';
-import type { TipoDato } from './estandar.js';
-import { partirLista } from './estandar.js';
+import { parseFecha } from './util';
+import type { TipoDato } from './estandar';
+import { partirLista } from './estandar';
 
 export type Severidad = 'error' | 'aviso';
 

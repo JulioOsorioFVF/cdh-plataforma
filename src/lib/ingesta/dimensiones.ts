@@ -15,7 +15,7 @@
  * que reejecutar la ingesta no duplique nada.
  */
 import { PrismaClient } from '@prisma/client';
-import { aCodigo, compacta, normalizar, separarNombre, textoONulo } from './util.js';
+import { aCodigo, compacta, normalizar, separarNombre, textoONulo } from './util';
 
 type Cliente = PrismaClient;
 type Fila = Record<string, unknown>;

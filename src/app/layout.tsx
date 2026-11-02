@@ -26,18 +26,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#3C0C24' },
-    { media: '(prefers-color-scheme: dark)', color: '#1A0712' },
-  ],
+  themeColor: '#3C0C24',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="es-VE"
-      className={`${jost.variable} ${oswald.variable}`}
-      suppressHydrationWarning
+      className={`light-theme ${jost.variable} ${oswald.variable}`}
     >
       <body className="min-h-dvh antialiased">
         <a

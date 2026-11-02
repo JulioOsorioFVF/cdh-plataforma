@@ -10,7 +10,7 @@
  * motivo, nunca un valor inventado. Un cero o una fecha falsa es peor que un
  * nulo, porque entra al tablero como si fuera un dato.
  */
-import { esNulo, parseFecha, parseNumero, textoONulo } from './util.js';
+import { esNulo, parseFecha, parseNumero, textoONulo } from './util';
 
 export type TipoDato =
   | 'texto'

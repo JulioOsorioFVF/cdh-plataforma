@@ -423,7 +423,7 @@ export default function PlataformaTramiteIntegralPage() {
     filtroTorneo === 'TODOS' ? expedientes : expedientes.filter((e) => e.torneo === filtroTorneo);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6">
+    <div className="light-screen min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6">
       {/* CABECERA EJECUTIVA PMO / PORTAL LEGAL FVF */}
       <header className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-800 pb-5">
         <div>

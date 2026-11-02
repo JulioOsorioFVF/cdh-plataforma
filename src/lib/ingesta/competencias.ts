@@ -10,9 +10,9 @@
  * `hash_origen`, que es unico. Reejecutarla no duplica nada.
  */
 import { PrismaClient } from '@prisma/client';
-import { celda } from './csv.js';
-import { Dimensiones } from './dimensiones.js';
-import { esCitaVacia, esNulo, hashFila, parseFecha, parseNumero, textoONulo } from './util.js';
+import { celda } from './csv';
+import { Dimensiones } from './dimensiones';
+import { esCitaVacia, esNulo, hashFila, parseFecha, parseNumero, textoONulo } from './util';
 
 const DOCUMENTO = 'COMPETENCIAS';
 const GID = '1639745222';

@@ -2,6 +2,8 @@
 
 import { GoogleGenAI, Type, Schema } from '@google/genai';
 import { prisma } from '@/lib/prisma';
+import { anonimizarIdentificadoresDirectos } from '@/lib/privacidad/anonimizacion';
+import { requierePermiso } from '@/server/auth/sesion';
 import { revalidatePath } from 'next/cache';
 
 const VALOR_UCFVF_USD = 3.0; // Paridad oficial CDH-FVF ($3.00 USD por cada 1 UCFVF)
@@ -103,6 +105,10 @@ export async function buscarPrecedentesSimilaresRAG(
       1 - (embedding <=> $1::vector) AS similitud
     FROM memoria_juridica_vectorial
     WHERE embedding IS NOT NULL
+      AND (
+        tipo_documento IN ('ARTICULO_RDFVF', 'CODIGO_FIFA', 'LAUDO_TAS')
+        OR metadatos_json->>'anonimizado' = 'true'
+      )
     ORDER BY embedding <=> $1::vector
     LIMIT $2;
     `,
@@ -118,23 +124,6 @@ export async function buscarPrecedentesSimilaresRAG(
     multaAplicadaUcfvf: Number(f.multa_aplicada_ucfvf || 0),
     similitud: Number((f.similitud || 0).toFixed(4)),
   }));
-}
-
-/**
- * 2. Consulta el Feature Store de Reincidencia y Solvencia en Supabase
- */
-async function obtenerContextoReincidenciaSujetos(texto: string) {
-  const sujetosRegistrados = await prisma.historialDisciplinarioSujeto.findMany({
-    take: 25,
-    orderBy: { sancionesHistoricas: 'desc' },
-  });
-
-  const textoUpper = texto.toUpperCase();
-  return sujetosRegistrados.filter(
-    (s) =>
-      textoUpper.includes(s.nombreCompleto.toUpperCase()) ||
-      (s.clubActual && textoUpper.includes(s.clubActual.toUpperCase())),
-  );
 }
 
 /**
@@ -264,21 +253,27 @@ export async function ejecutarAgenteJuridicoCDHAction(params: {
   jornada: number;
   origen: 'INFORME_ARBITRAL' | 'INFORME_DELEGADO' | 'PROTESTA_CLUB' | 'CONSULTA_REGIONAL';
   textoInforme: string;
+  datosAnonimizadosConfirmados: boolean;
   guardarEnActaSupabase?: boolean;
 }): Promise<{
   dictamen: DictamenEstructuradoAgenteIA;
   precedentesRAG: PrecedenteRecuperadoRAG[];
-  reincidentesDetectados: number;
   actaGuardadaCodigo?: string;
 }> {
+  await requierePermiso('ingesta:run');
+  if (!params.datosAnonimizadosConfirmados) {
+    throw new Error('Revisa y anonimiza los nombres y demás datos identificables antes de consultar el agente.');
+  }
+  const textoSeguro = anonimizarIdentificadoresDirectos(params.textoInforme.trim());
+  if (textoSeguro.length < 20 || textoSeguro.length > 100_000) {
+    throw new Error('El informe debe tener entre 20 y 100.000 caracteres.');
+  }
+
   // Paso A: Recuperar Jurisprudencia y Normas del Vector Store (RAG)
   const precedentesRAG = await buscarPrecedentesSimilaresRAG(
-    `${params.torneo} ${params.origen} ${params.textoInforme}`,
+    `${params.torneo} ${params.origen} ${textoSeguro}`,
     4,
   );
-
-  // Paso B: Consultar Feature Store de Reincidencia y Deudas Pendientes
-  const antecedentesSujetos = await obtenerContextoReincidenciaSujetos(params.textoInforme);
 
   const promptContextualizado = `
 Eres el Agente Jurídico Senior y Cientista de Datos del Consejo de Honor de la Federación Venezolana de Fútbol (FVF).
@@ -292,13 +287,12 @@ REGLAS ESTRICTAS DE DERECHO DEPORTIVO FVF Y ARITMÉTICA SANCIONATORIA:
 PRECEDENTES Y NORMAS RECUPERADAS DE SUPABASE (RAG VECTORIAL):
 ${JSON.stringify(precedentesRAG, null, 2)}
 
-ANTECEDENTES DE REINCIDENCIA Y SOLVENCIA EN FEATURE STORE SUPABASE:
-${JSON.stringify(antecedentesSujetos, null, 2)}
-
-TEXTO ÍNTEGRO DEL INFORME / DENUNCIA A PROCESAR:
+TEXTO ANONIMIZADO DEL INFORME / DENUNCIA A PROCESAR:
 """
-${params.textoInforme}
+${textoSeguro}
 """
+No infieras ni inventes identidades. Si hacen falta antecedentes individualizados, indícalo
+como una verificación que debe realizar el especialista dentro del sistema autorizado.
 `;
 
   const respuesta = await clienteGoogleGenAI().models.generateContent({
@@ -372,7 +366,7 @@ ${params.textoInforme}
           clubInvolucrado: s.clubInvolucrado,
           sujetoSancionado: s.sujetoSancionado,
           tipoSujeto: s.tipoSujeto,
-          extractoInformeBruto: params.textoInforme.slice(0, 500),
+          extractoInformeBruto: textoSeguro.slice(0, 500),
           articulosRdfvf: dictamen.tipificacionJuridica.articulosAplicables,
           tipoSancion: s.tipoSancion,
           partidosSuspension: s.partidosSuspension,
@@ -391,7 +385,6 @@ ${params.textoInforme}
   return {
     dictamen,
     precedentesRAG,
-    reincidentesDetectados: antecedentesSujetos.length,
     actaGuardadaCodigo,
   };
 }

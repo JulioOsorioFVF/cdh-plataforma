@@ -24,6 +24,7 @@ next-env.d.ts
 # Datos locales y artefactos de ingesta
 /data/
 /public/uploads/
+/storage/expedientes/
 *.sqlite
 *.sqlite3
 

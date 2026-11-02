@@ -15,13 +15,13 @@
  */
 import { EstadoFila, EstadoIngesta, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { Analizador, contarPorCodigo, type ResultadoFila } from './validar.js';
-import { CONTRATOS, compararEsquema } from './contratos.js';
-import { detectarSeparador, leerTabla } from './csv.js';
-import { ingestaCompetencias } from './competencias.js';
-import { ingestaExpedientes } from './expedientes.js';
-import { buscarFuente, huella, type ClaveDocumento } from './fuentes.js';
-import { actualizarLote, crearLote, guardarFilas, marcarFilasCargadas } from './lotes.js';
+import { Analizador, contarPorCodigo, type ResultadoFila } from './validar';
+import { CONTRATOS, compararEsquema } from './contratos';
+import { detectarSeparador, leerTabla } from './csv';
+import { ingestaCompetencias } from './competencias';
+import { ingestaExpedientes } from './expedientes';
+import { buscarFuente, huella, type ClaveDocumento } from './fuentes';
+import { actualizarLote, crearLote, guardarFilas, marcarFilasCargadas } from './lotes';
 
 export type Entrada = {
   clave: ClaveDocumento;
@@ -100,7 +100,9 @@ export async function recibir(entrada: Entrada): Promise<Recepcion> {
       estado: r.estado as EstadoFila,
       errores: r.errores.length ? (r.errores as unknown as Prisma.InputJsonValue) : null,
       avisos: r.avisos.length ? (r.avisos as unknown as Prisma.InputJsonValue) : null,
-      crudo: r.crudo === null ? null : (r.crudo as unknown as Prisma.InputJsonValue),
+      // Se conserva la fila completa para reconstruir las columnas posicionales
+      // cuando un usuario confirme la carga desde la web.
+      crudo: filas[r.numeroFila - 1] as unknown as Prisma.InputJsonValue,
     })),
   );
 

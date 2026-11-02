@@ -12,9 +12,9 @@
  * distintos, minimos y maximos, valores mas frecuentes). Es lo que permite
  * detectar un cambio de formato en la fuente antes de que ensucie el tablero.
  */
-import type { Contrato, FilaNormalizada, Hallazgo } from './contratos.js';
-import { convertir, limpiar } from './estandar.js';
-import { hashFila } from './util.js';
+import type { Contrato, FilaNormalizada, Hallazgo } from './contratos';
+import { convertir, limpiar } from './estandar';
+import { hashFila } from './util';
 
 export type EstadoValidacion = 'VALIDA' | 'ADVERTENCIA' | 'RECHAZADA';
 
@@ -24,7 +24,7 @@ export type ResultadoFila = {
   estado: EstadoValidacion;
   errores: Hallazgo[];
   avisos: Hallazgo[];
-  /** Solo se guarda el crudo cuando hay algo que diagnosticar. */
+  /** Contenido original de la fila, conservado en staging para carga confirmada. */
   crudo: string[] | null;
   valores: Record<string, string | number | boolean | null>;
 };

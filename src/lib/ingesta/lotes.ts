@@ -3,7 +3,7 @@
  *
  * Un lote es una corrida completa: su cabecera (`stg_lote`) guarda el contrato,
  * el origen, el perfil de columnas y los contadores; sus filas (`stg_fila`)
- * guardan la huella de cada registro y, si hubo problemas, el contenido crudo.
+ * guardan la huella, el contenido original y los diagnósticos de cada fila.
  */
 import { EstadoFila, EstadoIngesta, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';

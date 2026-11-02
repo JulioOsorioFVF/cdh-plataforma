@@ -5,14 +5,11 @@
  * Ejecutar con: npx tsx scripts/ingesta/ingesta-drive-expedientes.ts
  */
 import { config } from 'dotenv';
-import { google } from 'googleapis';
 import { PrismaClient } from '@prisma/client';
-import { GoogleGenAI, Type } from '@google/genai';
 
 config();
 
 const prisma = new PrismaClient();
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 /**
  * 1. Siembra los 5 Playbooks Procedimentales Oficiales del Consejo de Honor FVF
@@ -307,72 +304,9 @@ async function sembrarExpedientesReales2026() {
  * 3. Lector Multimodal de la Carpeta de Google Drive (PDFs de Expedientes, Anexos y Reglamentos)
  */
 export async function sincronizarCarpetaDriveExpedientes() {
-  const folderId = process.env.GOOGLE_DRIVE_EXPEDIENTES_FOLDER_ID;
-  if (!folderId || !process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    console.log(
-      '[Aviso Drive]: Define GOOGLE_DRIVE_EXPEDIENTES_FOLDER_ID y GOOGLE_APPLICATION_CREDENTIALS en .env para descarga automática desde Drive.',
-    );
-    return;
-  }
-
-  const auth = new google.auth.GoogleAuth({
-    keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  });
-  const drive = google.drive({ version: 'v3', auth });
-
-  const lista = await drive.files.list({
-    q: `'${folderId}' in parents and mimeType = 'application/pdf' and trashed = false`,
-    fields: 'files(id, name, modifiedTime)',
-    pageSize: 100,
-  });
-
-  for (const archivo of lista.data.files ?? []) {
-    if (!archivo.id || !archivo.name) continue;
-    console.log(`Procesando PDF desde Drive: ${archivo.name}...`);
-
-    const binario = await drive.files.get(
-      { fileId: archivo.id, alt: 'media' },
-      { responseType: 'arraybuffer' },
-    );
-    const base64Pdf = Buffer.from(binario.data as ArrayBuffer).toString('base64');
-
-    const extraccion = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { inlineData: { mimeType: 'application/pdf', data: base64Pdf } },
-            {
-              text: `Extrae en JSON la ficha completa de este documento del Consejo de Honor FVF (Expediente o Reglamento):
-              codigoExpediente, anio, torneoCategoria, partido, motivoPrincipal, parteDemandante, parteDemandada,
-              articulosInvocados, cronologiaActuaciones, interrogatoriosRealizados, multasUcfvf, estadoFinal.`,
-            },
-          ],
-        },
-      ],
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            codigoExpediente: { type: Type.STRING },
-            anio: { type: Type.INTEGER },
-            torneoCategoria: { type: Type.STRING },
-            partido: { type: Type.STRING },
-            motivoPrincipal: { type: Type.STRING },
-            parteDemandante: { type: Type.STRING },
-            parteDemandada: { type: Type.STRING },
-            resumenEjecutivo: { type: Type.STRING },
-          },
-          required: ['codigoExpediente', 'anio', 'motivoPrincipal', 'resumenEjecutivo'],
-        },
-      },
-    });
-
-    console.log(`[Extraído con IA]: ${archivo.name} -> ${extraccion.text}`);
-  }
+  console.log(
+    'La sincronización segura de PDFs se realiza desde /ingesta; este script ya no envía archivos identificables a servicios de IA.',
+  );
 }
 
 async function main() {

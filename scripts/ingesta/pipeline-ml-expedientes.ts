@@ -1,6 +1,7 @@
 /**
- * Pipeline ETL, Feature Engineering Jurídico y Vectorización RAG (pgvector)
- * Alimenta la base de conocimiento del Agente IA del Consejo de Honor FVF.
+ * Indexación del corpus normativo público y autorizado (pgvector).
+ * Los expedientes históricos solo se indexan desde la pantalla de revisión
+ * después de anonimización y aprobación humana.
  *
  * Ejecutar con: npx tsx scripts/ingesta/pipeline-ml-expedientes.ts
  */
@@ -146,110 +147,8 @@ async function sembrarCorpusNormativoFVF() {
   console.log(`[OK] ${normasBase.length} bloques normativos vectorizados en Supabase.`);
 }
 
-/**
- * 2. Convierte cada Expediente Disciplinario del repositorio en un Precedente Vectorial
- *    y actualiza el Feature Store de Reincidencia (Clubes / Jugadores).
- */
-async function vectorizarExpedientesYConstruirFeatureStore() {
-  const expedientes = await prisma.expedienteDisciplinario.findMany({
-    include: {
-      actuaciones: true,
-      sanciones: true,
-      recursos: true,
-    },
-  });
-
-  for (const exp of expedientes) {
-    const decisionTexto = exp.actuaciones
-      .map((a) => `${a.tipoActuacion} (${a.numeroActuacion ?? ''}): ${a.resumenDispositivo}`)
-      .join(' | ');
-
-    const articulos = extraerArticulosNormativos(
-      `${exp.asuntoDetallado} ${decisionTexto} ${exp.sanciones.map((s) => s.articulosAplicados).join(' ')}`,
-    );
-
-    const multaTotalUcfvf = exp.sanciones.reduce((acc, s) => acc + Number(s.multaUcfvf), 0);
-    const sancionResumen = exp.sanciones.map((s) => `${s.sujetoSancionado}: ${s.tipoSancionDeportiva ?? 'Multa'}`).join('; ');
-
-    const textoSemantica = `
-      Expediente: ${exp.codigoExpediente} (${exp.anio}).
-      Torneo: ${exp.torneoCategoria}. Partido: ${exp.partido ?? 'N/A'}.
-      Motivo: ${exp.motivoPrincipal}. Asunto: ${exp.asuntoDetallado}.
-      Partes: ${exp.parteDemandante ?? 'Oficio'} vs ${exp.parteDemandada ?? 'N/A'}.
-      Estado: ${exp.estadoTramite}. Criterio y Actuaciones: ${decisionTexto}.
-      Sanciones: ${sancionResumen}. Multa: ${multaTotalUcfvf} UCFVF.
-    `.trim();
-
-    const vector = await generarEmbeddingJuridico(textoSemantica);
-    const vectorSql = `[${vector.join(',')}]`;
-
-    await prisma.$executeRawUnsafe(
-      `
-      INSERT INTO memoria_juridica_vectorial (
-        tipo_documento, codigo_referencia, anio, torneo, motivo_tipificado,
-        articulos_clave, extracto_hechos, criterio_juridico,
-        multa_aplicada_ucfvf, sancion_deportiva, metadatos_json, embedding
-      ) VALUES (
-        'DECISION_CDH', $1, $2, $3, $4, $5::text[], $6, $7, $8, $9, $10::jsonb, $11::vector
-      )
-      ON CONFLICT (codigo_referencia) DO UPDATE SET
-        criterio_juridico = EXCLUDED.criterio_juridico,
-        multa_aplicada_ucfvf = EXCLUDED.multa_aplicada_ucfvf,
-        embedding = EXCLUDED.embedding;
-      `,
-      exp.codigoExpediente,
-      exp.anio,
-      exp.torneoCategoria,
-      exp.motivoPrincipal,
-      articulos.length > 0 ? articulos : ['RDFVF General'],
-      exp.asuntoDetallado,
-      decisionTexto || 'En fase de instrucción.',
-      multaTotalUcfvf,
-      sancionResumen || null,
-      JSON.stringify({
-        juezUnico: exp.juezUnicoAsignado,
-        especialista: exp.especialistaAsignado,
-        estadoTramite: exp.estadoTramite,
-      }),
-      vectorSql,
-    );
-
-    // Actualizar el Feature Store de Reincidencia por cada sancionado
-    for (const s of exp.sanciones) {
-      const slugId = s.sujetoSancionado.toUpperCase().replace(/[^A-Z0-9]+/g, '_');
-      const tieneDeuda = s.estadoCumplimiento === 'PENDIENTE' && Number(s.multaUsd) > 0;
-
-      await prisma.historialDisciplinarioSujeto.upsert({
-        where: { identificadorUnico: slugId },
-        update: {
-          sancionesHistoricas: { increment: 1 },
-          multasAcumuladasUcfvf: { increment: s.multaUcfvf },
-          deudaPendienteUsd: tieneDeuda ? { increment: s.multaUsd } : undefined,
-          solventeLicenciaClubes: tieneDeuda ? false : undefined,
-          indiceRiesgoReincidencia: 0.65,
-        },
-        create: {
-          identificadorUnico: slugId,
-          nombreCompleto: s.sujetoSancionado,
-          tipoSujeto: s.tipoSujeto,
-          clubActual: exp.parteDemandada ?? s.sujetoSancionado,
-          torneoPrincipal: exp.torneoCategoria,
-          sancionesHistoricas: 1,
-          multasAcumuladasUcfvf: s.multaUcfvf,
-          deudaPendienteUsd: tieneDeuda ? s.multaUsd : 0,
-          solventeLicenciaClubes: !tieneDeuda,
-          indiceRiesgoReincidencia: 0.35,
-        },
-      });
-    }
-  }
-
-  console.log(`[OK] ${expedientes.length} expedientes vectorizados e integrados al Feature Store.`);
-}
-
 async function main() {
   await sembrarCorpusNormativoFVF();
-  await vectorizarExpedientesYConstruirFeatureStore();
 }
 
 main()

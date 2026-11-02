@@ -13,6 +13,7 @@ const config: NextConfig = {
   experimental: {
     // El dashboard consulta vistas analiticas; mantener el payload pequeno.
     optimizePackageImports: ['@prisma/client'],
+    serverActions: { bodySizeLimit: '26mb' },
   },
   async headers() {
     return [

@@ -21,10 +21,10 @@ import {
   TipoMovimientoExpediente,
   TipoParte,
 } from '@prisma/client';
-import { celda } from './csv.js';
-import { Dimensiones } from './dimensiones.js';
-import { esNulo, hashFila, parseFecha, parseNumero, textoONulo } from './util.js';
-import type { ResultadoIngesta } from './competencias.js';
+import { celda } from './csv';
+import { Dimensiones } from './dimensiones';
+import { esNulo, hashFila, parseFecha, parseNumero, textoONulo } from './util';
+import type { ResultadoIngesta } from './competencias';
 
 const DOCUMENTO = 'EXPEDIENTES';
 
