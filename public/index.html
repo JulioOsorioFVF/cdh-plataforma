@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejo de Honor FVF | Plataforma Disciplinaria & Agente IA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vin: {
+                            50: '#fbf5f7',
+                            100: '#f6ecf0',
+                            800: '#531132',
+                            900: '#3c0c24',
+                            950: '#230614'
+                        },
+                        oro: {
+                            400: '#c5a76e',
+                            500: '#b49054',
+                            600: '#9d7a3d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap');
+        body { font-family: 'Jost', sans-serif; }
+        h1, h2, h3, h4, .font-display { font-family: 'Oswald', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- BARRA SUPERIOR INSTITUCIONAL -->
+    <header class="bg-vin-950 text-white border-b border-vin-900 sticky top-0 z-30 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-vin-900 border border-oro-500/40 flex items-center justify-center font-bold text-oro-400 text-lg shadow-inner">
+                    ⚖️
+                </div>
+                <div>
+                    <span class="text-[0.65rem] tracking-[0.25em] text-oro-400 uppercase font-semibold block leading-none">Federación Venezolana de Fútbol</span>
+                    <h1 class="text-xl font-bold tracking-tight text-white leading-tight font-display">Consejo de Honor — Big Data Disciplinaria</h1>
+                </div>
+            </div>
+
+            <!-- BOTONES HEADER -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="abrirModalNuevoExpediente()" class="px-3.5 py-1.5 rounded-xl bg-oro-500 hover:bg-oro-400 text-vin-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
+                    <span>+</span>
+                    <span class="hidden sm:inline">Nuevo Expediente</span>
+                </button>
+                <button onclick="abrirModalIA()" class="px-3.5 py-1.5 rounded-xl bg-vin-900 hover:bg-vin-800 text-white border border-oro-500/50 font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer">
+                    <span>🤖</span>
+                    <span class="hidden sm:inline">Agente IA Orientador</span>
+                </button>
+                <span class="px-2 py-0.5 rounded-full text-[0.65rem] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    ● En Línea
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+        <!-- CABECERA Y RESUMEN DEL SISTEMA -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-bold text-vin-900 font-display">Tablero de Gestión de Expedientes (Kanban FVF)</h2>
+                <p class="text-xs text-slate-500 mt-0.5">
+                    Flujo procesal de expedientes disciplinarios, evaluación de admisibilidad, referencia jurisprudencial y asistencia jurídica con IA.
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="filtrarEstado('TODOS')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-vin-900 text-white">Todos</button>
+                <button onclick="filtrarAno('2026')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700">2026</button>
+                <button onclick="filtrarAno('2025')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700">2025</button>
+                <button onclick="filtrarAno('2024')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700">2024</button>
+            </div>
+        </div>
+
+        <!-- BUSCADOR -->
+        <div class="relative">
+            <input type="text" id="inputBusqueda" onkeyup="filtrarPorTexto()" placeholder="Buscar por N° expediente (ej. 001), motivo, club denunciado, árbitro o juez ponente..." class="w-full h-11 pl-10 pr-4 text-sm bg-white border border-slate-300 rounded-xl shadow-xs focus:ring-2 focus:ring-oro-500 focus:outline-none">
+            <span class="absolute left-3.5 top-3 text-slate-400">🔍</span>
+        </div>
+
+        <!-- TABLERO KANBAN TIPO TRELLO -->
+        <div class="overflow-x-auto pb-6">
+            <div class="flex gap-4 items-start min-w-max" id="contenedorKanban">
+                <!-- Se llena dinámicamente vía JavaScript -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-white text-xs py-4 border-t border-slate-800 text-center">
+        <p class="text-slate-400">Consejo de Honor de la Federación Venezolana de Fútbol (FVF) — Plataforma Tecnológica Disciplinaria</p>
+    </footer>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: AGENTE DE INTELIGENCIA ARTIFICIAL ORIENTADOR & JURISPRUDENCIA -->
+    <!-- ========================================================================= -->
+    <div id="modalIA" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 hidden">
+        <div class="bg-white rounded-2xl w-full max-w-4xl h-[90vh] max-h-[820px] shadow-2xl flex flex-col overflow-hidden border border-slate-200">
+            <!-- Header Agente -->
+            <div class="bg-vin-950 text-white px-6 py-4 flex items-center justify-between border-b border-vin-900 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-oro-500/20 border border-oro-400/40 flex items-center justify-center text-xl">
+                        🤖
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-display font-semibold text-lg text-white">Agente Jurídico Disciplinario FVF</h3>
+                            <span class="px-2 py-0.5 rounded-full text-[0.65rem] font-bold bg-emerald-500/20 text-emerald-300">Activo</span>
+                        </div>
+                        <p class="text-xs text-white/70">Orientador en los 5 pasos procesales & Búsqueda jurisprudencial en base de datos</p>
+                    </div>
+                </div>
+                <button onclick="cerrarModalIA()" class="text-white/70 hover:text-white text-xl p-1">✕</button>
+            </div>
+
+            <!-- Barra de 5 Pasos -->
+            <div class="bg-slate-50 px-4 py-2 border-b border-slate-200 flex items-center justify-between gap-1 overflow-x-auto text-xs shrink-0">
+                <button onclick="consultarPaso(1)" class="px-2.5 py-1 rounded bg-vin-900 text-white font-medium flex items-center gap-1.5 shrink-0">
+                    <span class="w-4 h-4 rounded-full bg-oro-500 text-vin-950 text-[0.65rem] font-bold flex items-center justify-center">1</span>
+                    <span>Admisibilidad (Art. 170)</span>
+                </button>
+                <button onclick="consultarPaso(2)" class="px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border font-medium flex items-center gap-1.5 shrink-0">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 text-slate-800 text-[0.65rem] font-bold flex items-center justify-center">2</span>
+                    <span>Auto de Entrada (A.E.)</span>
+                </button>
+                <button onclick="consultarPaso(3)" class="px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border font-medium flex items-center gap-1.5 shrink-0">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 text-slate-800 text-[0.65rem] font-bold flex items-center justify-center">3</span>
+                    <span>Instrucción & Pruebas</span>
+                </button>
+                <button onclick="consultarPaso(4)" class="px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border font-medium flex items-center gap-1.5 shrink-0">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 text-slate-800 text-[0.65rem] font-bold flex items-center justify-center">4</span>
+                    <span>Resolución & Multas</span>
+                </button>
+                <button onclick="consultarPaso(5)" class="px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-slate-700 border font-medium flex items-center gap-1.5 shrink-0">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 text-slate-800 text-[0.65rem] font-bold flex items-center justify-center">5</span>
+                    <span>Reconsideración</span>
+                </button>
+            </div>
+
+            <!-- Historial de Chat -->
+            <div id="historialChat" class="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/50 text-sm">
+                <!-- Mensaje de bienvenida inicial -->
+                <div class="flex flex-col items-start">
+                    <div class="max-w-[85%] bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-2">
+                        <p class="font-bold text-vin-900 flex items-center gap-2">
+                            <span>⚖️</span> Asistente Jurídico del Consejo de Honor FVF
+                        </p>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Saludos. Estoy a su disposición para orientar la tramitación de expedientes disciplinarios conforme al <strong>Reglamento Disciplinario FVF (RDFVF)</strong> y el histórico jurisprudencial de resoluciones y sanciones del fútbol venezolano.
+                        </p>
+                        <div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 font-medium">
+                            ⚠️ <strong>Recordatorio Admisibilidad (Art. 170):</strong> Las protestas de partidos deben consignar voucher de caución dentro de las 48h hábiles.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chips de consulta rápida -->
+            <div class="px-4 py-2 bg-slate-100 border-t border-slate-200 flex items-center gap-2 overflow-x-auto shrink-0 text-xs">
+                <span class="text-slate-500 font-bold uppercase text-[0.65rem]">Preguntas frecuentes:</span>
+                <button onclick="enviarMensajeIA('¿Cuáles son los requisitos de admisibilidad según Art. 170 y Art. 169?')" class="px-2.5 py-1 rounded-full bg-white border border-slate-300 hover:border-oro-500 shrink-0">
+                    Caución Art. 170 RDFVF
+                </button>
+                <button onclick="enviarMensajeIA('Jurisprudencia sobre alineación indebida y pérdida de puntos')" class="px-2.5 py-1 rounded-full bg-white border border-slate-300 hover:border-oro-500 shrink-0">
+                    Alineación Indebida (Precedentes)
+                </button>
+                <button onclick="enviarMensajeIA('Procedimiento por falta de pago de honorarios arbitrales')" class="px-2.5 py-1 rounded-full bg-white border border-slate-300 hover:border-oro-500 shrink-0">
+                    Deuda de Honorarios Arbitrales
+                </button>
+                <button onclick="enviarMensajeIA('¿Cómo interponer el Recurso de Reconsideración Art. 182?')" class="px-2.5 py-1 rounded-full bg-white border border-slate-300 hover:border-oro-500 shrink-0">
+                    Recurso de Reconsideración
+                </button>
+            </div>
+
+            <!-- Input Chat -->
+            <div class="p-4 bg-white border-t border-slate-200 shrink-0">
+                <form onsubmit="event.preventDefault(); enviarInputChat();" class="flex gap-2">
+                    <input type="text" id="inputChatIA" placeholder="Consulte al agente sobre normas, plazos, redacción de autos o jurisprudencia..." class="flex-1 h-11 px-4 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-oro-500 focus:outline-none">
+                    <button type="submit" class="px-5 h-11 bg-vin-900 hover:bg-vin-800 text-white font-semibold rounded-xl text-sm flex items-center gap-1.5 shadow-sm">
+                        <span>Enviar</span> ➔
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: DETALLE DE EXPEDIENTE & REFERENCIA JURISPRUDENCIAL -->
+    <!-- ========================================================================= -->
+    <div id="modalDetalle" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 hidden">
+        <div class="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden border border-slate-200">
+            <div class="bg-vin-950 text-white px-6 py-4 flex items-center justify-between border-b border-vin-900 shrink-0">
+                <div>
+                    <span id="detalleNumeroBadge" class="text-xs px-2 py-0.5 rounded bg-oro-500 text-vin-950 font-bold uppercase">Expediente</span>
+                    <h3 id="detalleTitulo" class="font-display font-semibold text-lg text-white mt-1">Detalle del Expediente</h3>
+                </div>
+                <button onclick="cerrarModalDetalle()" class="text-white/70 hover:text-white text-xl p-1">✕</button>
+            </div>
+
+            <div class="flex border-b border-slate-200 bg-slate-50 px-6 gap-4 text-xs font-semibold shrink-0">
+                <button id="tabBtnGeneral" onclick="cambiarTabDetalle('general')" class="py-3 border-b-2 border-vin-900 text-vin-900 font-bold">📋 Datos Generales</button>
+                <button id="tabBtnJurisprudencia" onclick="cambiarTabDetalle('jurisprudencia')" class="py-3 text-slate-500 hover:text-slate-800 flex items-center gap-1">📚 Referencia Jurisprudencial</button>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-1 space-y-4" id="contenidoDetalleGeneral">
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-slate-400 block">Torneo / Competición:</span>
+                        <p id="detalleTorneo" class="font-bold text-slate-800 text-sm mt-0.5"></p>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-slate-400 block">Fase Procesal:</span>
+                        <p id="detalleEstado" class="font-bold text-vin-900 text-sm mt-0.5"></p>
+                    </div>
+                </div>
+
+                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                    <span class="text-slate-400 block">Motivo de la Infracción:</span>
+                    <p id="detalleMotivo" class="font-semibold text-slate-800 text-sm mt-0.5"></p>
+                </div>
+
+                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                    <span class="text-slate-400 block">Equipos / Partes Involucradas:</span>
+                    <p id="detalleEquipos" class="font-medium text-slate-700 mt-0.5"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-slate-400 block">Juez / Asignado:</span>
+                        <p id="detalleAsignado" class="font-medium text-slate-700 mt-0.5"></p>
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <span class="text-slate-400 block">Sanción / Multa en UCFVF:</span>
+                        <p id="detalleMulta" class="font-bold text-vin-900 text-sm mt-0.5"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Referencia Jurisprudencial -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-4 hidden" id="contenidoDetalleJurisprudencia">
+                <div class="p-3 bg-oro-50 border border-oro-200 rounded-xl text-xs text-slate-700">
+                    <p class="font-bold text-vin-900 flex items-center gap-1.5">⚖️ Precedentes Similares Registrados en Base de Datos</p>
+                    <p class="mt-1">Casos con infracciones idénticas o motivos análogos para asegurar la coherencia y doctrina uniforme del Consejo de Honor.</p>
+                </div>
+
+                <div id="listaPrecedentes" class="space-y-2 text-xs">
+                    <!-- Se inyecta dinámicamente -->
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center shrink-0">
+                <button onclick="consultarCasoConIA()" class="px-4 py-2 bg-vin-900 text-white rounded-xl text-xs font-bold flex items-center gap-1.5">
+                    <span>🤖</span> Orientar este caso con IA
+                </button>
+                <button onclick="cerrarModalDetalle()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-xs font-semibold">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: NUEVO EXPEDIENTE -->
+    <!-- ========================================================================= -->
+    <div id="modalNuevoExp" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 hidden">
+        <div class="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden border border-slate-200">
+            <div class="bg-vin-950 text-white px-6 py-4 flex items-center justify-between border-b border-vin-900 shrink-0">
+                <h3 class="font-display font-semibold text-lg text-white">Radicar Nuevo Expediente Disciplinario</h3>
+                <button onclick="cerrarModalNuevoExpediente()" class="text-white/70 hover:text-white text-xl p-1">✕</button>
+            </div>
+
+            <form onsubmit="event.preventDefault(); guardarNuevoExpediente();" class="p-6 overflow-y-auto space-y-4 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Año</label>
+                        <input type="number" id="nuevoAno" value="2026" class="w-full h-9 px-3 border rounded-lg bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Columna Kanban</label>
+                        <select id="nuevoEstado" class="w-full h-9 px-2 border rounded-lg bg-slate-50">
+                            <option value="RECIBIDO">📥 RECIBIDOS / Por Iniciar</option>
+                            <option value="EN_ESTUDIO">🔍 EN ESTUDIO / Instrucción</option>
+                            <option value="EN_RECURSO">⚖️ EN RECURSO</option>
+                            <option value="RESUELTO">📜 RESUELTOS</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Torneo / Competición *</label>
+                    <select id="nuevoTorneo" class="w-full h-9 px-2 border rounded-lg bg-slate-50">
+                        <option value="Liga FUTVE (Primera División)">Liga FUTVE (Primera División)</option>
+                        <option value="Liga FUTVE 2 (Segunda División)">Liga FUTVE 2 (Segunda División)</option>
+                        <option value="Liga FUTVE Junior Sub-20">Liga FUTVE Junior Sub-20</option>
+                        <option value="Liga FUTVE Junior Sub-17">Liga FUTVE Junior Sub-17</option>
+                        <option value="Liga FUTVE Femenina">Liga FUTVE Femenina</option>
+                        <option value="Copa Venezuela">Copa Venezuela</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Motivo Principal / Infracción *</label>
+                    <input type="text" id="nuevoMotivo" placeholder="Ej: Protesta por alineación indebida (Art. 77.2 RDFVF)..." required class="w-full h-9 px-3 border rounded-lg bg-slate-50">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Equipos / Partes Involucradas</label>
+                    <input type="text" id="nuevoEquipos" placeholder="Ej: Caracas F.C. Vs. Deportivo Táchira" class="w-full h-9 px-3 border rounded-lg bg-slate-50">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Juez Instructor Asignado</label>
+                        <input type="text" id="nuevoAsignado" placeholder="Ej: Sala 1 / Ponencia B" class="w-full h-9 px-3 border rounded-lg bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Alerta Procesal</label>
+                        <input type="text" id="nuevoAlerta" placeholder="Ej: Verificar caución Art. 170" class="w-full h-9 px-3 border rounded-lg bg-slate-50">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t flex justify-end gap-2">
+                    <button type="button" onclick="cerrarModalNuevoExpediente()" class="px-4 py-2 bg-slate-200 rounded-lg font-semibold">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-vin-900 text-white rounded-lg font-bold">Guardar Expediente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SCRIPT DE DATOS Y REACTIVIDAD -->
+    <!-- ========================================================================= -->
+    <script>
+        // DATOS REALES DE EXPEDIENTES (BASE DE DATOS CONSEJO DE HONOR FVF)
+        let expedientesDB = [
+            { id: 1, numero: "001", anio: 2026, motivo: "Protesta Partido. Alineación indebida de jugador", torneo: "Liga FUTVE (Primera División)", equipos: "Caracas F.C. Vs. Dep. Táchira", asignado: "Dr. Julio Osorio", estado: "EN_ESTUDIO", alerta: "Voucher de caución Art. 170 consignado", multaUc: 250, numeroDecision: "A.E. 001/2026" },
+            { id: 2, numero: "002", anio: 2026, motivo: "Falta de pago de honorarios a Árbitros en Liga Futve Junior", torneo: "Liga FUTVE Junior Sub-20", equipos: "Academia Puerto Cabello Vs. Mineros", asignado: "Sala 2", estado: "RECIBIDO", alerta: "Plazo de 48h para descargo de pago", multaUc: 0, numeroDecision: null },
+            { id: 3, numero: "003", anio: 2026, motivo: "Conducta Violenta e insultos a la terna arbitral", torneo: "Liga FUTVE 2 (Segunda División)", equipos: "Ureña S.C. Vs. Real Frontera", asignado: "Juez Ponente 1", estado: "EN_ESTUDIO", alerta: "Informe arbitral adjunto con video", multaUc: 150, numeroDecision: "A.E. 003/2026" },
+            { id: 4, numero: "004", anio: 2026, motivo: "Recurso de Reconsideración contra Resolución N° 045/2025", torneo: "Liga FUTVE (Primera División)", equipos: "Metropolitanos F.C.", asignado: "Pleno CDH", estado: "EN_RECURSO", alerta: "Dentro del término de 3 días", multaUc: 300, numeroDecision: "Resolución N° 045" },
+            { id: 5, numero: "005", anio: 2025, motivo: "Falta de Director Técnico habilitado en banquillo", torneo: "Liga FUTVE Junior Sub-17", equipos: "Angostura F.C.", asignado: "Sala 1", estado: "RESUELTO", alerta: null, multaUc: 100, numeroDecision: "Resolución N° 120/2025" },
+            { id: 6, numero: "006", anio: 2025, motivo: "Invasión de público y fallas graves de seguridad en estadio", torneo: "Liga FUTVE (Primera División)", equipos: "Deportivo Lara Vs. Zamora F.C.", asignado: "Dr. Julio Osorio", estado: "NOTIFICADO", alerta: "Notificado al sistema COMET", multaUc: 500, numeroDecision: "Resolución N° 098/2025" },
+            { id: 7, numero: "007", anio: 2025, motivo: "Protesta de partido extemporánea sin consignar caución", torneo: "Liga FUTVE Femenina", equipos: "Flor de Patria Vs. Secasports", asignado: "Sala 3", estado: "DESESTIMADO", alerta: "Inadmisible Art. 170 RDFVF", multaUc: 0, numeroDecision: "Auto de Inadmisibilidad N° 012" },
+            { id: 8, numero: "008", anio: 2024, motivo: "Falta de Visa de Transeúnte Laboral Vigente (Art. 39)", torneo: "Liga FUTVE (Primera División)", equipos: "UCV F.C.", asignado: "Pleno CDH", estado: "ARCHIVADO", alerta: null, multaUc: 200, numeroDecision: "Resolución N° 030/2024" }
+        ];
+
+        const COLUMNAS_CONFIG = [
+            { estado: 'RECIBIDO', titulo: 'Recibidos / Por Iniciar', icono: '📥', colorBorde: 'border-blue-500', colorBadge: 'bg-blue-100 text-blue-800' },
+            { estado: 'EN_ESTUDIO', titulo: 'En Estudio / Instrucción', icono: '🔍', colorBorde: 'border-amber-500', colorBadge: 'bg-amber-100 text-amber-800' },
+            { estado: 'EN_RECURSO', titulo: 'En Reconsideración', icono: '⚖️', colorBorde: 'border-purple-500', colorBadge: 'bg-purple-100 text-purple-800' },
+            { estado: 'RESUELTO', titulo: 'Resueltos / Con Decisión', icono: '📜', colorBorde: 'border-emerald-600', colorBadge: 'bg-emerald-100 text-emerald-800' },
+            { estado: 'NOTIFICADO', titulo: 'Notificados (COMET)', icono: '📬', colorBorde: 'border-teal-600', colorBadge: 'bg-teal-100 text-teal-800' },
+            { estado: 'DESESTIMADO', titulo: 'Desestimados / Inadmisibles', icono: '❌', colorBorde: 'border-rose-500', colorBadge: 'bg-rose-100 text-rose-800' },
+            { estado: 'ARCHIVADO', titulo: 'Archivados', icono: '📁', colorBorde: 'border-slate-500', colorBadge: 'bg-slate-100 text-slate-800' }
+        ];
+
+        let filtroTextoActual = '';
+        let filtroAnoActual = 'TODOS';
+        let expedienteSeleccionado = null;
+
+        function renderizarKanban() {
+            const contenedor = document.getElementById('contenedorKanban');
+            contenedor.innerHTML = '';
+
+            const filtrados = expedientesDB.filter(e => {
+                const coincideTexto = !filtroTextoActual || 
+                    e.numero.toLowerCase().includes(filtroTextoActual) ||
+                    e.motivo.toLowerCase().includes(filtroTextoActual) ||
+                    (e.equipos && e.equipos.toLowerCase().includes(filtroTextoActual)) ||
+                    (e.torneo && e.torneo.toLowerCase().includes(filtroTextoActual));
+                const coincideAno = filtroAnoActual === 'TODOS' || e.anio.toString() === filtroAnoActual;
+                return coincideTexto && coincideAno;
+            });
+
+            COLUMNAS_CONFIG.forEach(col => {
+                const itemsCol = filtrados.filter(e => e.estado === col.estado);
+                
+                const colDiv = document.createElement('div');
+                colDiv.className = `w-80 shrink-0 bg-slate-200/80 rounded-2xl border-t-4 ${col.colorBorde} border-x border-b border-slate-300 flex flex-col max-h-[75vh]`;
+                colDiv.ondragover = (ev) => ev.preventDefault();
+                colDiv.ondrop = (ev) => {
+                    ev.preventDefault();
+                    const id = parseInt(ev.dataTransfer.getData('text/plain'), 10);
+                    moverEstado(id, col.estado);
+                };
+
+                // Header Columna
+                colDiv.innerHTML = `
+                    <div class="p-3 bg-white/80 rounded-t-xl border-b border-slate-200 flex items-center justify-between shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span>${col.icono}</span>
+                            <span class="font-bold text-xs uppercase text-slate-800">${col.titulo}</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-bold ${col.colorBadge}">${itemsCol.length}</span>
+                    </div>
+                    <div class="p-2.5 space-y-2.5 overflow-y-auto flex-1" id="col-${col.estado}"></div>
+                `;
+
+                const contenedorCards = colDiv.querySelector(`#col-${col.estado}`);
+
+                if (itemsCol.length === 0) {
+                    contenedorCards.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs italic">Sin expedientes</div>`;
+                } else {
+                    itemsCol.forEach(exp => {
+                        const card = document.createElement('div');
+                        card.className = "p-3 bg-white rounded-xl border border-slate-200 shadow-xs hover:border-oro-500 hover:shadow-md transition-all cursor-pointer relative group";
+                        card.draggable = true;
+                        card.ondragstart = (ev) => ev.dataTransfer.setData('text/plain', exp.id.toString());
+                        card.onclick = () => verDetalleExpediente(exp.id);
+
+                        card.innerHTML = `
+                            <div class="flex items-center justify-between text-[0.65rem] mb-1">
+                                <span class="font-bold font-mono text-vin-900 bg-vin-50 px-2 py-0.5 rounded border border-vin-200">N° ${exp.numero}/${exp.anio}</span>
+                                <span class="text-slate-400">${exp.torneo.split(' ')[0]}</span>
+                            </div>
+                            <h4 class="text-xs font-semibold text-slate-800 line-clamp-2 leading-snug">${exp.motivo}</h4>
+                            <p class="text-[0.7rem] text-slate-600 mt-1 truncate font-medium">${exp.equipos}</p>
+                            ${exp.alerta ? `<div class="mt-2 p-1 bg-amber-50 border border-amber-200 rounded text-[0.65rem] text-amber-800 font-semibold truncate">⚠️ ${exp.alerta}</div>` : ''}
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[0.68rem]">
+                                <span class="text-slate-500 font-medium">${exp.asignado}</span>
+                                ${exp.multaUc > 0 ? `<span class="font-bold text-vin-900">${exp.multaUc} UCFVF</span>` : ''}
+                            </div>
+                        `;
+                        contenedorCards.appendChild(card);
+                    });
+                }
+
+                contenedor.appendChild(colDiv);
+            });
+        }
+
+        function moverEstado(id, nuevoEstado) {
+            const exp = expedientesDB.find(e => e.id === id);
+            if (exp) {
+                exp.estado = nuevoEstado;
+                renderizarKanban();
+            }
+        }
+
+        function filtrarPorTexto() {
+            filtroTextoActual = document.getElementById('inputBusqueda').value.toLowerCase().trim();
+            renderizarKanban();
+        }
+
+        function filtrarAno(ano) {
+            filtroAnoActual = ano;
+            renderizarKanban();
+        }
+
+        function filtrarEstado(estado) {
+            filtroTextoActual = '';
+            filtroAnoActual = 'TODOS';
+            document.getElementById('inputBusqueda').value = '';
+            renderizarKanban();
+        }
+
+        // ================= MODAL DETALLE & JURISPRUDENCIA =================
+        function verDetalleExpediente(id) {
+            expedienteSeleccionado = expedientesDB.find(e => e.id === id);
+            if (!expedienteSeleccionado) return;
+
+            document.getElementById('detalleNumeroBadge').innerText = `Exp. N° ${expedienteSeleccionado.numero}/${expedienteSeleccionado.anio}`;
+            document.getElementById('detalleTitulo').innerText = expedienteSeleccionado.motivo;
+            document.getElementById('detalleTorneo').innerText = expedienteSeleccionado.torneo;
+            document.getElementById('detalleEstado').innerText = expedienteSeleccionado.estado;
+            document.getElementById('detalleMotivo').innerText = expedienteSeleccionado.motivo;
+            document.getElementById('detalleEquipos').innerText = expedienteSeleccionado.equipos;
+            document.getElementById('detalleAsignado').innerText = expedienteSeleccionado.asignado;
+            document.getElementById('detalleMulta').innerText = expedienteSeleccionado.multaUc > 0 ? `${expedienteSeleccionado.multaUc} UCFVF (~$${expedienteSeleccionado.multaUc * 3.0} USD)` : 'Sin multa impuesta';
+
+            // Armar precedentes jurisprudenciales
+            const contenedorPrec = document.getElementById('listaPrecedentes');
+            contenedorPrec.innerHTML = '';
+            
+            const otrosCasos = expedientesDB.filter(e => e.id !== expedienteSeleccionado.id);
+            otrosCasos.slice(0, 3).forEach(prec => {
+                const item = document.createElement('div');
+                item.className = "p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1";
+                item.innerHTML = `
+                    <div class="flex justify-between items-center font-bold text-slate-800">
+                        <span>Exp. N° ${prec.numero}/${prec.anio} (${prec.estado})</span>
+                        <span class="text-vin-900">${prec.numeroDecision || 'Auto de archivo'}</span>
+                    </div>
+                    <p class="text-slate-600 font-medium">${prec.motivo}</p>
+                    <p class="text-slate-500 text-[0.7rem]">Equipos: ${prec.equipos} · Sanción: ${prec.multaUc > 0 ? `${prec.multaUc} UCFVF` : 'Desestimado'}</p>
+                `;
+                contenedorPrec.appendChild(item);
+            });
+
+            cambiarTabDetalle('general');
+            document.getElementById('modalDetalle').classList.remove('hidden');
+        }
+
+        function cerrarModalDetalle() {
+            document.getElementById('modalDetalle').classList.add('hidden');
+        }
+
+        function cambiarTabDetalle(tab) {
+            const tabGen = document.getElementById('contenidoDetalleGeneral');
+            const tabJur = document.getElementById('contenidoDetalleJurisprudencia');
+            const btnGen = document.getElementById('tabBtnGeneral');
+            const btnJur = document.getElementById('tabBtnJurisprudencia');
+
+            if (tab === 'general') {
+                tabGen.classList.remove('hidden');
+                tabJur.classList.add('hidden');
+                btnGen.className = "py-3 border-b-2 border-vin-900 text-vin-900 font-bold";
+                btnJur.className = "py-3 text-slate-500 hover:text-slate-800 flex items-center gap-1";
+            } else {
+                tabGen.classList.add('hidden');
+                tabJur.classList.remove('hidden');
+                btnGen.className = "py-3 text-slate-500 hover:text-slate-800";
+                btnJur.className = "py-3 border-b-2 border-vin-900 text-vin-900 font-bold flex items-center gap-1";
+            }
+        }
+
+        function consultarCasoConIA() {
+            cerrarModalDetalle();
+            abrirModalIA();
+            if (expedienteSeleccionado) {
+                enviarMensajeIA(`Orientación jurídica para el Expediente N° ${expedienteSeleccionado.numero}/${expedienteSeleccionado.anio} (${expedienteSeleccionado.motivo}). ¿Cuáles son los pasos procesales y jurisprudencia aplicable?`);
+            }
+        }
+
+        // ================= MODAL AGENTE IA =================
+        function abrirModalIA() {
+            document.getElementById('modalIA').classList.remove('hidden');
+        }
+
+        function cerrarModalIA() {
+            document.getElementById('modalIA').classList.add('hidden');
+        }
+
+        function enviarInputChat() {
+            const input = document.getElementById('inputChatIA');
+            const texto = input.value.trim();
+            if (texto) {
+                enviarMensajeIA(texto);
+                input.value = '';
+            }
+        }
+
+        function enviarMensajeIA(texto) {
+            const chat = document.getElementById('historialChat');
+
+            // Mensaje usuario
+            const msgUser = document.createElement('div');
+            msgUser.className = "flex flex-col items-end";
+            msgUser.innerHTML = `
+                <div class="max-w-[80%] bg-vin-900 text-white rounded-2xl rounded-tr-xs p-3 text-xs leading-relaxed shadow-xs">
+                    ${texto}
+                </div>
+            `;
+            chat.appendChild(msgUser);
+
+            // Generar respuesta del agente experto
+            setTimeout(() => {
+                const msgIA = document.createElement('div');
+                msgIA.className = "flex flex-col items-start";
+
+                let respuestaTexto = "";
+                let articulos = "Art. 169 RDFVF, Art. 170 RDFVF, Art. 77 RDFVF";
+
+                const lower = texto.toLowerCase();
+                if (lower.includes('caucion') || lower.includes('170') || lower.includes('admisib')) {
+                    respuestaTexto = `<strong>Diagnóstico de Admisibilidad (Paso 1):</strong><br>
+                    Para admitir válidamente la protesta, debe cumplirse obligatoriamente con el <strong>Art. 170 RDFVF</strong> (consignación del depósito en cuenta de la FVF) y el <strong>Art. 169 RDFVF</strong> (señalamiento exacto de las disposiciones presuntamente violadas). Sin la caución, el Consejo de Honor declarará la protesta <strong>INADMISIBLE DE PLANO</strong>.`;
+                } else if (lower.includes('alineacion') || lower.includes('alineación') || lower.includes('puntos')) {
+                    respuestaTexto = `<strong>Precedente Jurisprudencial en Alineación Indebida:</strong><br>
+                    De acuerdo a la doctrina uniforme del Consejo de Honor, la alineación indebida comprobada acarrea:<br>
+                    1. <strong>Pérdida de los 3 puntos</strong> en disputa con marcador reglamentario de 3 goles por 0 (3-0).<br>
+                    2. <strong>Multa económica</strong> tasada en Unidades Cambiarias FVF (de 100 a 300 UCFVF).<br>
+                    3. Remisión de antecedentes a la Comisión de Disciplina para investigar al delegado firmante.`;
+                } else if (lower.includes('pago') || lower.includes('arbitro') || lower.includes('honorarios')) {
+                    respuestaTexto = `<strong>Procedimiento por Deuda Arbitral (CNA):</strong><br>
+                    1. Se requiere certificación expedida por la Comisión Nacional de Árbitros (CNA).<br>
+                    2. Se emite Auto de Requerimiento de Pago otorgando 48 a 72 horas hábiles.<br>
+                    3. Apercibimiento expreso: en caso de desacato, opera la suspensión de programación de encuentros oficiales.`;
+                } else {
+                    respuestaTexto = `<strong>Análisis Jurídico Disciplinario:</strong><br>
+                    Su consulta ha sido evaluada conforme al Reglamento Disciplinario FVF. Para sustanciar este expediente con rigor:<br>
+                    - Valore el informe arbitral (con presunción de veracidad *iuris tantum*).<br>
+                    - Otorgue el plazo legal de 3 a 5 días para descargos probatorios.<br>
+                    - Consulte los precedentes análogos en el Tablero Kanban para mantener la uniformidad en las sanciones impuestas.`;
+                }
+
+                msgIA.innerHTML = `
+                    <div class="max-w-[85%] bg-white border border-slate-200 rounded-2xl rounded-tl-xs p-4 text-xs leading-relaxed shadow-xs space-y-2">
+                        <p class="font-bold text-vin-900 flex items-center gap-1.5">⚖️ Agente Disciplinario FVF</p>
+                        <p class="text-slate-700">${respuestaTexto}</p>
+                        <div class="pt-2 border-t text-[0.7rem] text-slate-500 font-medium">
+                            Artículos aplicables: <span class="font-bold text-vin-900">${articulos}</span>
+                        </div>
+                    </div>
+                `;
+                chat.appendChild(msgIA);
+                chat.scrollTop = chat.scrollHeight;
+            }, 400);
+
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function consultarPaso(paso) {
+            const desc = [
+                "Examen preliminar de causales de admisibilidad y voucher de caución económica Art. 170 RDFVF.",
+                "Emisión formal del Auto de Entrada (A.E.) y citación a descargos probatorios dentro de 3 a 5 días.",
+                "Instrucción sumaria, informe arbitral y cotejo con precedentes jurisprudenciales en base de datos.",
+                "Cuantificación de sanciones en partidos de suspensión y liquidación de multas en Unidades Cambiarias (UCFVF).",
+                "Notificación oficial por sistema COMET y trámite del Recurso de Reconsideración (Art. 182 RDFVF)."
+            ];
+            enviarMensajeIA(`Paso ${paso} del Procedimiento: ${desc[paso - 1]}`);
+        }
+
+        // ================= MODAL NUEVO EXPEDIENTE =================
+        function abrirModalNuevoExpediente() {
+            document.getElementById('modalNuevoExp').classList.remove('hidden');
+        }
+
+        function cerrarModalNuevoExpediente() {
+            document.getElementById('modalNuevoExp').classList.add('hidden');
+        }
+
+        function guardarNuevoExpediente() {
+            const ano = parseInt(document.getElementById('nuevoAno').value, 10);
+            const torneo = document.getElementById('nuevoTorneo').value;
+            const motivo = document.getElementById('nuevoMotivo').value;
+            const equipos = document.getElementById('nuevoEquipos').value;
+            const asignado = document.getElementById('nuevoAsignado').value || 'Sin asignar';
+            const estado = document.getElementById('nuevoEstado').value;
+            const alerta = document.getElementById('nuevoAlerta').value;
+
+            const proximoNumero = (expedientesDB.length + 1).toString().padStart(3, '0');
+
+            expedientesDB.unshift({
+                id: Date.now(),
+                numero: proximoNumero,
+                anio: ano,
+                motivo,
+                torneo,
+                equipos,
+                asignado,
+                estado,
+                alerta: alerta || null,
+                multaUc: 0,
+                numeroDecision: `A.E. ${proximoNumero}/${ano}`
+            });
+
+            cerrarModalNuevoExpediente();
+            renderizarKanban();
+            alert(`Expediente N° ${proximoNumero}/${ano} radicado exitosamente y añadido al Tablero Kanban.`);
+        }
+
+        // Iniciar tablero al cargar
+        renderizarKanban();
+    </script>
+</body>
+</html>
