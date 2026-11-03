@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useTransition } from 'react';
-import { EstadoExpediente } from '@prisma/client';
+
 import {
   obtenerTableroKanban,
   moverEstadoExpedienteKanban,
 } from '@/server/expedientes/acciones';
-import type { ColumnaKanban, ExpedienteTarjetaKanban } from '@/types/kanban';
+import { EstadoExpediente, type ColumnaKanban, type ExpedienteTarjetaKanban } from '@/types/kanban';
 import { ModalCrearExpediente } from './modal-crear-expediente';
 import { ModalDetalleExpediente } from './modal-detalle-expediente';
 import { AsistenteDisciplinarioModal } from '@/components/ia/asistente-disciplinario-modal';

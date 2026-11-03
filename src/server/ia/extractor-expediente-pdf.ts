@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { EstadoExpediente, TipoParte, TipoMovimientoExpediente } from '@prisma/client';
+import { TipoMovimientoExpediente } from '@prisma/client';
+import { EstadoExpediente, TipoParte } from '@/types/kanban';
 import { TipoAutoCDH, EvaluacionMatrizDisciplinaria } from './matriz-evaluacion';
 
 export interface ParteExpedienteExtraida {

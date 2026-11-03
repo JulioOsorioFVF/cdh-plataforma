@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { obtenerSesion } from '@/server/auth/sesion';
-import { EstadoExpediente, TipoMovimientoExpediente, TipoParte } from '@prisma/client';
+import { TipoMovimientoExpediente, TipoParte } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { buscarJurisprudenciaExpedientes, type PrecedenteJurisprudencial } from '@/server/ia/agente-disciplinario';
 
@@ -12,6 +12,7 @@ import {
   type ExpedienteTarjetaKanban,
   type ColumnaKanban,
   type CrearExpedienteInput,
+  EstadoExpediente,
   COLUMNAS_KANBAN_CONFIG,
 } from '@/types/kanban';
 import {

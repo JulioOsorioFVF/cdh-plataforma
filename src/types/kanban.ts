@@ -1,4 +1,44 @@
-import { EstadoExpediente, TipoParte } from '@prisma/client';
+export type EstadoExpediente =
+  | 'RECIBIDO'
+  | 'EN_ESTUDIO'
+  | 'RESUELTO'
+  | 'NOTIFICADO'
+  | 'EN_RECURSO'
+  | 'ARCHIVADO'
+  | 'DESESTIMADO'
+  | 'REMITIDO';
+
+export const EstadoExpediente = {
+  RECIBIDO: 'RECIBIDO',
+  EN_ESTUDIO: 'EN_ESTUDIO',
+  RESUELTO: 'RESUELTO',
+  NOTIFICADO: 'NOTIFICADO',
+  EN_RECURSO: 'EN_RECURSO',
+  ARCHIVADO: 'ARCHIVADO',
+  DESESTIMADO: 'DESESTIMADO',
+  REMITIDO: 'REMITIDO',
+} as const;
+
+export type TipoParte =
+  | 'JUGADOR'
+  | 'CUERPO_TECNICO'
+  | 'CLUB'
+  | 'COMISION'
+  | 'LIGA'
+  | 'ORGANIZADOR'
+  | 'FVF'
+  | 'OTRO';
+
+export const TipoParte = {
+  JUGADOR: 'JUGADOR',
+  CUERPO_TECNICO: 'CUERPO_TECNICO',
+  CLUB: 'CLUB',
+  COMISION: 'COMISION',
+  LIGA: 'LIGA',
+  ORGANIZADOR: 'ORGANIZADOR',
+  FVF: 'FVF',
+  OTRO: 'OTRO',
+} as const;
 
 export interface CrearExpedienteInput {
   numero?: string;
