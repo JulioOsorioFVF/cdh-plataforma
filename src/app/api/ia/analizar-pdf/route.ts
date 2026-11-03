@@ -5,6 +5,21 @@ import { obtenerSesion } from '@/server/auth/sesion';
 
 export const maxDuration = 60;
 
+const LIMITE_TAMANO_BYTES = 25 * 1024 * 1024; // 25 MB máximo por expediente
+const EXTENSIONES_PERMITIDAS = new Set(['.pdf', '.txt', '.doc', '.docx', '.rtf', '.csv']);
+
+/**
+ * Sanitiza nombres de archivos para prevenir ataques de Path Traversal o caracteres de control.
+ */
+function sanitizarNombreArchivo(nombreOriginal: string): string {
+  const nombreLimpio = nombreOriginal
+    .replace(/[/\\]/g, '_')
+    .replace(/\.\.+/g, '_')
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .slice(0, 100);
+  return nombreLimpio || 'expediente_documento.pdf';
+}
+
 /**
  * Extrae cadenas legibles y objetos de texto de un buffer PDF en memoria sin dependencias nativas.
  */
@@ -53,7 +68,7 @@ function extraerTextoDeBufferPdf(buffer: Buffer): string {
 export async function POST(request: Request) {
   try {
     const sesion = await obtenerSesion();
-    // En entornos locales o de desarrollo permitimos la ejecución; en prod sesion debe ser válida
+    // En entornos de producción se exige autenticación formal
     if (process.env.NODE_ENV === 'production' && !sesion) {
       return NextResponse.json({ error: 'No autorizado. Inicie sesión en la plataforma.' }, { status: 401 });
     }
@@ -75,12 +90,33 @@ export async function POST(request: Request) {
       }
 
       if (archivo && archivo.size > 0) {
-        nombreArchivo = archivo.name;
+        // Validación de tamaño máximo (Protección DoS)
+        if (archivo.size > LIMITE_TAMANO_BYTES) {
+          return NextResponse.json(
+            { error: 'El archivo excede el tamaño máximo permitido de 25 MB por seguridad.' },
+            { status: 413 }
+          );
+        }
+
+        nombreArchivo = sanitizarNombreArchivo(archivo.name);
+        const ext = '.' + (nombreArchivo.split('.').pop() || '').toLowerCase();
+        if (!EXTENSIONES_PERMITIDAS.has(ext)) {
+          return NextResponse.json(
+            { error: 'Formato de archivo no permitido. Solo se admiten archivos PDF, TXT, DOC, DOCX o RTF.' },
+            { status: 415 }
+          );
+        }
+
         tamanoBytes = archivo.size;
         const arrayBuffer = await archivo.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        if (nombreArchivo.toLowerCase().endsWith('.pdf')) {
+        if (ext === '.pdf') {
+          // Verificación de cabecera PDF (Magic bytes %PDF)
+          const esPdfValido = buffer.slice(0, 5).toString('ascii').startsWith('%PDF');
+          if (!esPdfValido && buffer.length > 100) {
+            console.warn('Advertencia: El archivo no contiene la cabecera estándar %PDF.');
+          }
           textoDocumento = extraerTextoDeBufferPdf(buffer);
         } else {
           textoDocumento = buffer.toString('utf-8');
@@ -94,7 +130,7 @@ export async function POST(request: Request) {
       // JSON payload
       const body = await request.json().catch(() => ({}));
       textoDocumento = body.texto || '';
-      nombreArchivo = body.nombreArchivo || 'documento_expediente.pdf';
+      nombreArchivo = sanitizarNombreArchivo(body.nombreArchivo || 'documento_expediente.pdf');
       tamanoBytes = body.tamanoBytes || (textoDocumento ? textoDocumento.length : 0);
       expedienteId = body.expedienteId;
     }
@@ -134,9 +170,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, analisis });
   } catch (error: any) {
     console.error('Error en /api/ia/analizar-pdf:', error);
-    return NextResponse.json(
-      { error: error.message || 'Error al procesar y extraer datos del PDF' },
-      { status: 500 }
-    );
+    const mensajeSeguro =
+      process.env.NODE_ENV === 'production'
+        ? 'Error al procesar y extraer datos del documento.'
+        : error.message || 'Error al procesar y extraer datos del PDF';
+
+    return NextResponse.json({ error: mensajeSeguro }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@
 
 import { GoogleGenAI, Type, Schema } from '@google/genai';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { anonimizarIdentificadoresDirectos } from '@/lib/privacidad/anonimizacion';
 import { requierePermiso } from '@/server/auth/sesion';
 import { revalidatePath } from 'next/cache';
