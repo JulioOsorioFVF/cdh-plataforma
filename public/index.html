@@ -576,6 +576,242 @@
             if (sub) sub.classList.toggle('hidden');
         }
 
+        // Datos de Formatos y Plantillas
+        let formatosData = [
+            {
+                codigoTipologia: 'INTEGRIDAD_AMANO',
+                nombre: 'Procedimiento Sancionatorio por Manipulación de Partidos (Amaño)',
+                organo: 'Consejo de Honor FVF',
+                descargos: '5 días hábiles',
+                articulos: 'Art. 9, Art. 10 literal k, Art. 14, 16 RDFVF, Art. 33 Ética, Art. 20 CDC FIFA',
+                contenido: 'REPÚBLICA BOLIVARIANA DE VENEZUELA\\nFEDERACIÓN VENEZOLANA DE FÚTBOL\\nCONSEJO DE HONOR\\nAUTO N° {{CORRELATIVO_AUTO}}\\nEXPEDIENTE N° {{NUMERO_EXPEDIENTE}}\\n\\nCaracas, {{FECHA_EMISION}}\\n\\nVISTO el informe presentado por la Oficialía de Integridad y Cumplimiento de la FVF sobre el encuentro {{EQUIPO_LOCAL}} vs {{EQUIPO_VISITANTE}} disputado el {{FECHA_PARTIDO}};\\n\\nCONSIDERANDO los artículos 9 y 10 literal k) del RDFVF;\\n\\nSE ACUERDA: Dar inicio formal al procedimiento disciplinario contra los ciudadanos {{NOMBRES_IMPUTADOS}} y el club {{NOMBRE_CLUB}} por presunta tentativa de amaño. Conceder plazo de {{PLAZO_DESCARGOS_DIAS}} días hábiles para formular descargos.',
+                variables: [
+                    { cod: 'CORRELATIVO_AUTO', label: 'Correlativo del Auto', ej: 'AUTO N° CDH-FVF-001-2026' },
+                    { cod: 'NUMERO_EXPEDIENTE', label: 'N° Expediente', ej: '121/25' },
+                    { cod: 'FECHA_EMISION', label: 'Fecha de Emisión', ej: '1° de agosto de 2025' },
+                    { cod: 'EQUIPO_LOCAL', label: 'Equipo Local', ej: 'Real Frontera S.C.' },
+                    { cod: 'EQUIPO_VISITANTE', label: 'Equipo Visitante', ej: 'Yaracuyanos S.C.' },
+                    { cod: 'FECHA_PARTIDO', label: 'Fecha del Encuentro', ej: '27 de agosto de 2024' },
+                    { cod: 'NOMBRES_IMPUTADOS', label: 'Jugadores Imputados', ej: 'Cristian Cruz y Kevin Díaz' },
+                    { cod: 'NOMBRE_CLUB', label: 'Club Investigado', ej: 'Yaracuyanos S.C.' },
+                    { cod: 'PLAZO_DESCARGOS_DIAS', label: 'Días de Descargo', ej: '5' }
+                ]
+            },
+            {
+                codigoTipologia: 'ACTA_JORNADA',
+                nombre: 'Sanciones Automáticas por Acta Arbitral de Jornada',
+                organo: 'Consejo de Honor FVF',
+                descargos: '2 días hábiles',
+                articulos: 'Art. 54, 60, 122 RDFVF',
+                contenido: 'RESOLUCIÓN DE SANCIONES DE JORNADA N° {{NUMERO_JORNADA}}\\nTORNEO: {{NOMBRE_TORNEO}}\\n\\nVISTA el Acta Arbitral suscrita por el árbitro {{NOMBRE_ARBITRO}} del partido {{ENCUENTRO}};\\n\\nEL CONSEJO DE HONOR RESUELVE:\\n1. Suspender por {{CANTIDAD_PARTIDOS_SUSPENSION}} partidos oficiales al jugador {{JUGADOR_SANCIONADO}} (C.I. {{CEDULA_JUGADOR}}) del club {{CLUB_JUGADOR}} por {{MOTIVO_EXPULSION}}.\\n2. Imponer multa arancelaria de {{MULTA_UC}} UCFVF.',
+                variables: [
+                    { cod: 'NUMERO_JORNADA', label: 'N° Jornada', ej: 'Jornada 14' },
+                    { cod: 'NOMBRE_TORNEO', label: 'Torneo', ej: 'Liga FUTVE 1' },
+                    { cod: 'NOMBRE_ARBITRO', label: 'Árbitro Principal', ej: 'Jesús Valenzuela' },
+                    { cod: 'ENCUENTRO', label: 'Partido', ej: 'Caracas FC vs Deportivo Táchira' },
+                    { cod: 'CANTIDAD_PARTIDOS_SUSPENSION', label: 'Partidos Suspensión', ej: '2' },
+                    { cod: 'JUGADOR_SANCIONADO', label: 'Jugador Sancionado', ej: 'Juan Pérez' },
+                    { cod: 'CEDULA_JUGADOR', label: 'Cédula', ej: 'V-26.123.456' },
+                    { cod: 'CLUB_JUGADOR', label: 'Club', ej: 'Caracas FC' },
+                    { cod: 'MOTIVO_EXPULSION', label: 'Causa Expulsión', ej: 'Conducta violenta' },
+                    { cod: 'MULTA_UC', label: 'Multa UCFVF', ej: '50' }
+                ]
+            },
+            {
+                codigoTipologia: 'INADMISIBILIDAD_CAUCION',
+                nombre: 'Inadmisibilidad In Limine Litis por Omisión de Caución (Art. 170 RDFVF)',
+                organo: 'Consejo de Honor FVF',
+                descargos: 'Improcedente (Cosa Juzgada)',
+                articulos: 'Art. 170, 196 RDFVF, Precedente RES-012/2024',
+                contenido: 'AUTO DE INADMISIBILIDAD N° {{CORRELATIVO_AUTO}}\\nEXPEDIENTE: {{NUMERO_EXPEDIENTE}}\\n\\nVISTO el escrito presentado por el club {{CLUB_PROTESTANTE}} mediante el cual interpone protesta contra {{CLUB_CONTRARIO}};\\n\\nCONSIDERANDO que el Art. 170 RDFVF exige la consignación oportuna de la caución arancelaria como requisito esencial de admisibilidad;\\n\\nSE DECLARA: LA INADMISIBILIDAD DE PLENO DERECHO de la protesta por falta de consignación de la caución de ley.',
+                variables: [
+                    { cod: 'CORRELATIVO_AUTO', label: 'Correlativo del Auto', ej: 'AUTO N° CDH-FVF-089-2026' },
+                    { cod: 'NUMERO_EXPEDIENTE', label: 'N° Expediente', ej: 'EXP-045/2026' },
+                    { cod: 'CLUB_PROTESTANTE', label: 'Club Protestante', ej: 'Academia Puerto Cabello' },
+                    { cod: 'CLUB_CONTRARIO', label: 'Club Contraparte', ej: 'Monagas S.C.' }
+                ]
+            }
+        ];
+
+        let formatoSeleccionadoIdx = 0;
+        let simuladorValores = {};
+
+        function setTabFormatos(tab) {
+            document.getElementById('subvistaFormatosCatalogo').classList.add('hidden');
+            document.getElementById('subvistaFormatosNuevo').classList.add('hidden');
+            document.getElementById('subvistaFormatosSimulador').classList.add('hidden');
+
+            const btnCat = document.getElementById('tabBtnFormatosCatalogo');
+            const btnNue = document.getElementById('tabBtnFormatosNuevo');
+            const btnSim = document.getElementById('tabBtnFormatosSimulador');
+
+            [btnCat, btnNue, btnSim].forEach(b => {
+                b.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 text-slate-200 hover:bg-slate-700 transition';
+            });
+
+            if (tab === 'CATALOGO') {
+                document.getElementById('subvistaFormatosCatalogo').classList.remove('hidden');
+                btnCat.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-oro-500 text-slate-950 transition';
+                renderFormatos();
+            } else if (tab === 'NUEVO') {
+                document.getElementById('subvistaFormatosNuevo').classList.remove('hidden');
+                btnNue.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-oro-500 text-slate-950 transition';
+            } else if (tab === 'SIMULADOR') {
+                document.getElementById('subvistaFormatosSimulador').classList.remove('hidden');
+                btnSim.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-oro-500 text-slate-950 transition';
+                renderSimulador();
+            }
+        }
+
+        function renderFormatos() {
+            const lista = document.getElementById('listaFormatosCards');
+            const detalle = document.getElementById('detalleFormatoCard');
+            const count = document.getElementById('countFormatos');
+            if (count) count.innerText = formatosData.length;
+
+            lista.innerHTML = formatosData.map((f, i) => 
+                <div onclick="seleccionarFormato()" class="p-4 rounded-2xl border cursor-pointer transition ">
+                    <div class="flex justify-between items-center text-[10px] mb-1">
+                        <span class="font-mono text-oro-400 font-bold px-1.5 py-0.5 rounded bg-black/40"></span>
+                        <span class="text-slate-400"> variables</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-white line-clamp-1"></h4>
+                    <p class="text-[11px] text-slate-400 line-clamp-2 mt-1"></p>
+                </div>
+            ).join('');
+
+            const f = formatosData[formatoSeleccionadoIdx] || formatosData[0];
+            if (f) {
+                detalle.innerHTML = 
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div>
+                            <span class="text-[10px] font-bold text-oro-400 uppercase tracking-wider"></span>
+                            <h2 class="text-base font-bold text-white"></h2>
+                        </div>
+                        <button onclick="setTabFormatos('SIMULADOR')" class="px-3 py-1.5 rounded-xl bg-oro-500 text-slate-950 font-bold text-xs hover:bg-oro-400">
+                            🚀 Probar en Simulador
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                            <span class="text-slate-400 block text-[10px]">Lapso de Descargos</span>
+                            <span class="font-bold text-white"></span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                            <span class="text-slate-400 block text-[10px]">Artículos Fundamentales</span>
+                            <span class="font-bold text-oro-300 truncate block"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Cuerpo del Formato Estructurado</span>
+                        <pre class="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-300 whitespace-pre-wrap max-h-72 overflow-y-auto leading-relaxed"></pre>
+                    </div>
+                ;
+            }
+        }
+
+        function seleccionarFormato(i) {
+            formatoSeleccionadoIdx = i;
+            renderFormatos();
+        }
+
+        function renderSimulador() {
+            const f = formatosData[formatoSeleccionadoIdx] || formatosData[0];
+            const inputsContainer = document.getElementById('simuladorInputsContainer');
+            if (!f) return;
+
+            // Inicializar valores de ejemplo si no existen
+            if (!simuladorValores[f.codigoTipologia]) {
+                simuladorValores[f.codigoTipologia] = {};
+                f.variables.forEach(v => {
+                    simuladorValores[f.codigoTipologia][v.cod] = v.ej;
+                });
+            }
+
+            inputsContainer.innerHTML = f.variables.map(v => 
+                <div>
+                    <label class="text-[11px] font-bold text-slate-300 flex justify-between mb-0.5">
+                        <span></span>
+                        <span class="font-mono text-oro-400 text-[10px]">{{}}</span>
+                    </label>
+                    <input type="text" oninput="actualizarVariableSimulador('', '', this.value)" value="" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white">
+                </div>
+            ).join('');
+
+            actualizarTextoSimulado();
+        }
+
+        function actualizarVariableSimulador(tipologia, cod, val) {
+            if (!simuladorValores[tipologia]) simuladorValores[tipologia] = {};
+            simuladorValores[tipologia][cod] = val;
+            actualizarTextoSimulado();
+        }
+
+        function actualizarTextoSimulado() {
+            const f = formatosData[formatoSeleccionadoIdx] || formatosData[0];
+            const preview = document.getElementById('simuladorPreviewTexto');
+            if (!f || !preview) return;
+
+            let texto = f.contenido;
+            const vals = simuladorValores[f.codigoTipologia] || {};
+            f.variables.forEach(v => {
+                const re = new RegExp('\\\\{\\\\{' + v.cod + '\\\\}\\\\}', 'g');
+                texto = texto.replace(re, vals[v.cod] || '[' + v.cod + ']');
+            });
+            preview.innerText = texto;
+        }
+
+        function copiarTextoSimulado() {
+            const preview = document.getElementById('simuladorPreviewTexto');
+            if (preview) {
+                navigator.clipboard.writeText(preview.innerText);
+                alert('¡Texto copiado al portapapeles!');
+            }
+        }
+
+        function aprenderFormatoOnline() {
+            const nombre = document.getElementById('inputNombreFormato').value.trim() || 'Nuevo Formato Asimilado';
+            const tipologia = document.getElementById('selectTipologiaFormato').value;
+            const texto = document.getElementById('inputTextFormato').value.trim();
+
+            if (!texto) {
+                alert('Por favor ingrese el texto del formato que desea que el motor aprenda.');
+                return;
+            }
+
+            // Detección de variables {{VARIABLE}}
+            const re = /\\{\\{([A-Z0-9_]{3,40})\\}\\}/g;
+            let m;
+            const varsDetectadas = [];
+            while ((m = re.exec(texto)) !== null) {
+                if (m[1] && !varsDetectadas.some(v => v.cod === m[1])) {
+                    varsDetectadas.push({ cod: m[1], label: m[1].replace(/_/g, ' '), ej: 'Dato de prueba' });
+                }
+            }
+
+            if (varsDetectadas.length === 0) {
+                // Auto-detectar variables comunes
+                varsDetectadas.push({ cod: 'CORRELATIVO_AUTO', label: 'Correlativo Auto', ej: 'AUTO N° CDH-FVF-100-2026' });
+                varsDetectadas.push({ cod: 'NUMERO_EXPEDIENTE', label: 'Número de Expediente', ej: '121/25' });
+                varsDetectadas.push({ cod: 'NOMBRE_IMPUTADO', label: 'Sujeto Imputado', ej: 'Cristian Cruz' });
+            }
+
+            const nuevoFormato = {
+                codigoTipologia: tipologia + '_' + (formatosData.length + 1),
+                nombre: nombre,
+                organo: 'Consejo de Honor FVF',
+                descargos: '5 días hábiles',
+                articulos: 'RDFVF / Normas aplicables',
+                contenido: texto,
+                variables: varsDetectadas
+            };
+
+            formatosData.unshift(nuevoFormato);
+            formatoSeleccionadoIdx = 0;
+            alert('¡Formato asimilado exitosamente! El motor ha indexado la estructura y detectado ' + varsDetectadas.length + ' variables dinámicas.');
+            setTabFormatos('CATALOGO');
+        }
+
         function cambiarVista(vistaId) {
             vistaActual = vistaId;
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
@@ -585,7 +821,11 @@
             const headerBadge = document.getElementById('headerBadgeModulo');
             const headerTitulo = document.getElementById('headerTituloModulo');
 
-            if (vistaId === 'plataforma') {
+            if (vistaId === 'formatos') {
+                headerBadge.innerText = 'Aprendizaje Continuo';
+                headerTitulo.innerText = 'Gestor de Formatos y Plantillas Procesales (LEX-SPORTIVA CORE)';
+                renderFormatos();
+            } else if (vistaId === 'plataforma') {
                 headerBadge.innerText = 'CDH-FVF v2.6';
                 headerTitulo.innerText = 'Suite Tecnológica & Menú Integral';
             } else if (vistaId === 'expedientes') {
