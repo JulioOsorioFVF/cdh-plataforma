@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejo de Honor FVF | Plataforma Disciplinaria, Data Analyst & Agente IA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vin: {
+                            50: '#fbf5f7',
+                            100: '#f6ecf0',
+                            800: '#531132',
+                            900: '#3c0c24',
+                            950: '#230614'
+                        },
+                        oro: {
+                            300: '#dfc691',
+                            400: '#c5a76e',
+                            500: '#b49054',
+                            600: '#9d7a3d'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap');
+        body { font-family: 'Jost', sans-serif; }
+        h1, h2, h3, h4, .font-display { font-family: 'Oswald', sans-serif; }
+        .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 9999px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased h-full flex overflow-hidden">
+
+    <!-- ========================================================================= -->
+    <!-- BARRA LATERAL / SIDEBAR INTERACTIVO Y OCULTABLE (IZQUIERDA) -->
+    <!-- ========================================================================= -->
+    <aside id="sidebarPrincipal" class="w-72 shrink-0 bg-vin-950 border-r border-vin-900/80 flex flex-col transition-all duration-300 ease-in-out z-40 select-none">
+        
+        <!-- Cabecera Sidebar con Logo FVF y Botón Colapsar -->
+        <div class="h-16 px-4 border-b border-white/10 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3 overflow-hidden">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-oro-400 to-oro-600 flex items-center justify-center shrink-0 shadow-md font-bold text-vin-950 text-xs">
+                    FVF
+                </div>
+                <div id="sidebarTitulo" class="leading-tight truncate">
+                    <span class="text-[9px] font-bold tracking-widest text-oro-400 uppercase block">Federación Venezolana</span>
+                    <span class="text-sm font-bold text-white tracking-tight truncate block">Consejo de Honor</span>
+                </div>
+            </div>
+
+            <!-- Botón Ocultar / Colapsar -->
+            <button onclick="toggleSidebar()" id="btnToggleSidebar" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 flex items-center justify-center text-xs text-slate-300 hover:text-white transition cursor-pointer" title="Colapsar menú lateral">
+                ◀
+            </button>
+        </div>
+
+        <!-- Buscador Rápido en Menú -->
+        <div id="contenedorBuscadorSidebar" class="p-3 border-b border-white/5">
+            <div class="relative">
+                <input type="text" id="inputBusquedaSidebar" onkeyup="filtrarSidebar()" placeholder="Buscar función o módulo..." class="w-full h-8 pl-7 pr-6 text-xs bg-black/40 border border-white/10 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-oro-500">
+                <span class="absolute left-2 top-2 text-[11px] text-slate-500">🔍</span>
+            </div>
+        </div>
+
+        <!-- Lista de Navegación con Submenús Desplegables -->
+        <nav class="flex-1 overflow-y-auto px-2 py-3 space-y-4 scrollbar-thin text-xs" id="navItemsList">
+
+            <!-- GRUPO 1: GESTIÓN PROCESAL E IA -->
+            <div class="space-y-1">
+                <div class="sidebar-group-title flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold tracking-wider uppercase text-oro-400/80">
+                    <span>⚖️</span> <span>Gestión Procesal e IA</span>
+                </div>
+                
+                <ul class="space-y-0.5">
+                    <!-- Suite Plataforma -->
+                    <li>
+                        <button onclick="cambiarVista('plataforma')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">🧭</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Suite de Funciones</span>
+                            <span class="nav-badge px-1.5 py-0.2 rounded text-[9px] font-bold bg-oro-500/20 text-oro-300">Hub</span>
+                        </button>
+                    </li>
+
+                    <!-- Expedientes Kanban -->
+                    <li>
+                        <div class="flex items-center">
+                            <button onclick="cambiarVista('expedientes')" class="nav-btn flex-1 flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                                <span class="text-base shrink-0">📁</span>
+                                <span class="nav-text truncate flex-1 font-semibold">Expedientes (Kanban)</span>
+                            </button>
+                            <button onclick="toggleSubmenu('sub-expedientes')" class="nav-arrow p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 text-[10px] mr-1">▾</button>
+                        </div>
+                        <ul id="sub-expedientes" class="pl-8 pr-1 py-1 space-y-0.5 border-l border-white/10 ml-5 my-1 text-[11px]">
+                            <li><a href="#" onclick="cambiarVista('expedientes'); return false;" class="block py-1 text-slate-400 hover:text-oro-300">📋 Tablero de 6 Fases</a></li>
+                            <li><a href="#" onclick="abrirModalNuevoExpediente(); return false;" class="block py-1 text-slate-400 hover:text-oro-300">➕ Crear Expediente</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Centro Data Analyst & Ingesta IA -->
+                    <li>
+                        <div class="flex items-center">
+                            <button onclick="cambiarVista('ingesta')" class="nav-btn flex-1 flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                                <span class="text-base shrink-0">🔬</span>
+                                <span class="nav-text truncate flex-1 font-semibold">Data Analyst & Ingesta</span>
+                                <span class="nav-badge px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-300">IA</span>
+                            </button>
+                            <button onclick="toggleSubmenu('sub-ingesta')" class="nav-arrow p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 text-[10px] mr-1">▾</button>
+                        </div>
+                        <ul id="sub-ingesta" class="pl-8 pr-1 py-1 space-y-0.5 border-l border-white/10 ml-5 my-1 text-[11px]">
+                            <li><a href="#" onclick="cambiarVista('ingesta'); setTabIngesta('INGESTA'); return false;" class="block py-1 text-slate-400 hover:text-oro-300">📥 Intake de PDFs Grandes</a></li>
+                            <li><a href="#" onclick="cambiarVista('ingesta'); setTabIngesta('ESTRUCTURACION'); return false;" class="block py-1 text-slate-400 hover:text-oro-300">🔍 Extracción 7 Dimensiones</a></li>
+                            <li><a href="#" onclick="cambiarVista('ingesta'); setTabIngesta('ABOGADO_DEPORTIVO'); return false;" class="block py-1 text-emerald-400 font-semibold hover:text-emerald-300">⚖️ Abogado Deportivo (TAS)</a></li>
+                            <li><a href="#" onclick="cambiarVista('ingesta'); setTabIngesta('PROJECT_MANAGER'); return false;" class="block py-1 text-slate-400 hover:text-oro-300">⏱️ Project Manager & SLA</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Agente IA Disciplinario -->
+                    <li>
+                        <button onclick="cambiarVista('agente-ia')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">🤖</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Agente IA Disciplinario</span>
+                        </button>
+                    </li>
+
+                    <!-- Indicadores & Métricas -->
+                    <li>
+                        <button onclick="cambiarVista('indicadores')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">📈</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Indicadores & KPIs</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- GRUPO 2: JUSTICIA Y FINANZAS -->
+            <div class="space-y-1">
+                <div class="sidebar-group-title flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold tracking-wider uppercase text-oro-400/80">
+                    <span>🏛️</span> <span>Justicia y Finanzas</span>
+                </div>
+                
+                <ul class="space-y-0.5">
+                    <li>
+                        <button onclick="cambiarVista('sanciones')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">⚖️</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Registro de Sanciones</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="cambiarVista('finanzas')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">💰</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Finanzas & Multas (UC)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="cambiarVista('incidencias')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">🚨</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Incidencias & Licencias</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- GRUPO 3: OPERACIÓN Y AUDITORÍA -->
+            <div class="space-y-1">
+                <div class="sidebar-group-title flex items-center gap-1.5 px-3 py-1 text-[10px] font-bold tracking-wider uppercase text-oro-400/80">
+                    <span>⚙️</span> <span>Operación y Big Data</span>
+                </div>
+                
+                <ul class="space-y-0.5">
+                    <li>
+                        <button onclick="cambiarVista('ocr')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">📷</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Actas Arbitrales & OCR</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="cambiarVista('usuarios')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">👥</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Directorio de Jueces</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="cambiarVista('auditoria')" class="nav-btn w-full flex items-center gap-3 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/8 transition text-left">
+                            <span class="text-base shrink-0">📜</span>
+                            <span class="nav-text truncate flex-1 font-semibold">Bitácora de Auditoría</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+        </nav>
+
+        <!-- Pie de Sidebar: Perfil de Usuario -->
+        <div class="p-3 border-t border-white/10 bg-black/30 shrink-0">
+            <div id="sidebarUserFooter" class="flex items-center justify-between">
+                <div class="overflow-hidden">
+                    <span class="font-bold text-white text-xs block truncate">Julio Osorio</span>
+                    <span class="text-[10px] text-oro-400 font-medium block">Consejo de Honor FVF</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    ● En Línea
+                </span>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ========================================================================= -->
+    <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+    <!-- ========================================================================= -->
+    <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+
+        <!-- CABECERA SUPERIOR -->
+        <header class="h-16 bg-vin-950/80 backdrop-blur-md border-b border-white/10 px-6 flex items-center justify-between shrink-0 z-30">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg bg-white/5 text-white">☰</button>
+                <div class="flex items-center gap-2">
+                    <span id="headerBadgeModulo" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-oro-500/20 text-oro-400 border border-oro-500/30">
+                        CDH-FVF v2.6
+                    </span>
+                    <h2 id="headerTituloModulo" class="text-sm sm:text-base font-bold text-white tracking-tight">
+                        Suite Tecnológica & Menú Integral
+                    </h2>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="abrirModalExtraccionPDF()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-semibold text-xs flex items-center gap-1.5 shadow-sm transition">
+                    <span>📎</span> <span>Analizar PDF con IA</span>
+                </button>
+                <button onclick="abrirModalNuevoExpediente()" class="px-3 py-1.5 rounded-xl bg-oro-500 hover:bg-oro-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+                    <span>+</span> <span>Nuevo Caso</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENIDO DINÁMICO POR VISTAS -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 scrollbar-thin">
+
+            <!-- ============================================================= -->
+            <!-- VISTA 1: SUITE & DIRECTORIO DE FUNCIONES (/plataforma) -->
+            <!-- ============================================================= -->
+            <section id="vista-plataforma" class="space-y-6">
+                <!-- Banner Bienvenida -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-oro-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="relative z-10 space-y-2 max-w-3xl">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-oro-500/20 text-oro-400 border border-oro-500/30">
+                                Plataforma Central del Consejo de Honor
+                            </span>
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                            Suite Disciplinaria, Data Analyst & Inteligencia Artificial
+                        </h1>
+                        <p class="text-sm text-slate-400">
+                            Acceso directo a todos los módulos y submenús. Utiliza el menú lateral ocultable a la izquierda para navegar o despliega cualquiera de las herramientas a continuación.
+                        </p>
+                    </div>
+
+                    <!-- Métricas Globales -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-800">
+                        <div class="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+                            <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Expedientes Totales</span>
+                            <span class="text-2xl font-black text-white mt-0.5 block">567</span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+                            <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Sanciones Ejecutoriadas</span>
+                            <span class="text-2xl font-black text-oro-400 mt-0.5 block">1.240</span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+                            <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Tasa Oficial UCFVF</span>
+                            <span class="text-2xl font-black text-emerald-400 mt-0.5 block">$3.00 USD</span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+                            <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Doctrina TAS / CAS</span>
+                            <span class="text-2xl font-black text-cyan-400 mt-0.5 block">Köllerer / Hilos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid de Tarjetas de Módulos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    
+                    <!-- Tarjeta Expedientes -->
+                    <div class="bg-slate-900 border border-slate-800 hover:border-oro-500/50 rounded-2xl p-5 shadow-lg flex flex-col justify-between transition">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl mb-3">📁</div>
+                            <h3 class="text-base font-bold text-white">Expedientes (Tablero Kanban)</h3>
+                            <p class="text-xs text-slate-400 mt-1">Flujo procesal de 6 fases, control de estados y auditoría de plazos perentorios.</p>
+                            <div class="mt-3 pt-3 border-t border-slate-800 space-y-1 text-xs">
+                                <a href="#" onclick="cambiarVista('expedientes'); return false;" class="block text-slate-300 hover:text-oro-300">📋 Tablero de 6 Fases →</a>
+                                <a href="#" onclick="abrirModalNuevoExpediente(); return false;" class="block text-slate-300 hover:text-oro-300">➕ Crear Expediente →</a>
+                            </div>
+                        </div>
+                        <button onclick="cambiarVista('expedientes')" class="mt-4 w-full py-2 rounded-xl text-xs font-bold bg-oro-500 text-slate-950 hover:bg-oro-400 transition">Abrir Tablero</button>
+                    </div>
+
+                    <!-- Tarjeta Data Analyst & Ingesta -->
+                    <div class="bg-slate-900 border border-slate-800 hover:border-oro-500/50 rounded-2xl p-5 shadow-lg flex flex-col justify-between transition">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl mb-3">🔬</div>
+                            <h3 class="text-base font-bold text-white">Centro Data Analyst & Ingesta IA</h3>
+                            <p class="text-xs text-slate-400 mt-1">Intake multipart de PDFs pesados, estructuración de 7 dimensiones y factores de Abogado Deportivo.</p>
+                            <div class="mt-3 pt-3 border-t border-slate-800 space-y-1 text-xs">
+                                <a href="#" onclick="cambiarVista('ingesta'); setTabIngesta('ESTRUCTURACION'); return false;" class="block text-slate-300 hover:text-oro-300">🔍 Extracción 7 Dimensiones →</a>
+                                <a href="#" onclick="cambiarVista('ingesta'); setTabIngesta('ABOGADO_DEPORTIVO'); return false;" class="block text-emerald-400 hover:text-emerald-300">⚖️ Dictamen Forense TAS/CAS →</a>
+                            </div>
+                        </div>
+                        <button onclick="cambiarVista('ingesta')" class="mt-4 w-full py-2 rounded-xl text-xs font-bold bg-oro-500 text-slate-950 hover:bg-oro-400 transition">Abrir Pipeline</button>
+                    </div>
+
+                    <!-- Tarjeta Indicadores -->
+                    <div class="bg-slate-900 border border-slate-800 hover:border-oro-500/50 rounded-2xl p-5 shadow-lg flex flex-col justify-between transition">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-2xl mb-3">📈</div>
+                            <h3 class="text-base font-bold text-white">Indicadores & Simulador TAS</h3>
+                            <p class="text-xs text-slate-400 mt-1">Dashboard cuantitativo, auditoría de multas en UCFVF/USD y simulador predictivo de casos futuros.</p>
+                            <div class="mt-3 pt-3 border-t border-slate-800 space-y-1 text-xs">
+                                <a href="#" onclick="cambiarVista('indicadores'); return false;" class="block text-slate-300 hover:text-oro-300">📊 KPIs y Gráficas de Torneo →</a>
+                                <a href="#" onclick="cambiarVista('indicadores'); return false;" class="block text-slate-300 hover:text-oro-300">🔮 Simulador Predictivo →</a>
+                            </div>
+                        </div>
+                        <button onclick="cambiarVista('indicadores')" class="mt-4 w-full py-2 rounded-xl text-xs font-bold bg-oro-500 text-slate-950 hover:bg-oro-400 transition">Abrir Métricas</button>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- VISTA 2: TABLERO KANBAN DE EXPEDIENTES (/expedientes) -->
+            <!-- ============================================================= -->
+            <section id="vista-expedientes" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-white font-display">Tablero de Gestión de Expedientes (Kanban FVF)</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Seguimiento procesal por fases reglamentarias, plazos perentorios y resoluciones.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="filtrarKanbanAnio('TODOS')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-vin-900 text-white">Todos</button>
+                        <button onclick="filtrarKanbanAnio('2026')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300">2026</button>
+                        <button onclick="filtrarKanbanAnio('2025')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300">2025</button>
+                        <button onclick="filtrarKanbanAnio('2024')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300">2024</button>
+                    </div>
+                </div>
+
+                <!-- Tablero de Columnas -->
+                <div class="overflow-x-auto pb-4 scrollbar-thin">
+                    <div class="flex gap-4 items-start min-w-max" id="contenedorKanbanDinamico">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- VISTA 3: CENTRO DATA ANALYST & INGESTA IA (/ingesta) -->
+            <!-- ============================================================= -->
+            <section id="vista-ingesta" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-oro-400 uppercase tracking-wider block">Lead Legal Data Analyst & Project Manager</span>
+                            <h2 class="text-lg font-bold text-white">Centro de Ingesta y Análisis Forense</h2>
+                        </div>
+                        <!-- Pestañas internas de Ingesta -->
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="setTabIngesta('INGESTA')" id="btnTabIngesta-INGESTA" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-oro-500 text-slate-950">1. Intake PDF</button>
+                            <button onclick="setTabIngesta('ESTRUCTURACION')" id="btnTabIngesta-ESTRUCTURACION" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">2. 7 Dimensiones</button>
+                            <button onclick="setTabIngesta('ABOGADO_DEPORTIVO')" id="btnTabIngesta-ABOGADO_DEPORTIVO" class="px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-400 hover:text-emerald-300">3. Abogado Deportivo (TAS)</button>
+                            <button onclick="setTabIngesta('PROJECT_MANAGER')" id="btnTabIngesta-PROJECT_MANAGER" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">4. Project Manager & SLA</button>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor Tab 1: INTAKE -->
+                    <div id="tabContent-INGESTA" class="space-y-4">
+                        <div class="border-2 border-dashed border-slate-700 hover:border-oro-500 bg-slate-950/60 rounded-2xl p-8 text-center cursor-pointer">
+                            <span class="text-4xl block mb-2">📄</span>
+                            <p class="text-sm font-semibold text-white">Arrastra aquí el expediente o resolución en PDF (hasta 50 MB)</p>
+                            <p class="text-xs text-slate-400 mt-1">El extractor procesará automáticamente partes, testigos, normas, argumentos y laudos TAS.</p>
+                            <button onclick="ejecutarAnalisisDemo()" class="mt-4 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-vin-800 to-oro-600 text-white shadow-lg">
+                                ⚡ Cargar y Extraer Caso Demo: Yaracuyanos vs Real Frontera (Res. 127/2025)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor Tab 2: 7 DIMENSIONES -->
+                    <div id="tabContent-ESTRUCTURACION" class="space-y-4 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                                <span class="font-bold text-oro-300 uppercase block">1. Partes Identificadas</span>
+                                <p class="text-slate-300">• Cristian Enrique Cruz Meleán (Jugador / Imputado)</p>
+                                <p class="text-slate-300">• Kevin Raphael Díaz (Jugador / Imputado)</p>
+                                <p class="text-slate-300">• Yaracuyanos S.C. (Club / Sancionado)</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                                <span class="font-bold text-oro-300 uppercase block">2. Testigos & Declaraciones</span>
+                                <p class="text-slate-300">• Richard Ruiz (Portero / Testigo presencial calificado)</p>
+                                <p class="text-slate-300">• Andryu Romero (Jugador / Contactado videollamada)</p>
+                                <p class="text-slate-300">• Evelin Evies (Oficial de Integridad FVF)</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                                <span class="font-bold text-oro-300 uppercase block">3. Normas Aplicadas</span>
+                                <p class="text-slate-300">• RDFVF: Art. 10 lit. k y m (Amaño y Apuestas)</p>
+                                <p class="text-slate-300">• RDFVF: Art. 14 (Tentativa y complicidad)</p>
+                                <p class="text-slate-300">• FIFA DC: Art. 20 (Manipulación de partidos)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor Tab 3: ABOGADO DEPORTIVO (TAS / CAS) -->
+                    <div id="tabContent-ABOGADO_DEPORTIVO" class="space-y-4 hidden">
+                        <div class="p-5 rounded-2xl bg-slate-950 border border-emerald-500/40 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Dictamen Forense de Derecho Disciplinario</span>
+                                <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold">Riesgo TAS: 15% (Bajo)</span>
+                            </div>
+                            <p class="text-xs text-white leading-relaxed">
+                                Caso de alta trascendencia disciplinaria. La doctrina TAS Köllerer (CAS 2011/A/2490) y el estándar de satisfacción suficiente blindan el fallo frente a impugnaciones internacionales. La conspiración o intento de amaño se sanciona como falta consumada con 4 años de inhabilitación y 5.000 UCFVF ($15.000 USD).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Contenedor Tab 4: PROJECT MANAGER -->
+                    <div id="tabContent-PROJECT_MANAGER" class="space-y-4 hidden">
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-400">Auto Oficial Correlativo Generado:</span>
+                                <span class="px-2 py-0.5 rounded bg-oro-500/20 text-oro-300 font-mono font-bold">AUTO N° CDH-FVF-001-2026</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-400">Plazo para Descargos (Art. 195/200 RDFVF):</span>
+                                <span class="text-emerald-400 font-bold">5 días hábiles (En plazo)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- VISTA 4: INDICADORES & SIMULADOR (/indicadores) -->
+            <!-- ============================================================= -->
+            <section id="vista-indicadores" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h2 class="text-xl font-bold text-white font-display">Indicadores, Métricas & Simulador Predictivo</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                            <span class="font-bold text-oro-400 block uppercase">Recaudación Disciplinaria</span>
+                            <p class="text-slate-300">Total en UCFVF: <strong class="text-white">10.030 UC</strong></p>
+                            <p class="text-slate-300">Equivalente USD (Tasa $3.00): <strong class="text-emerald-400">$30.090 USD</strong></p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                            <span class="font-bold text-cyan-400 block uppercase">Simulador de Sanción para Casos Futuros</span>
+                            <p class="text-slate-300">Selecciona tipología de falta para calcular de forma inmediata baremo y jurisprudencia aplicable.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================= -->
+            <!-- VISTA 5: AGENTE IA (/agente-ia) -->
+            <!-- ============================================================= -->
+            <section id="vista-agente-ia" class="space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl">🤖</span>
+                        <div>
+                            <h2 class="text-lg font-bold text-white">Agente IA Disciplinario del Consejo de Honor</h2>
+                            <p class="text-xs text-slate-400">RAG con memoria jurídica vectorial, doctrina del TAS y Estatutos de la FVF.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 h-64 overflow-y-auto space-y-3 text-xs" id="chatIaContainer">
+                        <div class="p-3 rounded-xl bg-slate-900 text-slate-200 border border-slate-800 max-w-lg">
+                            👋 Hola, soy el Agente IA del Consejo de Honor. Puedo asesorarte sobre el baremo en UCFVF, precedentes de amaño (CAS 2011/A/2490) o redacción de autos.
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="inputChatIa" placeholder="Pregunta sobre un caso, laudo TAS o artículo del RDFVF..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-oro-500">
+                        <button onclick="enviarMensajeIA()" class="px-4 py-2 rounded-xl bg-oro-500 font-bold text-xs text-slate-950 hover:bg-oro-400">Enviar</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL NUEVO EXPEDIENTE -->
+    <!-- ========================================================================= -->
+    <div id="modalNuevoExp" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-white">Registrar Nuevo Expediente</h3>
+                <button onclick="cerrarModalNuevoExpediente()" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="text-slate-400 block mb-1">N° Expediente</label>
+                    <input type="text" id="nuevoExpNumero" value="001/2026" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                </div>
+                <div>
+                    <label class="text-slate-400 block mb-1">Motivo / Hecho Denunciado</label>
+                    <input type="text" id="nuevoExpMotivo" placeholder="Ej. Agresión a oficiales / Protesta de partido" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                </div>
+                <div>
+                    <label class="text-slate-400 block mb-1">Club o Parte Imputada</label>
+                    <input type="text" id="nuevoExpClub" placeholder="Ej. Caracas F.C." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-white">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+                <button onclick="cerrarModalNuevoExpediente()" class="px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-300">Cancelar</button>
+                <button onclick="guardarNuevoExpediente()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-oro-500 text-slate-950">Guardar Caso</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DINÁMICO DE TODAS LAS FUNCIONES -->
+    <script>
+        // Estado de la Aplicación
+        let sidebarColapsado = false;
+        let vistaActual = 'plataforma';
+        let expedientesData = [
+            { id: 1, numero: "142/2024", portada: "121/25", club: "Yaracuyanos S.C.", torneo: "Liga FUTVE 2", estado: "RESUELTO", motivo: "Amaño y apuestas ilegales (Real Frontera vs Yaracuyanos). Sanción de 4 años e inhabilitación.", multaUc: 5030, multaUsd: 15090, fase: 6, tag: "Amaño / TAS" },
+            { id: 2, numero: "001/2026", portada: "001/26", club: "Caracas F.C.", torneo: "Liga FUTVE", estado: "EN_ESTUDIO", motivo: "Incidencias de conducta y demora injustificada de partido.", multaUc: 120, multaUsd: 360, fase: 2, tag: "Conducta" },
+            { id: 3, numero: "048/2025", portada: "048/25", club: "Deportivo Táchira", torneo: "Liga FUTVE", estado: "RECIBIDO", motivo: "Informe arbitral por expulsión de cuerpo técnico.", multaUc: 60, multaUsd: 180, fase: 1, tag: "Expulsión" },
+            { id: 4, numero: "015/2026", portada: "015/26", club: "Monagas S.C.", torneo: "Liga FUTVE 2", estado: "EN_TRAMITE", motivo: "Protesta por presunta alineación indebida (Art. 77 RDFVF).", multaUc: 350, multaUsd: 1050, fase: 3, tag: "Alineación" }
+        ];
+
+        // Columnas Kanban
+        const columnasDef = [
+            { id: "RECIBIDO", titulo: "1. Recibidos", color: "border-sky-500", bgBadge: "bg-sky-500/20 text-sky-300" },
+            { id: "EN_ESTUDIO", titulo: "2. En Estudio / Descargos", color: "border-amber-500", bgBadge: "bg-amber-500/20 text-amber-300" },
+            { id: "EN_TRAMITE", titulo: "3. Pruebas & Audiencia", color: "border-purple-500", bgBadge: "bg-purple-500/20 text-purple-300" },
+            { id: "RESUELTO", titulo: "4. Resueltos / Fallo", color: "border-emerald-500", bgBadge: "bg-emerald-500/20 text-emerald-300" }
+        ];
+
+        function toggleSidebar() {
+            sidebarColapsado = !sidebarColapsado;
+            const sidebar = document.getElementById('sidebarPrincipal');
+            const titulo = document.getElementById('sidebarTitulo');
+            const buscador = document.getElementById('contenedorBuscadorSidebar');
+            const userFooter = document.getElementById('sidebarUserFooter');
+            const btn = document.getElementById('btnToggleSidebar');
+
+            if (sidebarColapsado) {
+                sidebar.classList.remove('w-72');
+                sidebar.classList.add('w-20');
+                titulo.classList.add('hidden');
+                buscador.classList.add('hidden');
+                userFooter.classList.add('hidden');
+                btn.innerText = '▶';
+                document.querySelectorAll('.nav-text, .nav-badge, .nav-arrow, .sidebar-group-title').forEach(el => el.classList.add('hidden'));
+            } else {
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-72');
+                titulo.classList.remove('hidden');
+                buscador.classList.remove('hidden');
+                userFooter.classList.remove('hidden');
+                btn.innerText = '◀';
+                document.querySelectorAll('.nav-text, .nav-badge, .nav-arrow, .sidebar-group-title').forEach(el => el.classList.remove('hidden'));
+            }
+        }
+
+        function toggleSubmenu(id) {
+            const sub = document.getElementById(id);
+            if (sub) sub.classList.toggle('hidden');
+        }
+
+        function cambiarVista(vistaId) {
+            vistaActual = vistaId;
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            const sec = document.getElementById('vista-' + vistaId);
+            if (sec) sec.classList.remove('hidden');
+
+            const headerBadge = document.getElementById('headerBadgeModulo');
+            const headerTitulo = document.getElementById('headerTituloModulo');
+
+            if (vistaId === 'plataforma') {
+                headerBadge.innerText = 'CDH-FVF v2.6';
+                headerTitulo.innerText = 'Suite Tecnológica & Menú Integral';
+            } else if (vistaId === 'expedientes') {
+                headerBadge.innerText = 'Kanban Flujo';
+                headerTitulo.innerText = 'Gestión de Expedientes en 6 Fases';
+                renderKanban();
+            } else if (vistaId === 'ingesta') {
+                headerBadge.innerText = 'Data Analyst IA';
+                headerTitulo.innerText = 'Centro de Ingesta & Abogado Deportivo (TAS)';
+            } else if (vistaId === 'indicadores') {
+                headerBadge.innerText = 'KPIs & Métricas';
+                headerTitulo.innerText = 'Control de Multas (UCFVF) & Simulador';
+            } else if (vistaId === 'agente-ia') {
+                headerBadge.innerText = 'Agente RAG';
+                headerTitulo.innerText = 'Consultor Jurídico & Precedentes TAS';
+            }
+        }
+
+        function setTabIngesta(tabId) {
+            ['INGESTA', 'ESTRUCTURACION', 'ABOGADO_DEPORTIVO', 'PROJECT_MANAGER'].forEach(t => {
+                const el = document.getElementById('tabContent-' + t);
+                const btn = document.getElementById('btnTabIngesta-' + t);
+                if (el) el.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-oro-500', 'text-slate-950');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+            const activo = document.getElementById('tabContent-' + tabId);
+            const btnActivo = document.getElementById('btnTabIngesta-' + tabId);
+            if (activo) activo.classList.remove('hidden');
+            if (btnActivo) {
+                btnActivo.classList.add('bg-oro-500', 'text-slate-950');
+                btnActivo.classList.remove('text-slate-400');
+            }
+        }
+
+        function renderKanban() {
+            const container = document.getElementById('contenedorKanbanDinamico');
+            if (!container) return;
+            container.innerHTML = '';
+
+            columnasDef.forEach(col => {
+                const exps = expedientesData.filter(e => e.estado === col.id);
+                const divCol = document.createElement('div');
+                divCol.className = `w-80 shrink-0 bg-slate-900 border-t-4 ${col.color} border-x border-b border-slate-800 rounded-2xl flex flex-col max-h-[75vh]`;
+
+                divCol.innerHTML = `
+                    <div class="p-3.5 bg-slate-950/80 rounded-t-xl border-b border-slate-800 flex items-center justify-between">
+                        <span class="font-bold text-xs uppercase text-white">${col.titulo}</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-bold ${col.bgBadge}">${exps.length}</span>
+                    </div>
+                    <div class="p-3 space-y-2.5 overflow-y-auto scrollbar-thin flex-1">
+                        ${exps.map(e => `
+                            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-oro-500/50 transition shadow-sm space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-mono font-bold text-oro-400 text-xs">${e.numero}</span>
+                                    <span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 font-bold">${e.torneo}</span>
+                                </div>
+                                <h4 class="font-bold text-white text-xs">${e.club}</h4>
+                                <p class="text-[11px] text-slate-400 line-clamp-2">${e.motivo}</p>
+                                <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+                                    <span class="text-oro-300 font-mono font-bold">${e.multaUc.toLocaleString()} UC</span>
+                                    <span class="text-emerald-400 font-mono font-bold">$${e.multaUsd.toLocaleString()}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(divCol);
+            });
+        }
+
+        function ejecutarAnalisisDemo() {
+            setTabIngesta('ESTRUCTURACION');
+            alert('¡Expediente N° 121/25 (Res. 127/2025) analizado y estructurado con éxito! Revisa las pestañas "2. 7 Dimensiones" y "3. Abogado Deportivo (TAS)".');
+        }
+
+        function abrirModalNuevoExpediente() {
+            document.getElementById('modalNuevoExp').classList.remove('hidden');
+        }
+        function cerrarModalNuevoExpediente() {
+            document.getElementById('modalNuevoExp').classList.add('hidden');
+        }
+        function guardarNuevoExpediente() {
+            const num = document.getElementById('nuevoExpNumero').value;
+            const mot = document.getElementById('nuevoExpMotivo').value || 'Apertura de procedimiento disciplinario';
+            const club = document.getElementById('nuevoExpClub').value || 'Club por Determinar';
+
+            expedientesData.unshift({
+                id: Date.now(),
+                numero: num,
+                portada: num,
+                club: club,
+                torneo: "Liga FUTVE",
+                estado: "RECIBIDO",
+                motivo: mot,
+                multaUc: 150,
+                multaUsd: 450,
+                fase: 1,
+                tag: "Nuevo"
+            });
+
+            cerrarModalNuevoExpediente();
+            cambiarVista('expedientes');
+            alert(`Expediente ${num} registrado con éxito.`);
+        }
+
+        function abrirModalExtraccionPDF() {
+            cambiarVista('ingesta');
+            setTabIngesta('INGESTA');
+        }
+
+        function enviarMensajeIA() {
+            const inp = document.getElementById('inputChatIa');
+            const txt = inp.value.trim();
+            if (!txt) return;
+
+            const cont = document.getElementById('chatIaContainer');
+            cont.innerHTML += `<div class="p-3 rounded-xl bg-oro-500/20 text-oro-200 border border-oro-500/30 max-w-lg ml-auto text-right text-xs">💬 ${txt}</div>`;
+            inp.value = '';
+
+            setTimeout(() => {
+                cont.innerHTML += `<div class="p-3 rounded-xl bg-slate-900 text-slate-200 border border-slate-800 max-w-lg text-xs">
+                    ⚖️ <strong>Criterio Jurisprudencial CDH-FVF / TAS:</strong> Conforme al RDFVF y al laudo vinculante CAS 2011/A/2490 (Köllerer), el estándar probatorio aplicable es el de satisfacción suficiente (*comfortable satisfaction*). Se aplica la doctrina de la cuerda de hilos indiciarios concordantes.
+                </div>`;
+                cont.scrollTop = cont.scrollHeight;
+            }, 600);
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            renderKanban();
+        });
+    </script>
+</body>
+</html>
