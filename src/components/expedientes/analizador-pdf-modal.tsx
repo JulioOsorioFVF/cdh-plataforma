@@ -61,37 +61,44 @@ export function AnalizadorPdfModal({
     setAutoGeneradoResultado(null);
 
     try {
-      let contenidoTexto = textoManual;
+      let resp: Response;
 
       if (modoEntrada === 'archivo' && archivo) {
-        // En cliente, leemos el texto disponible o el contenido crudo
-        try {
-          contenidoTexto = await archivo.text();
-        } catch {
-          contenidoTexto = `Documento PDF: ${archivo.name}. Se solicita análisis de expediente de torneo oficial FVF.`;
+        const formData = new FormData();
+        formData.append('archivo', archivo);
+        if (textoManual.trim()) {
+          formData.append('texto', textoManual);
         }
-      }
+        if (expedienteId) {
+          formData.append('expedienteId', String(expedienteId));
+        }
 
-      if (!contenidoTexto.trim()) {
-        setErrorMsg('Por favor selecciona un archivo PDF o ingresa el texto del informe/expediente.');
-        setAnalizando(false);
-        return;
-      }
+        resp = await fetch('/api/ia/analizar-pdf', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        if (!textoManual.trim()) {
+          setErrorMsg('Por favor selecciona un archivo PDF o ingresa el texto del informe/expediente.');
+          setAnalizando(false);
+          return;
+        }
 
-      // Llamada al servidor con el texto del documento
-      const resp = await fetch('/api/ia/analizar-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          texto: contenidoTexto,
-          nombreArchivo: archivo ? archivo.name : 'escrito_disciplinario.pdf',
-          tamanoBytes: archivo ? archivo.size : contenidoTexto.length,
-          expedienteId,
-        }),
-      });
+        resp = await fetch('/api/ia/analizar-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            texto: textoManual,
+            nombreArchivo: 'escrito_disciplinario.pdf',
+            tamanoBytes: textoManual.length,
+            expedienteId,
+          }),
+        });
+      }
 
       if (!resp.ok) {
-        throw new Error('Error al procesar el análisis en el servidor.');
+        const errData = await resp.json().catch(() => ({}));
+        throw new Error(errData.error || 'Error al procesar el análisis en el servidor.');
       }
 
       const data = await resp.json();
