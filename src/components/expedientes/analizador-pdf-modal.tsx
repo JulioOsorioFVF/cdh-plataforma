@@ -30,7 +30,7 @@ export function AnalizadorPdfModal({
   const [resultado, setResultado] = useState<AnalisisCompletoExpedientePDF | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [pestañaActiva, setPestañaActiva] = useState<
-    'partes' | 'testigos' | 'argumentacion' | 'jurisprudencia' | 'normas' | 'antecedentes' | 'auto'
+    'partes' | 'testigos' | 'argumentacion' | 'jurisprudencia' | 'normas' | 'antecedentes' | 'abogado_deportivo' | 'auto'
   >('partes');
 
   // Estado para la generación de Auto
@@ -61,37 +61,44 @@ export function AnalizadorPdfModal({
     setAutoGeneradoResultado(null);
 
     try {
-      let contenidoTexto = textoManual;
+      let resp: Response;
 
       if (modoEntrada === 'archivo' && archivo) {
-        // En cliente, leemos el texto disponible o el contenido crudo
-        try {
-          contenidoTexto = await archivo.text();
-        } catch {
-          contenidoTexto = `Documento PDF: ${archivo.name}. Se solicita análisis de expediente de torneo oficial FVF.`;
+        const formData = new FormData();
+        formData.append('archivo', archivo);
+        if (textoManual.trim()) {
+          formData.append('texto', textoManual);
         }
-      }
+        if (expedienteId) {
+          formData.append('expedienteId', String(expedienteId));
+        }
 
-      if (!contenidoTexto.trim()) {
-        setErrorMsg('Por favor selecciona un archivo PDF o ingresa el texto del informe/expediente.');
-        setAnalizando(false);
-        return;
-      }
+        resp = await fetch('/api/ia/analizar-pdf', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        if (!textoManual.trim()) {
+          setErrorMsg('Por favor selecciona un archivo PDF o ingresa el texto del informe/expediente.');
+          setAnalizando(false);
+          return;
+        }
 
-      // Llamada al servidor con el texto del documento
-      const resp = await fetch('/api/ia/analizar-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          texto: contenidoTexto,
-          nombreArchivo: archivo ? archivo.name : 'escrito_disciplinario.pdf',
-          tamanoBytes: archivo ? archivo.size : contenidoTexto.length,
-          expedienteId,
-        }),
-      });
+        resp = await fetch('/api/ia/analizar-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            texto: textoManual,
+            nombreArchivo: 'escrito_disciplinario.pdf',
+            tamanoBytes: textoManual.length,
+            expedienteId,
+          }),
+        });
+      }
 
       if (!resp.ok) {
-        throw new Error('Error al procesar el análisis en el servidor.');
+        const errData = await resp.json().catch(() => ({}));
+        throw new Error(errData.error || 'Error al procesar el análisis en el servidor.');
       }
 
       const data = await resp.json();
@@ -344,6 +351,16 @@ export function AnalizadorPdfModal({
                 }`}
               >
                 🔍 Antecedentes y Matriz
+              </button>
+              <button
+                onClick={() => setPestañaActiva('abogado_deportivo')}
+                className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                  pestañaActiva === 'abogado_deportivo'
+                    ? 'bg-emerald-900 text-emerald-200 font-bold border border-emerald-500/40'
+                    : 'text-emerald-400 hover:text-emerald-300'
+                }`}
+              >
+                ⚖️ Abogado Deportivo (TAS/FVF)
               </button>
               <button
                 onClick={() => setPestañaActiva('auto')}
@@ -610,6 +627,100 @@ export function AnalizadorPdfModal({
                     >
                       {retroalimentadoExito ? '✅ Memoria Actualizada' : '🧠 Alimentar Matriz IA'}
                     </button>
+                  </div>
+                </div>
+              )}
+
+              {/* FACTORES DE ABOGADO DEPORTIVO EXPERTO (LEX SPORTIVA & TAS) */}
+              {pestañaActiva === 'abogado_deportivo' && resultado.factoresAbogadoDeportivo && (
+                <div className="space-y-4">
+                  {/* Dictamen Forense */}
+                  <div className="p-4 bg-slate-900 border border-emerald-500/30 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">
+                        Dictamen Forense de Derecho Disciplinario
+                      </span>
+                      <span className="text-xs px-2.5 py-0.5 rounded font-mono font-bold bg-emerald-950 text-emerald-300 border border-emerald-500/40">
+                        Riesgo TAS: {resultado.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.riesgoRevocacionInstanciasSuperiores}%
+                      </span>
+                    </div>
+                    <p className="text-xs font-semibold text-white">
+                      {resultado.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.dictamenEstrategicoForense}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    {/* Excepciones */}
+                    <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+                      <span className="font-bold text-white uppercase text-[11px] block border-b border-slate-800 pb-1">
+                        🛡️ Excepciones y Locus Standi
+                      </span>
+                      <div>
+                        <span className="text-slate-400 block text-[11px]">Legitimación:</span>
+                        <p className="text-slate-200">{resultado.factoresAbogadoDeportivo.excepcionesPrevias.legitimacionActivaPasiva}</p>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px]">Caducidad / Prescripción:</span>
+                        <p className="text-slate-200">{resultado.factoresAbogadoDeportivo.excepcionesPrevias.caducidadPrescripcion.dictamen}</p>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px]">Caución Art. 170:</span>
+                        <p className="text-slate-200">{resultado.factoresAbogadoDeportivo.excepcionesPrevias.caucionArancelArt170.consecuenciaJuridica}</p>
+                      </div>
+                    </div>
+
+                    {/* Estándar Probatorio */}
+                    <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+                      <span className="font-bold text-white uppercase text-[11px] block border-b border-slate-800 pb-1">
+                        ⚖️ Estándar Probatorio (TAS)
+                      </span>
+                      <div>
+                        <span className="text-slate-400 block text-[11px]">Acta Arbitral (Art. 172 RDFVF):</span>
+                        <span className="font-mono font-bold text-oro-400">
+                          {resultado.factoresAbogadoDeportivo.estandarProbatorioSanaCritica.valorActaArbitral}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px]">Doctrina Cuerda de Hilos TAS:</span>
+                        <p className="text-slate-300 italic text-[11px]">
+                          {resultado.factoresAbogadoDeportivo.estandarProbatorioSanaCritica.doctrinaCuerdaDeHilos}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Tipicidad */}
+                    <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+                      <span className="font-bold text-white uppercase text-[11px] block border-b border-slate-800 pb-1">
+                        🎯 Tipicidad & Culpabilidad
+                      </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400">Grado:</span>
+                        <span className="font-bold text-white">{resultado.factoresAbogadoDeportivo.tipicidadYCulpabilidad.gradoEjecucion}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-400">Culpabilidad:</span>
+                        <span className="font-bold text-oro-400">{resultado.factoresAbogadoDeportivo.tipicidadYCulpabilidad.calificacionCulpabilidad}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[11px]">Responsabilidad Objetiva Club:</span>
+                        <p className="text-slate-300 text-[11px]">{resultado.factoresAbogadoDeportivo.tipicidadYCulpabilidad.responsabilidadObjetivaClub.motivacion}</p>
+                      </div>
+                    </div>
+
+                    {/* Vías Recursivas */}
+                    <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+                      <span className="font-bold text-white uppercase text-[11px] block border-b border-slate-800 pb-1">
+                        🧭 Recursos y Plazos Legales
+                      </span>
+                      <ul className="space-y-1.5 text-[11px]">
+                        {resultado.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.recursosProcedentesYPlazos.map((r, i) => (
+                          <li key={i} className="flex items-center justify-between p-1.5 rounded bg-slate-950">
+                            <span className="font-semibold text-slate-200">{r.recurso}</span>
+                            <span className="font-mono text-oro-400 font-bold">{r.plazoDias} días</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               )}

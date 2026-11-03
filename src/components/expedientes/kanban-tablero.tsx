@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useTransition } from 'react';
+import Link from 'next/link';
 
 import {
   obtenerTableroKanban,
@@ -166,6 +167,15 @@ export function KanbanTablero({
           </div>
 
           <div className="flex items-center gap-2">
+            <Link
+              href="/ingesta"
+              className="px-3.5 py-2 text-xs font-semibold bg-emerald-950 hover:bg-emerald-900 text-emerald-300 rounded-xl flex items-center gap-1.5 shadow-sm transition-all border border-emerald-500/40 cursor-pointer"
+              title="Centro Data Analyst & Ingesta Automática de Casos"
+            >
+              <span>🔬</span>
+              <span>Data Analyst Pipeline</span>
+            </Link>
+
             <button
               onClick={() => setModalPdfAbierto(true)}
               className="px-3.5 py-2 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white rounded-xl flex items-center gap-1.5 shadow-sm transition-all border border-slate-700 cursor-pointer"

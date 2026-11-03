@@ -3,10 +3,6 @@
 import { randomBytes } from 'node:crypto';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { google } from 'googleapis';
-import { GoogleGenAI } from '@google/genai';
-import readXlsxFile from 'read-excel-file/node';
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { EstadoFila, EstadoIngesta, Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
@@ -62,7 +58,15 @@ async function extraerCsv(bytes: Buffer, nombre: string): Promise<string> {
     );
   }
 
-  const hojas = await readXlsxFile(bytes, { trim: false });
+  let readXlsx: any;
+  try {
+    const mod = await import('read-excel-file/node');
+    readXlsx = mod.default || mod;
+  } catch {
+    throw new Error('Para procesar libros XLSX se requiere el módulo read-excel-file o exportar el archivo a formato .csv.');
+  }
+
+  const hojas = await readXlsx(bytes, { trim: false });
   const hoja =
     hojas.find((candidata) => candidata.sheet.trim().toLocaleUpperCase() === 'ALL') ?? hojas[0];
   if (!hoja) throw new Error('El libro no contiene una hoja válida.');
@@ -235,23 +239,36 @@ function anonimizarTexto(texto: string, nombres: string[]): string {
 }
 
 async function extraerTextoPdf(bytes: Buffer): Promise<string> {
-  const documento = await getDocument({ data: new Uint8Array(bytes) }).promise;
-  const paginas: string[] = [];
   try {
-    for (let numero = 1; numero <= Math.min(documento.numPages, 120); numero++) {
-      const pagina = await documento.getPage(numero);
-      const contenido = await pagina.getTextContent();
-      paginas.push(
-        contenido.items
-          .filter((item): item is typeof item & { str: string } => 'str' in item)
-          .map((item) => item.str)
-          .join(' '),
-      );
+    const mod = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const getDoc = mod.getDocument || (mod as any).default?.getDocument;
+    if (getDoc) {
+      const documento = await getDoc({ data: new Uint8Array(bytes) }).promise;
+      const paginas: string[] = [];
+      try {
+        for (let numero = 1; numero <= Math.min(documento.numPages, 120); numero++) {
+          const pagina = await documento.getPage(numero);
+          const contenido = await pagina.getTextContent();
+          paginas.push(
+            contenido.items
+              .filter((item): item is typeof item & { str: string } => 'str' in item)
+              .map((item) => item.str)
+              .join(' '),
+          );
+        }
+      } finally {
+        await documento.destroy();
+      }
+      if (paginas.length > 0) return paginas.join('\n').slice(0, MAX_TEXTO_PDF);
     }
-  } finally {
-    await documento.destroy();
+  } catch {
+    // Fallback nativo
   }
-  return paginas.join('\n').slice(0, MAX_TEXTO_PDF);
+
+  const raw = bytes.toString('latin1');
+  const asciiRegex = /[\x20-\x7E\xA0-\xFF]{4,}/g;
+  const matches = raw.match(asciiRegex) || [];
+  return matches.slice(0, 1000).join(' ').slice(0, MAX_TEXTO_PDF);
 }
 
 export async function previsualizarPdfAction(documentoId: number) {
@@ -313,6 +330,7 @@ export async function aprobarPdfParaAgenteAction(
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error('Define GEMINI_API_KEY para indexar el texto aprobado.');
 
+    const { GoogleGenAI } = await import('@google/genai');
     const respuesta = await new GoogleGenAI({ apiKey }).models.embedContent({
       model: 'text-embedding-004',
       contents: texto.slice(0, 6000),
@@ -391,6 +409,7 @@ export async function importarPdfDriveAction(): Promise<{
         'Configura GOOGLE_DRIVE_EXPEDIENTES_FOLDER_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL y GOOGLE_PRIVATE_KEY.',
       );
     }
+    const { google } = await import('googleapis');
     const auth = new google.auth.GoogleAuth({
       credentials: { client_email: email, private_key: privateKey },
       scopes: ['https://www.googleapis.com/auth/drive.readonly'],
