@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { EstadoExpediente, TipoParte } from '@prisma/client';
+
 import { crearExpedienteEnSupabase } from '@/server/expedientes/acciones';
-import type { CrearExpedienteInput } from '@/types/kanban';
+import { EstadoExpediente, TipoParte, type CrearExpedienteInput } from '@/types/kanban';
 import { AnalizadorPdfModal } from './analizador-pdf-modal';
 import type { AnalisisCompletoExpedientePDF } from '@/server/ia/extractor-expediente-pdf';
 

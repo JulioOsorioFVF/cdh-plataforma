@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { EstadoExpediente, TipoMovimientoExpediente } from '@prisma/client';
+import { TipoMovimientoExpediente } from '@prisma/client';
+import { EstadoExpediente } from '@/types/kanban';
 
 export type TipoAutoCDH =
   | 'AUTO_ENTRADA_RADICACION'

@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { EstadoExpediente } from '@prisma/client';
+
 import {
   obtenerDetalleExpedienteConJurisprudencia,
   moverEstadoExpedienteKanban,
 } from '@/server/expedientes/acciones';
-import { COLUMNAS_KANBAN_CONFIG } from '@/types/kanban';
+import { EstadoExpediente, COLUMNAS_KANBAN_CONFIG } from '@/types/kanban';
 import type { PrecedenteJurisprudencial } from '@/server/ia/agente-disciplinario';
 import { BotonAsistenteIA } from '@/components/ia/boton-asistente-ia';
 import { AnalizadorPdfModal } from './analizador-pdf-modal';
