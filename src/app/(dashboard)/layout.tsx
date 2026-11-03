@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import { NAVEGACION } from '@/lib/nav';
 import { exigeCambioDeClave, requiereSesion } from '@/server/auth/sesion';
-import { BotonSalir } from './salir';
 import { BotonAsistenteIA } from '@/components/ia/boton-asistente-ia';
+import { SidebarInteractivo } from '@/components/navegacion/sidebar-interactivo';
 
 /**
  * Marco de la aplicacion.
@@ -20,61 +19,33 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const esAdmin = sesion.roles.includes('ADMINISTRADOR');
 
   return (
-    <div className="flex min-h-dvh">
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-vin-900 bg-vin-950 lg:flex">
-        <div className="border-b border-white/10 px-5 py-5">
-          <p className="font-display text-[0.65rem] tracking-[0.25em] text-oro-500 uppercase">
-            FVF
-          </p>
-          <p className="font-display text-lg leading-tight font-semibold text-white">
-            Consejo de Honor
-          </p>
-        </div>
-
-        <nav className="flex-1 overflow-y-auto px-3 py-4">
-          {NAVEGACION.map((seccion) => (
-            <div key={seccion.grupo} className="mb-5">
-              <p className="px-3 pb-2 text-[0.65rem] font-semibold tracking-widest text-white/40 uppercase">
-                {seccion.grupo}
-              </p>
-              <ul className="space-y-0.5">
-                {seccion.items.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="block rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/8 hover:text-white"
-                    >
-                      {item.etiqueta}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-
-        <div className="border-t border-white/10 px-5 py-4">
-          <p className="text-xs text-white/40">Sesion activa</p>
-          <p className="text-sm font-medium text-white/80" title={sesion.email}>
-            {sesion.nombre}
-          </p>
-          <p className="mb-2 text-[0.7rem] text-white/35">
-            {esAdmin ? 'Administrador' : sesion.roles.join(', ')}
-          </p>
-          <BotonSalir />
-        </div>
-      </aside>
+    <div className="flex min-h-dvh bg-slate-950 text-slate-100">
+      {/* Barra Lateral Ocultable e Interactiva con Submenús */}
+      <SidebarInteractivo
+        usuario={{
+          nombre: sesion.nombre,
+          email: sesion.email,
+          roles: sesion.roles,
+          esAdmin,
+        }}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center justify-between gap-4 border-b border-border bg-surface px-6">
-          <div className="lg:hidden">
-            <p className="font-display text-sm font-semibold text-vin-900">Consejo de Honor</p>
+        <header className="flex h-14 items-center justify-between gap-4 border-b border-white/10 bg-vin-950/90 backdrop-blur-md px-6 sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/plataforma"
+              className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-oro-500/10 hover:bg-oro-500/20 text-oro-400 border border-oro-500/30 transition flex items-center gap-1.5"
+            >
+              <span>🧭</span>
+              <span className="hidden sm:inline">Suite de Funciones</span>
+            </Link>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <BotonAsistenteIA estilo="header" />
             <Link
               href="/cambiar-password"
-              className="hidden text-xs text-ink-soft underline-offset-2 hover:underline lg:block"
+              className="hidden text-xs text-slate-300 hover:text-white underline-offset-2 hover:underline lg:block"
             >
               {nombreCorto}
             </Link>
@@ -82,7 +53,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </header>
 
-        <main id="contenido" className="flex-1 overflow-y-auto p-6 relative">
+        <main id="contenido" className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative">
           {children}
         </main>
 
