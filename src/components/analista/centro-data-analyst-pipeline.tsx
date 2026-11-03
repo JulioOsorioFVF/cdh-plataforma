@@ -34,7 +34,9 @@ interface Props {
 }
 
 export function CentroDataAnalystPipeline({ resumenInicial }: Props) {
-  const [pestañaActiva, setPestañaActiva] = useState<'INGESTA' | 'ESTRUCTURACION' | 'PROJECT_MANAGER' | 'CASOS_BD'>('INGESTA');
+  const [pestañaActiva, setPestañaActiva] = useState<
+    'INGESTA' | 'ESTRUCTURACION' | 'ABOGADO_DEPORTIVO' | 'PROJECT_MANAGER' | 'CASOS_BD'
+  >('INGESTA');
   const [archivo, setArchivo] = useState<File | null>(null);
   const [textoManual, setTextoManual] = useState('');
   const [autoGuardarEnBD, setAutoGuardarEnBD] = useState(true);
@@ -282,10 +284,26 @@ export function CentroDataAnalystPipeline({ resumenInicial }: Props) {
               : 'text-slate-400 hover:text-white hover:bg-slate-900'
           }`}
         >
-          <span>🔍</span> 2. Data Analyst: 7 Dimensiones Extraídas
+          <span>🔍</span> 2. Data Analyst (7 Dimensiones)
           {resultado && (
             <span className="ml-1 px-1.5 py-0.5 text-[10px] rounded-full bg-slate-950 text-oro-400">
               {resultado.metricasDataAnalyst.dataQualityScore}%
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={() => setPestañaActiva('ABOGADO_DEPORTIVO')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+            pestañaActiva === 'ABOGADO_DEPORTIVO'
+              ? 'bg-oro-500 text-slate-950 shadow-md'
+              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+          }`}
+        >
+          <span>⚖️</span> 3. Abogado Deportivo Experto (TAS / FVF)
+          {resultado?.analisis?.factoresAbogadoDeportivo && (
+            <span className="ml-1 px-1.5 py-0.5 text-[10px] rounded-full bg-slate-950 text-emerald-400">
+              TAS {100 - resultado.analisis.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.riesgoRevocacionInstanciasSuperiores}%
             </span>
           )}
         </button>
@@ -298,7 +316,7 @@ export function CentroDataAnalystPipeline({ resumenInicial }: Props) {
               : 'text-slate-400 hover:text-white hover:bg-slate-900'
           }`}
         >
-          <span>⏱️</span> 3. Project Manager: SLA & Autos
+          <span>⏱️</span> 4. Project Manager: SLA & Autos
         </button>
 
         <button
@@ -309,7 +327,7 @@ export function CentroDataAnalystPipeline({ resumenInicial }: Props) {
               : 'text-slate-400 hover:text-white hover:bg-slate-900'
           }`}
         >
-          <span>🗄️</span> 4. Casos Persistidos en Base de Datos ({resumenInicial.ultimosCasos.length})
+          <span>🗄️</span> 5. Casos Persistidos en Base de Datos ({resumenInicial.ultimosCasos.length})
         </button>
       </div>
 
@@ -632,7 +650,265 @@ export function CentroDataAnalystPipeline({ resumenInicial }: Props) {
         </div>
       )}
 
-      {/* PESTAÑA 3: PROJECT MANAGER (SLA & AUTOS) */}
+      {/* PESTAÑA 3: ABOGADO DEPORTIVO EXPERTO (LEX SPORTIVA & TAS/CAS) */}
+      {pestañaActiva === 'ABOGADO_DEPORTIVO' && (
+        <div className="space-y-6">
+          {!resultado?.analisis?.factoresAbogadoDeportivo ? (
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
+              <span className="text-3xl block mb-2">⚖️</span>
+              <p className="text-sm">Procesa un documento para visualizar el dictamen forense y análisis de derecho deportivo.</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Dictamen Forense y Auditoría de Vulnerabilidad (Banner Superior) */}
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-xl">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-1 max-w-3xl">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-oro-500/20 text-oro-400 border border-oro-500/30">
+                        Dictamen Forense de Derecho Disciplinario
+                      </span>
+                      <span className="text-xs text-slate-400">
+                        Criterio de Satisfacción Cómoda (TAS / FIFA)
+                      </span>
+                    </div>
+                    <h2 className="text-lg font-bold text-white tracking-tight">
+                      {resultado.analisis.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.dictamenEstrategicoForense}
+                    </h2>
+                  </div>
+
+                  {/* Semáforo de Riesgo ante el TAS */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center min-w-[140px]">
+                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">
+                        Riesgo Revocación TAS
+                      </span>
+                      <span
+                        className={`text-xl font-black mt-0.5 block ${
+                          resultado.analisis.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.riesgoRevocacionInstanciasSuperiores <= 20
+                            ? 'text-emerald-400'
+                            : resultado.analisis.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.riesgoRevocacionInstanciasSuperiores <= 50
+                            ? 'text-amber-400'
+                            : 'text-rose-400'
+                        }`}
+                      >
+                        {resultado.analisis.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.riesgoRevocacionInstanciasSuperiores}% (Bajo)
+                      </span>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center min-w-[140px]">
+                      <span className="text-[10px] text-slate-400 uppercase font-semibold block">
+                        Test Proporcionalidad
+                      </span>
+                      <span className="text-sm font-bold text-oro-400 mt-1 block">
+                        {resultado.analisis.factoresAbogadoDeportivo.dosimetriaYProporcionalidad.testProporcionalidadTAS}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Grid Forense de 4 Pilares de la Lex Sportiva */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* 1. Excepciones Previas y Plazos Procesales */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <span>🛡️</span> Excepciones Previas & Locus Standi
+                    </h3>
+                    <span className="text-[10px] text-slate-400 font-mono">Arts. 170 / 195 RDFVF</span>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-slate-400 block font-semibold">Legitimación Activa / Pasiva:</span>
+                      <p className="text-slate-200 mt-0.5">
+                        {resultado.analisis.factoresAbogadoDeportivo.excepcionesPrevias.legitimacionActivaPasiva}
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-slate-400 font-semibold">Caducidad y Prescripción:</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400">
+                          {resultado.analisis.factoresAbogadoDeportivo.excepcionesPrevias.caducidadPrescripcion.plazoHorasODias}
+                        </span>
+                      </div>
+                      <p className="text-slate-300">
+                        {resultado.analisis.factoresAbogadoDeportivo.excepcionesPrevias.caducidadPrescripcion.dictamen}
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-slate-400 block font-semibold">Caución de Protesta (Art. 170):</span>
+                      <p className="text-slate-300 mt-0.5">
+                        {resultado.analisis.factoresAbogadoDeportivo.excepcionesPrevias.caucionArancelArt170.consecuenciaJuridica}
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-slate-400 block font-semibold">Principio Non Bis In Idem:</span>
+                      <p className="text-slate-300 mt-0.5">
+                        {resultado.analisis.factoresAbogadoDeportivo.excepcionesPrevias.principioNeBisInIdem.observaciones}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Estándar Probatorio y Sana Crítica Judicial */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <span>⚖️</span> Estándar Probatorio & Sana Crítica
+                    </h3>
+                    <span className="text-[10px] text-slate-400 font-mono">Art. 172 RDFVF / FIFA DC</span>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-slate-400 font-semibold">Presunción del Acta Arbitral:</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-oro-500/10 text-oro-400 border border-oro-500/20 font-mono">
+                          {resultado.analisis.factoresAbogadoDeportivo.estandarProbatorioSanaCritica.valorActaArbitral}
+                        </span>
+                      </div>
+                      <p className="text-slate-300 text-[11px]">
+                        Presunción Iuris Tantum: El acta arbitral goza de fe pública salvo prueba contundente oficial en contrario.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-slate-400 block font-semibold">Doctrina de la Cuerda de Hilos Probatorios (TAS):</span>
+                      <p className="text-slate-300 mt-0.5 italic text-[11px]">
+                        "{resultado.analisis.factoresAbogadoDeportivo.estandarProbatorioSanaCritica.doctrinaCuerdaDeHilos}"
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-slate-400 block font-semibold">Ponderación de Testigos y Medios Digitales:</span>
+                      <p className="text-slate-300 mt-0.5 text-[11px]">
+                        {resultado.analisis.factoresAbogadoDeportivo.estandarProbatorioSanaCritica.ponderacionTestimonial}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Tipicidad, Culpabilidad y Responsabilidad Objetiva */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <span>🎯</span> Tipicidad & Responsabilidad Objetiva
+                    </h3>
+                    <span className="text-[10px] text-slate-400 font-mono">Strict Liability</span>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                        <span className="text-slate-400 block text-[11px]">Grado de Ejecución:</span>
+                        <span className="font-bold text-white mt-1 block">
+                          {resultado.analisis.factoresAbogadoDeportivo.tipicidadYCulpabilidad.gradoEjecucion}
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                        <span className="text-slate-400 block text-[11px]">Calificación Subjetiva:</span>
+                        <span className="font-bold text-oro-400 mt-1 block">
+                          {resultado.analisis.factoresAbogadoDeportivo.tipicidadYCulpabilidad.calificacionCulpabilidad}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-slate-400 block font-semibold">Responsabilidad Objetiva del Club (Strict Liability):</span>
+                      <p className="text-slate-300 mt-0.5 text-[11px]">
+                        {resultado.analisis.factoresAbogadoDeportivo.tipicidadYCulpabilidad.responsabilidadObjetivaClub.motivacion}
+                      </p>
+                      <span className="text-[10px] text-oro-400 font-mono block mt-1">
+                        Base: {resultado.analisis.factoresAbogadoDeportivo.tipicidadYCulpabilidad.responsabilidadObjetivaClub.fundamentoArticulo}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Dosimetría, Atenuantes, Agravantes y Medidas Cautelares */}
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                      <span>📊</span> Dosimetría Sancionatoria
+                    </h3>
+                    <span className="text-[10px] text-slate-400 font-mono">Arts. 16 y 17 RDFVF</span>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-rose-400 font-semibold block mb-1">Circunstancias Agravantes (Art. 16):</span>
+                      {resultado.analisis.factoresAbogadoDeportivo.dosimetriaYProporcionalidad.agravantesIdentificados.map((a, i) => (
+                        <div key={i} className="text-slate-300 text-[11px] flex items-center justify-between">
+                          <span>• {a.nombre}</span>
+                          <span className="text-slate-500 font-mono">{a.articulo}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-emerald-400 font-semibold block mb-1">Circunstancias Atenuantes (Art. 17):</span>
+                      {resultado.analisis.factoresAbogadoDeportivo.dosimetriaYProporcionalidad.atenuantesIdentificados.map((a, i) => (
+                        <div key={i} className="text-slate-300 text-[11px] flex items-center justify-between">
+                          <span>• {a.nombre}</span>
+                          <span className="text-slate-500 font-mono">{a.articulo}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80">
+                      <span className="text-slate-400 font-semibold block">Abono de Medidas Cautelares (Art. 34):</span>
+                      <p className="text-slate-300 mt-0.5 text-[11px]">
+                        {resultado.analisis.factoresAbogadoDeportivo.dosimetriaYProporcionalidad.descuentoMedidasPreventivas}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Vías Recursivas y Estrategia Litigiosa (Cuadro Comparativo) */}
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <span>🧭</span> Recursos Procedentes & Estrategia Litigiosa
+                  </h3>
+                  <span className="text-[10px] text-slate-400 font-mono">Días Hábiles vs Naturales</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {resultado.analisis.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.recursosProcedentesYPlazos.map((rec, i) => (
+                    <div key={i} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-white">{rec.recurso}</span>
+                        <span className="px-2 py-0.5 rounded bg-oro-500/10 text-oro-400 font-mono font-bold text-[10px]">
+                          {rec.plazoDias} días
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-400 block font-medium">Órgano: {rec.organo}</span>
+                      <p className="text-[10px] text-slate-500 font-mono">{rec.baseLegal}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800/80 text-xs space-y-1">
+                  <span className="text-amber-400 font-semibold block">⚠️ Puntos Críticos para Blindar el Fallo:</span>
+                  <ul className="text-slate-300 space-y-1 list-disc pl-4 text-[11px]">
+                    {resultado.analisis.factoresAbogadoDeportivo.estrategiaLitigiosaYVulnerabilidad.principalesVulnerabilidadesFallo.map((v, i) => (
+                      <li key={i}>{v}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* PESTAÑA 4: PROJECT MANAGER (SLA & AUTOS) */}
       {pestañaActiva === 'PROJECT_MANAGER' && (
         <div className="space-y-6">
           {!resultado ? (
