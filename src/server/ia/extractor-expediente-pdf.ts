@@ -338,6 +338,20 @@ export async function analizarExpedienteCompletoConIA(
   // 6. Jurisprudencia Citada en los Casos
   const jurisprudenciaCitada: JurisprudenciaCitada[] = [
     {
+      codigoCasoPrecedente: 'CDH-FVF RES-127/2025 (Exp. 142/2024)',
+      tribunalUOrgano: 'Consejo de Honor de la Federación Venezolana de Fútbol',
+      criterioAplicado:
+        'Caso Yaracuyanos S.C. (Amaño y Conspiración): La tentativa de manipulación constituye infracción autónoma consumada (Doctrina CAS 2011/A/2490 Köllerer). Estándar de satisfacción suficiente/cómoda del TAS valorando indicios como hilos de un cable. Sanción de 4 años de inhabilitación + 5.000 UCFVF (.000 USD) a jugadores y multa al club por Art. 179 RDFVF.',
+      esVinculante: true,
+    },
+    {
+      codigoCasoPrecedente: 'CAS 2011/A/2490 (Daniel Köllerer vs ATP)',
+      tribunalUOrgano: 'Tribunal Arbitral del Deporte (TAS / CAS - Lausana)',
+      criterioAplicado:
+        'Doctrina vinculante del TAS: La conspiración o intento de amaño de partidos se sanciona con el mismo rigor que la manipulación consumada; la consumación efectiva o el lucro económico es irrelevante.',
+      esVinculante: true,
+    },
+    {
       codigoCasoPrecedente: 'CDH-FVF EXP-048/2025',
       tribunalUOrgano: 'Consejo de Honor de la Federación Venezolana de Fútbol',
       criterioAplicado:
