@@ -14,6 +14,12 @@ import {
   type CrearExpedienteInput,
   COLUMNAS_KANBAN_CONFIG,
 } from '@/types/kanban';
+import {
+  analizarDocumentoYExtraerDatos,
+  generarAutoOficialConCorrelativo,
+  retroalimentarMatrizConExpediente,
+  type TipoAutoCDH,
+} from '@/server/ia/matriz-evaluacion';
 
 
 
@@ -343,5 +349,93 @@ export async function obtenerDetalleExpedienteConJurisprudencia(id: number) {
   } catch (error) {
     console.error('Error al obtener detalle de expediente:', error);
     return null;
+  }
+}
+
+/**
+ * 5. Analiza un documento o texto y extrae automáticamente los datos para el expediente.
+ */
+export async function analizarDocumentoConIAAction(texto: string, nombreArchivo?: string) {
+  try {
+    const resultado = await analizarDocumentoYExtraerDatos(texto, nombreArchivo);
+    return { ok: true, data: resultado };
+  } catch (error: any) {
+    console.error('Error en análisis IA de documento:', error);
+    return { ok: false, error: error.message || 'Error al procesar el documento' };
+  }
+}
+
+/**
+ * 6. Genera un Auto Oficial con asignación automática de correlativo oficial.
+ */
+export async function generarAutoConCorrelativoAction(params: {
+  expedienteId: number;
+  tipoAuto: TipoAutoCDH;
+  juezPonente?: string;
+  resumenHechos?: string;
+  articulosAplicables?: string[];
+  multaUcfvf?: number;
+  suspensionDeportiva?: string;
+  diasDescargos?: number;
+}) {
+  try {
+    const resultado = await generarAutoOficialConCorrelativo(params);
+    revalidatePath('/expedientes');
+    revalidatePath('/tramite');
+    return { ok: true, data: resultado };
+  } catch (error: any) {
+    console.error('Error al generar auto oficial:', error);
+    return { ok: false, error: error.message || 'Error al generar auto oficial' };
+  }
+}
+
+/**
+ * 7. Adjunta un documento a un expediente persistido.
+ */
+export async function adjuntarDocumentoAExpedienteAction(params: {
+  expedienteId: number;
+  nombre: string;
+  tipo: string;
+  tamanoBytes: number;
+  ruta?: string;
+}) {
+  try {
+    const doc = await prisma.expediente_documento.create({
+      data: {
+        expedienteId: params.expedienteId,
+        nombre: params.nombre,
+        tipo: params.tipo,
+        tamanoBytes: params.tamanoBytes,
+        mimeType: 'application/pdf',
+        ruta: params.ruta || `storage/expedientes/${Date.now()}_${params.nombre}`,
+      },
+    });
+    revalidatePath('/expedientes');
+    return { ok: true, documento: doc };
+  } catch (error: any) {
+    console.error('Error al adjuntar documento:', error);
+    return { ok: false, error: error.message };
+  }
+}
+
+/**
+ * 8. Retroalimenta el Cerebro IA / Matriz con un fallo firme.
+ */
+export async function retroalimentarMatrizDecisionAction(params: {
+  expedienteId: number;
+  criterioJuridico: string;
+  motivoTipificado: string;
+  articulosClave: string[];
+  multaAplicadaUcfvf: number;
+  sancionDeportiva?: string;
+  extractoHechos: string;
+}) {
+  try {
+    const res = await retroalimentarMatrizConExpediente(params);
+    revalidatePath('/agente-ia');
+    revalidatePath('/expedientes');
+    return res;
+  } catch (error: any) {
+    return { ok: false, error: error.message };
   }
 }

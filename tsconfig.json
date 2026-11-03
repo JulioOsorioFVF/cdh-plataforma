@@ -23,5 +23,14 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", ".next", "out"]
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out",
+    "scripts",
+    "src/app/(dashboard)/ingesta",
+    "src/lib/ingesta",
+    "src/server/ia/agente-jurisdiccional.ts",
+    "src/server/ia/director-instruccion-cdh.ts"
+  ]
 }

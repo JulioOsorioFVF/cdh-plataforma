@@ -9,6 +9,7 @@ import {
 import { COLUMNAS_KANBAN_CONFIG } from '@/types/kanban';
 import type { PrecedenteJurisprudencial } from '@/server/ia/agente-disciplinario';
 import { BotonAsistenteIA } from '@/components/ia/boton-asistente-ia';
+import { AnalizadorPdfModal } from './analizador-pdf-modal';
 
 interface ModalDetalleExpedienteProps {
   expedienteId: number | null;
@@ -29,6 +30,7 @@ export function ModalDetalleExpediente({
 
   const [pestanaActiva, setPestanaActiva] = useState<'general' | 'jurisprudencia' | 'movimientos'>('general');
   const [cambiandoEstado, setCambiandoEstado] = useState(false);
+  const [mostrarAnalizadorPdf, setMostrarAnalizadorPdf] = useState(false);
 
   useEffect(() => {
     if (!expedienteId) {
@@ -174,9 +176,17 @@ export function ModalDetalleExpediente({
             </button>
           </div>
 
-          {/* Control rápido de estado en Kanban */}
+          {/* Control rápido de estado en Kanban y Acciones */}
           {exp && (
             <div className="flex items-center gap-2 text-xs">
+              <button
+                onClick={() => setMostrarAnalizadorPdf(true)}
+                className="h-8 px-2.5 rounded-lg text-xs font-bold bg-oro-500 hover:bg-oro-400 text-slate-950 transition-colors shadow flex items-center gap-1.5 cursor-pointer shrink-0"
+                title="Anexar documento PDF y extraer Partes, Testigos, Normas y Autos"
+              >
+                <span>📎 Anexar PDF / Extraer IA</span>
+              </button>
+
               <span className="text-slate-500 font-medium hidden sm:inline">Mover a columna:</span>
               <select
                 disabled={cambiandoEstado}
@@ -479,6 +489,13 @@ export function ModalDetalleExpediente({
           </button>
         </div>
       </div>
+
+      {/* Modal de Extracción IA de Expediente PDF */}
+      <AnalizadorPdfModal
+        abierto={mostrarAnalizadorPdf}
+        alCerrar={() => setMostrarAnalizadorPdf(false)}
+        expedienteId={exp?.id}
+      />
     </div>
   );
 }

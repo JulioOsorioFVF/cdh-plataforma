@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { EstadoExpediente, TipoParte } from '@prisma/client';
 import { crearExpedienteEnSupabase } from '@/server/expedientes/acciones';
 import type { CrearExpedienteInput } from '@/types/kanban';
+import { AnalizadorPdfModal } from './analizador-pdf-modal';
+import type { AnalisisCompletoExpedientePDF } from '@/server/ia/extractor-expediente-pdf';
 
 interface ModalCrearExpedienteProps {
   abierto: boolean;
@@ -62,6 +64,36 @@ export function ModalCrearExpediente({
 
   const [guardando, setGuardando] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState<string | null>(null);
+  const [mostrarAnalizadorPdf, setMostrarAnalizadorPdf] = useState(false);
+
+  const handleAplicarExtraccion = (datos: AnalisisCompletoExpedientePDF) => {
+    if (datos.identificacionExpediente.numeroSugerido) {
+      setNumero(datos.identificacionExpediente.numeroSugerido);
+    }
+    if (datos.identificacionExpediente.torneo) {
+      setLigaTorneo(datos.identificacionExpediente.torneo);
+    }
+    if (datos.argumentacionJuridica.resumenHechos) {
+      setMotivo(datos.argumentacionJuridica.resumenHechos.slice(0, 140));
+      setSubMotivo(datos.normasAplicables.map((n) => `${n.cuerpoNormativo} ${n.articulo}`).join(', '));
+    }
+    const p1 = datos.partes[0];
+    const p2 = datos.partes[1];
+    if (p1) {
+      setParte1Nombre(p1.nombre);
+      setParte1Tipo(p1.tipo === 'JUGADOR' ? TipoParte.JUGADOR : TipoParte.CLUB);
+    }
+    if (p2) {
+      setParte2Nombre(p2.nombre);
+      setParte2Tipo(p2.tipo === 'JUGADOR' ? TipoParte.JUGADOR : TipoParte.CLUB);
+    }
+    if (datos.partes.length > 0) {
+      setEquipos(datos.partes.map((p) => p.nombre).join(' vs '));
+    }
+    setNotas(
+      `Partes: ${datos.partes.map((p) => p.nombre).join(', ')} | Testigos: ${datos.testigos.map((t) => t.nombre).join(', ')} | Normas aplicables: ${datos.normasAplicables.map((n) => n.articulo).join(', ')} | Precedentes: ${datos.jurisprudenciaCitada.map((j) => j.codigoCasoPrecedente).join(', ')}`
+    );
+  };
 
   if (!abierto) return null;
 
@@ -135,6 +167,30 @@ export function ModalCrearExpediente({
 
         {/* Formulario */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
+          {/* Banner de Extracción IA de Documentos PDF */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 bg-gradient-to-r from-vin-950 via-slate-900 to-slate-950 border border-oro-500/40 rounded-xl shadow-md">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-oro-500/20 text-oro-400 text-lg">
+                ⚡
+              </span>
+              <div>
+                <p className="text-xs font-bold text-oro-300">
+                  ¿Tienes el archivo PDF del acta, informe arbitral o escrito?
+                </p>
+                <p className="text-[11px] text-slate-300 mt-0.5">
+                  La IA extrae automáticamente: Partes, Testigos, Declaraciones, Jurisprudencia, Normas (RDFVF/FIFA) y autocompleta el expediente.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setMostrarAnalizadorPdf(true)}
+              className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-950 bg-oro-400 hover:bg-oro-300 transition-colors shadow flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+            >
+              <span>📎 Anexar PDF y Extraer con IA</span>
+            </button>
+          </div>
+
           {errorMensaje && (
             <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-sm font-medium">
               {errorMensaje}
@@ -387,6 +443,13 @@ export function ModalCrearExpediente({
           </div>
         </form>
       </div>
+
+      {/* Modal de Extracción IA de Expediente PDF */}
+      <AnalizadorPdfModal
+        abierto={mostrarAnalizadorPdf}
+        alCerrar={() => setMostrarAnalizadorPdf(false)}
+        alAplicarAExpediente={handleAplicarExtraccion}
+      />
     </div>
   );
 }
