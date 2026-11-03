@@ -67,7 +67,36 @@ export async function analizarDocumentoYExtraerDatos(
   let suspensionSugerida = '2 a 4 partidos de suspensión';
   let multaUcfvf = 100;
 
-  if (texto.includes('CAUCIÓN') || texto.includes('ART. 170') || texto.includes('EXTEMPORÁNE') || texto.includes('PROTESTA')) {
+  if (
+    texto.includes('AMAÑO') ||
+    texto.includes('MANIPULACIÓN') ||
+    texto.includes('MANIPULACION') ||
+    texto.includes('APUESTAS') ||
+    texto.includes('INTEGRIDAD') ||
+    texto.includes('SOBORNO') ||
+    texto.includes('VENDER PARTIDO') ||
+    texto.includes('127/2025') ||
+    texto.includes('142/2024')
+  ) {
+    motivoPrincipal = 'Amaño y/o Manipulación de Competencia y Apuestas Ilegales (Conspiración y Responsabilidad Objetiva)';
+    subMotivo = 'Art. 10 lit. k) RDFVF en concordancia con Art. 20 Código Disciplinario FIFA y Art. 19 CONMEBOL';
+    articulos = [
+      'Art. 9 RDFVF',
+      'Art. 10 lit. k RDFVF',
+      'Art. 14 num. 2 y 3 RDFVF (Tentativa y Complicidad)',
+      'Art. 16 RDFVF (Agravantes)',
+      'Art. 19 RDFVF (Tentativa)',
+      'Art. 174 y 179 RDFVF (Valoración de Pruebas y Obstrucción)',
+      'Art. 20 Código Disciplinario FIFA',
+      'Art. 39 Código Disciplinario FIFA (Estándar de Satisfacción Cómoda)',
+      'Art. 19 Código Disciplinario CONMEBOL',
+      'Precedente CDH-FVF Res. 127/2025 (Exp. 142/2024 Yaracuyanos)',
+      'Doctrina TAS/CAS CAS 2011/A/2490 (Köllerer vs ATP)',
+    ];
+    gravedad = 'MUY_GRAVE';
+    suspensionSugerida = 'Cuatro (4) años de prohibición de ejercer actividades relacionadas con el fútbol';
+    multaUcfvf = 5000;
+  } else if (texto.includes('CAUCIÓN') || texto.includes('ART. 170') || texto.includes('EXTEMPORÁNE') || texto.includes('PROTESTA')) {
     motivoPrincipal = 'Protesta de Partido sin Cumplimiento de Caución';
     subMotivo = 'Inadmisibilidad formal / Falta de requisitos de procedibilidad';
     articulos = ['Art. 169 RDFVF', 'Art. 170 RDFVF'];
