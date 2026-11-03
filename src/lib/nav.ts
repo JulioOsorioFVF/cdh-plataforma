@@ -2,30 +2,31 @@
 
 export const NAVEGACION = [
   {
-    grupo: 'Analisis',
+    grupo: 'Gestión Procesal e IA',
     items: [
-      { href: '/dashboard', etiqueta: 'Tablero general', icono: 'grid' },
-      { href: '/tramite', etiqueta: 'Trámite y Mesa de Partes', icono: 'folder' },
-      { href: '/sanciones', etiqueta: 'Sanciones', icono: 'gavel' },
-      { href: '/expedientes', etiqueta: 'Expedientes', icono: 'folder' },
-      { href: '/incidencias', etiqueta: 'Incidencias', icono: 'alert' },
-      { href: '/administracion', etiqueta: 'Administracion y multas', icono: 'wallet' },
+      { href: '/dashboard', etiqueta: 'Tablero General', icono: 'grid' },
+      { href: '/expedientes', etiqueta: 'Expedientes (Kanban)', icono: 'folder' },
+      { href: '/tramite', etiqueta: 'Trámite Procesal y Autos', icono: 'file-text' },
+      { href: '/agente-ia', etiqueta: 'Agente IA Disciplinario & RAG', icono: 'cpu' },
+      { href: '/indicadores', etiqueta: 'Indicadores y Métricas', icono: 'chart' },
     ],
   },
   {
-    grupo: 'Inspiracional',
+    grupo: 'Justicia y Finanzas',
     items: [
-      { href: '/inspiracional', etiqueta: 'Plan de accion', icono: 'target' },
-      { href: '/inspiracional/kpis', etiqueta: 'Pilares y KPIs', icono: 'chart' },
+      { href: '/sanciones', etiqueta: 'Registro de Sanciones', icono: 'gavel' },
+      { href: '/finanzas', etiqueta: 'Finanzas, Multas y Pagos', icono: 'wallet' },
+      { href: '/evaluacion', etiqueta: 'Matriz de Evaluación Disciplinaria', icono: 'target' },
+      { href: '/incidencias', etiqueta: 'Incidencias y Licencias', icono: 'alert' },
     ],
   },
   {
-    grupo: 'Operacion',
+    grupo: 'Operación y Big Data',
     items: [
-      { href: '/ocr', etiqueta: 'Actas y OCR', icono: 'scan' },
-      { href: '/ingesta', etiqueta: 'Sincronizacion', icono: 'refresh' },
-      { href: '/usuarios', etiqueta: 'Usuarios y roles', icono: 'users' },
-      { href: '/auditoria', etiqueta: 'Auditoria', icono: 'history' },
+      { href: '/ingesta', etiqueta: 'Sincronización de Datos', icono: 'refresh' },
+      { href: '/ocr', etiqueta: 'Actas Arbitrales y OCR', icono: 'scan' },
+      { href: '/usuarios', etiqueta: 'Usuarios y Roles', icono: 'users' },
+      { href: '/auditoria', etiqueta: 'Bitácora de Auditoría', icono: 'history' },
     ],
   },
 ] as const;

@@ -5,12 +5,12 @@ import { EstadoExpediente } from '@prisma/client';
 import {
   obtenerTableroKanban,
   moverEstadoExpedienteKanban,
-  type ColumnaKanban,
-  type ExpedienteTarjetaKanban,
 } from '@/server/expedientes/acciones';
+import type { ColumnaKanban, ExpedienteTarjetaKanban } from '@/types/kanban';
 import { ModalCrearExpediente } from './modal-crear-expediente';
 import { ModalDetalleExpediente } from './modal-detalle-expediente';
 import { AsistenteDisciplinarioModal } from '@/components/ia/asistente-disciplinario-modal';
+import { AnalizadorPdfModal } from './analizador-pdf-modal';
 
 interface KanbanTableroProps {
   columnasIniciales?: ColumnaKanban[];
@@ -32,7 +32,18 @@ export function KanbanTablero({
   const [modalCrearAbierto, setModalCrearAbierto] = useState(false);
   const [modalDetalleId, setModalDetalleId] = useState<number | null>(null);
   const [modalIAAbierto, setModalIAAbierto] = useState(false);
+  const [modalPdfAbierto, setModalPdfAbierto] = useState(false);
   const [expedienteParaIA, setExpedienteParaIA] = useState<any>(null);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+
+  const scrollHorizontal = (direccion: 'izq' | 'der') => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: direccion === 'der' ? 360 : -360,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   // Drag and drop state
   const [arrastrandoId, setArrastrandoId] = useState<number | null>(null);
@@ -156,6 +167,15 @@ export function KanbanTablero({
 
           <div className="flex items-center gap-2">
             <button
+              onClick={() => setModalPdfAbierto(true)}
+              className="px-3.5 py-2 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white rounded-xl flex items-center gap-1.5 shadow-sm transition-all border border-slate-700 cursor-pointer"
+              title="Anexar documento PDF y extraer Partes, Testigos, Normas y Autos con IA"
+            >
+              <span>📎</span>
+              <span>Extraer de PDF con IA</span>
+            </button>
+
+            <button
               onClick={() => {
                 setExpedienteParaIA(null);
                 setModalIAAbierto(true);
@@ -236,8 +256,48 @@ export function KanbanTablero({
         </div>
       </div>
 
-      {/* Tablero de Columnas (Trello-Style) */}
-      <div className="flex-1 overflow-x-auto p-4 sm:p-5">
+      {/* Guía de Fases Procesales y Controles de Desplazamiento Horizontal */}
+      <div className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 text-xs shrink-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider shrink-0 mr-1">
+            Fases del Proceso:
+          </span>
+          {columnas.map((col, idx) => (
+            <div key={col.estado} className="flex items-center gap-1 shrink-0">
+              <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold flex items-center gap-1 ${col.colorBadge}`}>
+                <span>{col.icono}</span>
+                <span>{idx + 1}. {col.titulo}</span>
+                <span className="opacity-75">({col.expedientes.length})</span>
+              </span>
+              {idx < columnas.length - 1 && <span className="text-slate-400 text-xs">→</span>}
+            </div>
+          ))}
+        </div>
+
+        {/* Botones de Desplazamiento Horizontal */}
+        <div className="flex items-center gap-1 shrink-0 ml-auto">
+          <button
+            onClick={() => scrollHorizontal('izq')}
+            className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center text-xs shadow-xs cursor-pointer transition-colors"
+            title="Desplazar a la izquierda"
+          >
+            ◀
+          </button>
+          <button
+            onClick={() => scrollHorizontal('der')}
+            className="w-7 h-7 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center text-xs shadow-xs cursor-pointer transition-colors"
+            title="Desplazar a la derecha"
+          >
+            ▶
+          </button>
+        </div>
+      </div>
+
+      {/* Tablero de Columnas (Trello-Style) con Desplazamiento Horizontal */}
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-x-auto p-4 sm:p-5 scroll-smooth"
+      >
         <div className="flex gap-4 items-start min-w-max pb-4">
           {columnas.map((col) => {
             const esDestinoHover = columnaDestinoHover === col.estado;
@@ -401,6 +461,15 @@ export function KanbanTablero({
         abierto={modalIAAbierto}
         alCerrar={() => setModalIAAbierto(false)}
         expedienteContexto={expedienteParaIA}
+      />
+
+      {/* Modal de Extracción IA de Documentos PDF */}
+      <AnalizadorPdfModal
+        abierto={modalPdfAbierto}
+        alCerrar={() => setModalPdfAbierto(false)}
+        alAplicarAExpediente={() => {
+          cargarDatos();
+        }}
       />
     </div>
   );
